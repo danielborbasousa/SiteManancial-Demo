@@ -1,0 +1,160 @@
+:root {
+    --bg-dark: #07101d;
+    --bg-light: #152238;
+    --text-main: #ffffff;
+    --text-muted: #94a3b8;
+    --card-bg: #475569;
+    --auth-bg: #1e293b;
+}
+
+body {
+    background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-light) 100%);
+    color: var(--text-main);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-x: hidden;
+}
+
+/* Navbar Customization */
+.navbar {
+    background: linear-gradient(to bottom, rgba(7, 16, 29, 0.9) 0%, transparent 100%) !important;
+    z-index: 10;
+}
+.nav-icon {
+    width: 32px;
+    height: 32px;
+    background-color: var(--text-muted);
+    border-radius: 50%;
+    display: inline-block;
+}
+
+/* icon spans in navbar */
+#searchIcon, #notifIcon {
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+#brandIcon {
+    margin-right: 0.3rem;
+}
+
+/* logo image used in navbar and auth pages */
+.logo {
+    height: 64px;
+    width: auto;
+}
+
+/* make thumbnails indicate video content */
+.stream-thumbnail {
+    position: relative;
+    color: #cbd5e1;
+    font-weight: bold;
+}
+
+.stream-thumbnail::after {
+    content: "▶";
+    position: absolute;
+    font-size: 1.5rem;
+    opacity: 0.7;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Hero Section */
+.hero-section {
+    height: 70vh;
+    display: flex;
+    align-items: center;
+    background-color: #1e293b; /* Fallback */
+    background-image: linear-gradient(to right, var(--bg-dark) 30%, transparent 100%);
+    position: relative;
+}
+
+/* Stream Cards (Fixes the overlapping issue) */
+.stream-carousel {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+    scrollbar-width: none; /* Firefox */
+}
+.stream-carousel::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+.stream-item {
+    min-width: 250px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+.stream-item:hover {
+    transform: scale(1.02);
+}
+
+.stream-thumbnail {
+    height: 140px;
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: #cbd5e1;
+    position: relative;
+    border: 2px solid transparent;
+}
+.stream-thumbnail.active {
+    border-color: var(--text-main);
+}
+
+.play-circle {
+    width: 50px;
+    height: 50px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+}
+.play-triangle {
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 15px solid var(--bg-dark);
+    margin-left: 5px;
+}
+
+/* Auth Pages Customization */
+.auth-container {
+    background-color: var(--auth-bg);
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    width: 100%;
+    max-width: 450px;
+}
+
+.custom-input {
+    background-color: #334155 !important;
+    border: none !important;
+    color: white !important;
+    padding: 0.8rem 1rem;
+}
+.custom-input::placeholder {
+    color: #94a3b8;
+}
+.custom-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25) !important;
+}
+
+.auth-link {
+    color: var(--text-main);
+    text-decoration: none;
+    font-weight: 500;
+}
+.auth-link:hover {
+    text-decoration: underline;
+}
