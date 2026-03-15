@@ -112,6 +112,11 @@ include("conexao.php"); // Inclui o arquivo de conexão com o banco de dados
                 </div>
             </div>
         </section>
+                <!-- Botão de logout -->
+        <div class="text-center mt-4">
+            <a href="sair.php" class="btn btn-danger">Sair</a>
+        </div>
+    </div>
 
     </main>
 

@@ -10,7 +10,7 @@
  
         if(mysqli_num_rows($resultado) == 1){ // Verifica se encontrou um usuário
             $_SESSION["Usuario_logado"] = $email; // Armazena o e-mail na sessão
-            header("location:dashboardusuario.php"); // Redireciona para a página principal
+            header("location:dashboardusuario.php"); // Redireciona para o dashboard
             exit; // Para a execução
         }
         else{
