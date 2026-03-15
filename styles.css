@@ -1,3 +1,5 @@
+/* Módulo de estilos CSS */
+/* Variáveis CSS para cores e temas */
 :root {
     --bg-dark: #07101d;
     --bg-light: #152238;
@@ -7,6 +9,7 @@
     --auth-bg: #1e293b;
 }
 
+/* Estilos do corpo da página */
 body {
     background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-light) 100%);
     color: var(--text-main);
@@ -15,11 +18,12 @@ body {
     overflow-x: hidden;
 }
 
-/* Navbar Customization */
+/* Personalização da navbar */
 .navbar {
     background: linear-gradient(to bottom, rgba(7, 16, 29, 0.9) 0%, transparent 100%) !important;
     z-index: 10;
 }
+/* Ícones na navbar */
 .nav-icon {
     width: 32px;
     height: 32px;

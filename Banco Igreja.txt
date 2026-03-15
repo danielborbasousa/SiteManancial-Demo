@@ -1,0 +1,76 @@
+CREATE DATABASE igreja_cursos;
+
+-- Seleciona o banco
+USE igreja_cursos;
+
+-- ============================
+-- TABELA DE CURSOS 
+-- ============================
+
+CREATE TABLE ID_CONTENT (
+    IDC_CURSO INT AUTO_INCREMENT PRIMARY KEY,
+    IDC_VIDEO VARCHAR(255),
+    IDC_DOC VARCHAR(255),
+    IDC_IMAGE VARCHAR(255)
+);
+
+-- ============================
+-- TABELA DE ADMINISTRADORES
+-- ============================
+
+CREATE TABLE ID_ADMIN (
+    IDA_CPF CHAR(11) PRIMARY KEY,
+    IDA_NOME VARCHAR(100) NOT NULL,
+    IDA_EMAIL VARCHAR(100) UNIQUE NOT NULL,
+    IDA_FILIAL VARCHAR(100),
+    IDA_SENHA VARCHAR(255) NOT NULL
+);
+
+-- ============================
+-- TABELA DE FIEIS / ALUNOS
+-- ============================
+
+CREATE TABLE ID_FIEL (
+    IDF_ID INT,
+    IDF_NOME VARCHAR(100) NOT NULL,
+    IDF_TELEFONE VARCHAR(20),
+    IDF_EMAIL VARCHAR(100),
+    IDF_CPF CHAR(11) PRIMARY KEY,
+    IDF_FILIAL VARCHAR(100),
+    IDF_FUNCAO VARCHAR(50),
+    IDF_ENDERECO VARCHAR(200),
+    IDF_SENHA VARCHAR(255) NOT NULL,
+    ID_CURSO INT
+);
+
+-- ============================
+-- INSERINDO ALGUNS DADOS TESTE
+-- ============================
+
+INSERT INTO ID_CONTENT (IDC_VIDEO, IDC_DOC, IDC_IMAGE)
+VALUES
+('video_curso1.mp4', 'apostila_curso1.pdf', 'imagem_curso1.png'),
+('video_curso2.mp4', 'apostila_curso2.pdf', 'imagem_curso2.png');
+
+INSERT INTO ID_ADMIN (IDA_CPF, IDA_NOME, IDA_EMAIL, IDA_FILIAL, IDA_SENHA)
+VALUES
+('12345678900', 'Administrador Geral', 'admin@igreja.com', 'Matriz', '123456');
+
+INSERT INTO ID_FIEL (IDF_NOME, IDF_TELEFONE, IDF_EMAIL, IDF_CPF, IDF_FILIAL, IDF_FUNCAO, IDF_ENDERECO, IDF_SENHA, ID_CURSO)
+VALUES
+('João Silva', '11999999999', 'joao@email.com', '11122233344', 'São Paulo', 'Aluno', 'Rua A, 123', '123456', 1),
+('Maria Oliveira', '11888888888', 'maria@email.com', '55566677788', 'Rio de Janeiro', 'Aluno', 'Rua B, 456', '123456', 2);
+
+ -- =============
+ -- COMANDOS PARA VISUALIZAR TABELAS
+-- ==============
+
+SELECT * FROM  ID_FIEL;
+SELECT * FROM  ID_ADMIN;
+SELECT * FROM  ID_CONTENT;
+
+
+
+
+
+

@@ -1,5 +1,6 @@
+// Módulo de JavaScript para interações do cliente
 document.addEventListener("DOMContentLoaded", function() {
-    // Enable mouse-wheel scrolling for the horizontal carousels
+    // Habilita rolagem com mouse para os carrosséis horizontais
     const carousels = document.querySelectorAll('.stream-carousel');
     
     carousels.forEach(carousel => {
@@ -9,8 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    // fetch icons from a simple API (here a local JSON file)
-    // the response should include replacements for search, notification, book, profile, etc.
+    // Busca ícones de um arquivo JSON local
     fetch('icons.json')
         .then(res => {
             if (!res.ok) {
@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function() {
             return res.json();
         })
         .then(data => {
+            // Substitui os ícones se encontrados nos elementos
             if (data.search && document.getElementById('searchIcon')) {
                 document.getElementById('searchIcon').textContent = data.search;
             }
@@ -29,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 document.getElementById('brandIcon').textContent = data.book;
             }
             if (data.profile && document.getElementById('profileIcon')) {
-                // profileIcon is a div; insert emoji or svg inside
+                // profileIcon é um div; insere emoji ou svg dentro
                 const prof = document.getElementById('profileIcon');
                 prof.textContent = data.profile;
                 prof.style.backgroundColor = 'transparent';
@@ -40,6 +41,6 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         })
         .catch(err => {
-            console.error('Icon API error:', err);
+            console.error('Erro na API de ícones:', err);
         });
 });

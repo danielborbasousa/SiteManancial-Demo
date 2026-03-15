@@ -1,3 +1,9 @@
+<?php
+session_start(); // Inicia a sessão do usuário
+include("conexao.php"); // Inclui o arquivo de conexão com o banco de dados
+// Módulo da página principal (dashboard)
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -10,6 +16,7 @@
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark position-absolute w-100 p-3">
+        <!-- Barra de navegação com logo e links -->
         <div class="container-fluid px-4">
             <a class="navbar-brand fw-bold d-flex align-items-center" href="#"><img src="logo.png" alt="Logotipo da Missão Evangélica Manancial da Esperança" class="logo me-2" /> Missão Evangélica Manancial da Esperança</a>
             <div class="collapse navbar-collapse">
@@ -28,6 +35,7 @@
     </nav>
 <br><br>
     <header class="hero-section px-5">
+        <!-- Seção principal (hero) com título e botões -->
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-6 z-1">
@@ -46,8 +54,10 @@
     </header>
 
     <main class="container-fluid px-5 py-4">
+        <!-- Conteúdo principal da página -->
         
         <section class="mb-5">
+            <!-- Seção de vídeos em destaque -->
             <h5 class="mb-3 fw-bold">Vídeos em destaque</h5>
             <div class="stream-carousel">
                 
@@ -82,6 +92,7 @@
         </section>
 
         <section>
+            <!-- Seção de outros vídeos -->
             <h5 class="mb-3 fw-bold">Outros vídeos</h5>
             <div class="stream-carousel">
                 <div class="stream-item" role="button" aria-label="Vídeo">
