@@ -1,62 +1,50 @@
 # SiteManancial-Demo
 
-Passo a passo para rodar o projeto localmente com XAMPP.
+Guia rapido para baixar e rodar localmente.
 
-## 1) Clonar o projeto dentro do htdocs
+## Requisitos
 
-No Windows PowerShell:
+- XAMPP (Apache + MySQL)
+- Git
+
+## 1) Baixar o projeto
+
+No PowerShell:
 
 ```powershell
 cd C:\xampp1\htdocs
 git clone <URL_DO_REPOSITORIO> SiteManancial-Demo
+cd SiteManancial-Demo
 ```
 
-Se voce ja tem os arquivos, apenas garanta que a pasta final fique assim:
+## 2) Iniciar servicos
 
-```text
-C:\xampp1\htdocs\SiteManancial-Demo
-```
+No XAMPP Control Panel:
 
-## 2) Iniciar o XAMPP
+1. Start em Apache
+2. Start em MySQL
 
-1. Abra o XAMPP Control Panel.
-2. Clique em Start no Apache.
-3. Clique em Start no MySQL.
+## 3) Criar banco de dados
 
-## 3) Banco de dados usado no projeto
+Arquivo recomendado para este projeto: Banco Igreja.txt.
 
-Estamos rodando o projeto com o banco robusto:
+No MySQL Workbench (ou phpMyAdmin), execute o SQL do arquivo Banco Igreja.txt.
+Esse script cria o banco igreja_cursos e popula dados de teste.
 
-- Banco Igreja Robusto.sql
+## 4) Ajustar conexao
 
-O arquivo Banco Igreja.txt fica apenas como material didatico para entender como o banco funciona.
-
-## 4) Importar no MySQL Workbench (obrigatorio para este fluxo)
-
-1. Abra o MySQL Workbench.
-2. Conecte no seu servidor local (localhost).
-3. Va em File > Open SQL Script.
-4. Selecione o arquivo Banco Igreja Robusto.sql.
-5. Clique no icone de raio (Execute).
-6. Confirme se o banco igreja_cursos_v2 foi criado.
-
-## 5) Conferir conexao do projeto
-
-No arquivo `conexao.php`, os dados de conexao devem estar assim (XAMPP padrao):
+No arquivo conexao.php, use:
 
 ```php
 $host = "localhost";
 $usuario = "root";
 $senha = "";
-$banco = "igreja_cursos_v2";
+$banco = "igreja_cursos";
 ```
 
-Resumo rapido:
+Se sua maquina ja estiver usando outro nome de banco, ajuste apenas o valor de $banco.
 
-- Banco em uso: igreja_cursos_v2 (robusto)
-- Banco Igreja.txt: apenas para entendimento da estrutura
-
-## 6) Rodar o projeto
+## 5) Rodar o sistema
 
 Abra no navegador:
 
@@ -64,26 +52,25 @@ Abra no navegador:
 http://localhost/SiteManancial-Demo/index.php
 ```
 
-## 7) Login de teste
+## 6) Login de teste
 
-- Email: joao@email.com
-- Senha: 123456
+- joao@email.com / 123456
+- maria@email.com / 123456
 
-ou
+## 7) Videos internos (sem YouTube)
 
-- Email: maria@email.com
-- Senha: 123456
+1. Coloque o arquivo de video em videos/
+2. Cadastre no banco em ID_CONTENT com IDCT_TIPO = 'video' e IDCT_URL = caminho do arquivo
+
+Exemplo:
+
+```sql
+INSERT INTO ID_CONTENT (IDC_ID, IDM_ID, IDCT_TIPO, IDCT_TITULO, IDCT_DESCRICAO, IDCT_URL, IDCT_ORDEM)
+VALUES
+(1, 1, 'video', 'Video de teste', 'Arquivo local para demonstracao', 'videos/Neymar.MP4', 1);
+```
 
 ## 8) Problemas comuns
 
-### Erro de acesso do MySQL (Access denied)
-
-- Verifique se o MySQL esta iniciado no XAMPP.
-- Verifique usuario/senha em `conexao.php`.
-- No XAMPP padrao, normalmente `root` sem senha.
-
-### Pagina nao abre
-
-- Verifique se o Apache esta iniciado.
-- Verifique se a pasta do projeto esta em `C:\xampp1\htdocs\SiteManancial-Demo`.
-- Abra exatamente a URL: `http://localhost/SiteManancial-Demo/index.php`.
+- Access denied MySQL: confira usuario/senha e se o MySQL iniciou no XAMPP
+- Pagina nao abre: confira Apache iniciado e caminho em C:\xampp1\htdocs\SiteManancial-Demo

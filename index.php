@@ -44,9 +44,9 @@
                 <input type="password" name="IDF_SENHA" class="form-control custom-input" placeholder="Senha" required>
             </div>
             
-            <button type="submit" class="btn btn-light w-100 py-2 fw-bold mb-4">Entrar</button>
+            <button type="submit" class="btn btn-light w-100 py-2 fw-bold mb-4 d-block mx-auto">Entrar</button>
             
-            <p class="text-center text-muted mb-0">
+            <p class="text-center text-light mb-0">
                 Novo aqui? <a href="register.php" class="auth-link">Criar conta.</a>
             </p>
         </form>
