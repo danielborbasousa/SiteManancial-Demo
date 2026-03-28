@@ -1,6 +1,10 @@
 <?php
 session_start(); // Inicia a sessão do usuário
 include("conexao.php"); // Inclui o arquivo de conexão com o banco de dados
+if(!isset($_SESSION["Usuario_logado"])) {
+    header("location:index.php");
+    exit;
+}
 // Módulo da página principal (dashboard)
 ?>
 
@@ -21,14 +25,14 @@ include("conexao.php"); // Inclui o arquivo de conexão com o banco de dados
             <a class="navbar-brand fw-bold d-flex align-items-center" href="#"><img src="logo.png" alt="Logotipo da Missão Evangélica Manancial da Esperança" class="logo me-2" /> Missão Evangélica Manancial da Esperança</a>
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="#">Início</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Sobre</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Contato</a></li>
+                    <li class="nav-item"><a class="nav-link" href="dashboardusuario.php">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="sobre.php">Sobre</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contato.php">Contato</a></li>
                 </ul>
                 <div class="d-flex align-items-center gap-4">
-                    <span id="searchIcon" style="cursor: pointer;">🔍</span>
-                    <span id="notifIcon" style="cursor: pointer;">🔔</span>
-                    <div id="profileIcon" class="nav-icon" style="cursor: pointer;"></div>
+                    <a href="busca.php" id="searchIcon" style="cursor: pointer; text-decoration: none;">🔍</a>
+                    <a href="notificacoes.php" id="notifIcon" style="cursor: pointer; text-decoration: none;">🔔</a>
+                    <a href="perfil.php" id="profileIcon" class="nav-icon" style="cursor: pointer; text-decoration: none;"></a>
                 </div>
             </div>
         </div>
@@ -45,15 +49,15 @@ include("conexao.php"); // Inclui o arquivo de conexão com o banco de dados
                         Explore nossos cursos e mensagens vindas do globo da igreja. Navegue pelo conteúdo exclusivo da Missão Evangélica Manancial da Esperança.
                     </p>
                     <div class="d-flex gap-3">
-                        <button class="btn btn-light fw-bold px-4 py-2">▶ Assistir</button>
-                        <button class="btn btn-outline-light fw-bold px-4 py-2">ⓘ Mais informações</button>
+                        <a href="#videos" class="btn btn-light fw-bold px-4 py-2">▶ Assistir</a>
+                        <a href="sobre.php" class="btn btn-outline-light fw-bold px-4 py-2">ⓘ Mais informacoes</a>
                     </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <main class="container-fluid px-5 py-4">
+    <main id="videos" class="container-fluid px-5 py-4">
         <!-- Conteúdo principal da página -->
         
         <section class="mb-5">

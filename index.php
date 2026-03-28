@@ -8,7 +8,7 @@
         $sql = "SELECT * FROM ID_FIEL WHERE IDF_EMAIL = '$email' AND IDF_SENHA = '$senha'"; // Consulta SQL para verificar credenciais
         $resultado = mysqli_query($conn, $sql); // Executa a consulta
  
-        if(mysqli_num_rows($resultado) == 1){ // Verifica se encontrou um usuário
+        if($resultado && mysqli_num_rows($resultado) == 1){ // Verifica se encontrou um usuário
             $_SESSION["Usuario_logado"] = $email; // Armazena o e-mail na sessão
             header("location:dashboardusuario.php"); // Redireciona para o dashboard
             exit; // Para a execução
@@ -47,7 +47,7 @@
             <button type="submit" class="btn btn-light w-100 py-2 fw-bold mb-4">Entrar</button>
             
             <p class="text-center text-muted mb-0">
-                Novo aqui? <a href="register.html" class="auth-link">Criar conta.</a>
+                Novo aqui? <a href="register.php" class="auth-link">Criar conta.</a>
             </p>
         </form>
     </div>
