@@ -33,6 +33,7 @@ if(!isset($_SESSION["Usuario_logado"])) {
                     <a href="busca.php" id="searchIcon" style="cursor: pointer; text-decoration: none;">🔍</a>
                     <a href="notificacoes.php" id="notifIcon" style="cursor: pointer; text-decoration: none;">🔔</a>
                     <a href="perfil.php" id="profileIcon" class="nav-icon" style="cursor: pointer; text-decoration: none;"></a>
+                    <a href="sair.php" class="btn btn-danger btn-sm">Sair</a>
                 </div>
             </div>
         </div>
@@ -116,10 +117,6 @@ if(!isset($_SESSION["Usuario_logado"])) {
                 </div>
             </div>
         </section>
-                <!-- Botão de logout -->
-        <div class="text-center mt-4">
-            <a href="sair.php" class="btn btn-danger">Sair</a>
-        </div>
     </div>
 
     </main>
