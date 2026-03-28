@@ -38,7 +38,7 @@ if(!isset($_SESSION["Usuario_logado"])) {
             <p class="mb-1"><strong>Telefone:</strong> (11) 99999-9999</p>
             <p class="mb-3"><strong>Endereco:</strong> Rua Exemplo, 100 - Centro</p>
 
-            <h5 class="mt-4">Formulario simples</h5>
+            <h5 class="mt-4">Formulário</h5>
             <form method="post" action="#" class="mt-3">
                 <div class="mb-3">
                     <input type="text" class="form-control custom-input" placeholder="Seu nome" required>

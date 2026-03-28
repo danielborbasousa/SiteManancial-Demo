@@ -6,6 +6,57 @@ if(!isset($_SESSION["Usuario_logado"])) {
     exit;
 }
 // Módulo da página principal (dashboard)
+
+// Buscar vídeos do banco de dados
+$sql_videos = "SELECT * FROM ID_CONTENT WHERE IDCT_TIPO = 'video' ORDER BY IDCT_ORDEM";
+$resultado_videos = mysqli_query($conn, $sql_videos);
+$videos = array();
+if($resultado_videos && mysqli_num_rows($resultado_videos) > 0) {
+    while($video = mysqli_fetch_assoc($resultado_videos)) {
+        $videos[] = $video;
+    }
+}
+
+// Remove videos locais que nao existem mais em disco
+$videos_validos = array();
+foreach($videos as $video_item) {
+    if(isset($video_item["IDCT_URL"]) && strpos($video_item["IDCT_URL"], "videos/") === 0) {
+        if(file_exists($video_item["IDCT_URL"])) {
+            $videos_validos[] = $video_item;
+        }
+    } else {
+        $videos_validos[] = $video_item;
+    }
+}
+$videos = $videos_validos;
+
+// Fallback para demonstracao local quando nao houver video valido no banco
+if(count($videos) == 0 && file_exists("videos/Neymar.MP4")) {
+    $videos[] = array(
+        "IDCT_TITULO" => "Video de teste",
+        "IDCT_DESCRICAO" => "Arquivo local para demonstracao",
+        "IDCT_URL" => "videos/Neymar.MP4"
+    );
+}
+
+// Define o primeiro video valido para iniciar no mini player
+$video_inicial = null;
+foreach($videos as $video_item) {
+    if(isset($video_item["IDCT_URL"]) && $video_item["IDCT_URL"] != "") {
+        $video_inicial = $video_item;
+        break;
+    }
+}
+
+// Mantem o padrao de feed com varios cards
+$videos_feed = $videos;
+while(count($videos_feed) < 5) {
+    $videos_feed[] = array(
+        "IDCT_TITULO" => "Conteudo em breve",
+        "IDCT_DESCRICAO" => "Novo video sera publicado em breve",
+        "IDCT_URL" => ""
+    );
+}
 ?>
 
 <!DOCTYPE html>
@@ -64,57 +115,48 @@ if(!isset($_SESSION["Usuario_logado"])) {
         <section class="mb-5">
             <!-- Seção de vídeos em destaque -->
             <h5 class="mb-3 fw-bold">Vídeos em destaque</h5>
-            <div class="stream-carousel">
-                
-                <div class="stream-item">
-                    <div class="stream-thumbnail active">
-                        IMGEXEMPLO
-                        <div class="play-circle"><div class="play-triangle"></div></div>
-                    </div>
-                    <div class="progress mt-2 rounded-0 bg-secondary" style="height: 4px;">
-                        <div class="progress-bar bg-white w-50" role="progressbar"></div>
-                    </div>
-                    <div class="mt-2">
-                        <h6 class="mb-0 fw-bold">Lorem Ipsum Lorem Ipsum</h6>
-                        <small class="text-info opacity-75">Lorem Ipsum</small>
-                    </div>
-                </div>
 
-                <div class="stream-item" role="button" aria-label="Vídeo">
-                    <div class="stream-thumbnail">Vídeo</div>
+            <?php if($video_inicial): ?>
+                <div class="mb-3" style="max-width: 520px; background: #000; border-radius: 8px; overflow: hidden;">
+                    <video id="miniPlayer" controls style="width: 100%; height: 200px; object-fit: cover;" src="<?php echo htmlspecialchars($video_inicial['IDCT_URL']); ?>">
+                        Seu navegador não suporta vídeo HTML5.
+                    </video>
+                    <div class="p-2">
+                        <small id="miniTitulo" class="text-white fw-bold d-block"><?php echo htmlspecialchars($video_inicial['IDCT_TITULO']); ?></small>
+                        <small id="miniDescricao" class="text-info"><?php echo htmlspecialchars($video_inicial['IDCT_DESCRICAO']); ?></small>
+                    </div>
                 </div>
-                <div class="stream-item" role="button" aria-label="Vídeo">
-                    <div class="stream-thumbnail">Vídeo</div>
-                </div>
-                <div class="stream-item" role="button" aria-label="Vídeo">
-                    <div class="stream-thumbnail">Vídeo</div>
-                </div>
-                <div class="stream-item" role="button" aria-label="Vídeo">
-                    <div class="stream-thumbnail">Vídeo</div>
-                </div>
-                
-            </div>
-        </section>
+            <?php else: ?>
+                <div class="alert alert-info">Nenhum vídeo disponível no momento.</div>
+            <?php endif; ?>
 
-        <section>
-            <!-- Seção de outros vídeos -->
-            <h5 class="mb-3 fw-bold">Outros vídeos</h5>
             <div class="stream-carousel">
-                <div class="stream-item" role="button" aria-label="Vídeo">
-                    <div class="stream-thumbnail">Vídeo</div>
-                </div>
-                <div class="stream-item" role="button" aria-label="Vídeo">
-                    <div class="stream-thumbnail">Vídeo</div>
-                </div>
-                <div class="stream-item" role="button" aria-label="Vídeo">
-                    <div class="stream-thumbnail">Vídeo</div>
-                </div>
-                <div class="stream-item" role="button" aria-label="Vídeo">
-                    <div class="stream-thumbnail">Vídeo</div>
-                </div>
-                <div class="stream-item" role="button" aria-label="Vídeo">
-                    <div class="stream-thumbnail">Vídeo</div>
-                </div>
+                <?php foreach($videos_feed as $video): ?>
+                    <?php
+                        $url_video = isset($video['IDCT_URL']) ? $video['IDCT_URL'] : '';
+                        $titulo_video = isset($video['IDCT_TITULO']) ? $video['IDCT_TITULO'] : 'Video';
+                        $descricao_video = isset($video['IDCT_DESCRICAO']) ? $video['IDCT_DESCRICAO'] : '';
+                        $tem_video = ($url_video != '');
+                    ?>
+                    <div class="stream-item" style="min-width: 230px;">
+                        <div class="stream-thumbnail" style="height: 120px; <?php echo $tem_video ? 'cursor:pointer;' : 'opacity:0.7;'; ?>"
+                            <?php if($tem_video): ?>
+                            onclick="var p=document.getElementById('miniPlayer'); if(p){p.src='<?php echo htmlspecialchars($url_video); ?>'; p.load();} document.getElementById('miniTitulo').innerText='<?php echo htmlspecialchars(addslashes($titulo_video)); ?>'; document.getElementById('miniDescricao').innerText='<?php echo htmlspecialchars(addslashes($descricao_video)); ?>';"
+                            <?php endif; ?>>
+                            <?php if($tem_video): ?>▶<?php else: ?>Em breve<?php endif; ?>
+                            <div class="play-circle"><div class="play-triangle"></div></div>
+                        </div>
+
+                        <div class="mt-2">
+                            <h6 class="mb-1 fw-bold" style="font-size: 13px;"><?php echo htmlspecialchars($titulo_video); ?></h6>
+                            <?php if($tem_video): ?>
+                                <a href="assistir_video.php?url=<?php echo urlencode($url_video); ?>&titulo=<?php echo urlencode($titulo_video); ?>&descricao=<?php echo urlencode($descricao_video); ?>" class="text-info" style="font-size:12px;">Abrir vídeo</a>
+                            <?php else: ?>
+                                <small class="text-muted" style="font-size:12px;">Aguardando novo conteúdo</small>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
             </div>
         </section>
     </div>
