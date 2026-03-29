@@ -4,6 +4,9 @@ if(!isset($_SESSION["Usuario_logado"])) {
     header("location:index.php");
     exit;
 }
+
+// Endpoint real do Formspree
+$formspreeEndpoint = "https://formspree.io/f/xblaplaq";
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -38,21 +41,89 @@ if(!isset($_SESSION["Usuario_logado"])) {
             <p class="mb-1"><strong>Telefone:</strong> (11) 99999-9999</p>
             <p class="mb-3"><strong>Endereco:</strong> Rua Exemplo, 100 - Centro</p>
 
-            <h5 class="mt-4">Formulário</h5>
-            <form method="post" action="#" class="mt-3">
+                        <h5 class="mt-4">Formulário</h5>
+                        <form id="contactForm" method="POST" action="<?php echo $formspreeEndpoint; ?>" class="mt-3" autocomplete="off">
                 <div class="mb-3">
-                    <input type="text" class="form-control custom-input" placeholder="Seu nome" required>
+                                        <input type="text" id="nome" name="nome" class="form-control custom-input" placeholder="Seu nome" required maxlength="80">
                 </div>
                 <div class="mb-3">
-                    <input type="email" class="form-control custom-input" placeholder="Seu e-mail" required>
+                                        <input type="email" id="email" name="email" class="form-control custom-input" placeholder="Seu e-mail" required maxlength="120">
                 </div>
                 <div class="mb-3">
-                    <textarea class="form-control custom-input" rows="4" placeholder="Sua mensagem" required></textarea>
+                                        <textarea id="mensagem" name="mensagem" class="form-control custom-input" rows="4" placeholder="Sua mensagem" required maxlength="500"></textarea>
                 </div>
                 <button type="submit" class="btn btn-light">Enviar</button>
             </form>
             <a href="dashboardusuario.php" class="btn btn-secondary mt-3">Voltar para o painel</a>
         </div>
     </main>
+
+        <script>
+        const form = document.getElementById("contactForm");
+        const emailInput = document.getElementById("email");
+        const messageInput = document.getElementById("mensagem");
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+
+        const fakeEmails = ["test@test.com", "a@a.com", "email@email.com"];
+
+        const forbiddenWords = [
+            "idiota", "burro", "lixo", "merda", "porra",
+            "script", "<script", "select *", "drop table",
+            "http://", "https://", "spam", "hack"
+        ];
+
+        form.addEventListener("submit", function (event) {
+            const email = emailInput.value.trim().toLowerCase();
+            const message = messageInput.value.toLowerCase();
+            const action = form.getAttribute("action");
+
+            if (action.indexOf("SEU_ID_AQUI") !== -1) {
+                alert("Configure seu endpoint do Formspree antes de enviar.");
+                event.preventDefault();
+                return;
+            }
+
+            if (!emailRegex.test(email)) {
+                alert("Por favor, insira um email valido.");
+                event.preventDefault();
+                return;
+            }
+
+            if (fakeEmails.includes(email)) {
+                alert("Email invalido ou generico.");
+                event.preventDefault();
+                return;
+            }
+
+            for (const word of forbiddenWords) {
+                if (message.includes(word)) {
+                    alert("Sua mensagem contem termos inadequados ou suspeitos.");
+                    event.preventDefault();
+                    return;
+                }
+            }
+
+            // Mantem envio na mesma aba e marca retorno para ir ao inicio
+            sessionStorage.setItem("formspreeRetorno", "1");
+        });
+
+        // Ao voltar da tela do Formspree, redireciona para a tela inicial
+        window.addEventListener("pageshow", function(event) {
+            const veioDoFormspree = document.referrer.indexOf("formspree.io") !== -1;
+            const deveIrParaInicio = sessionStorage.getItem("formspreeRetorno") === "1";
+
+            if (veioDoFormspree && deveIrParaInicio) {
+                sessionStorage.removeItem("formspreeRetorno");
+                form.reset();
+                window.location.replace("dashboardusuario.php");
+                return;
+            }
+
+            if (event.persisted) {
+                form.reset();
+            }
+        });
+        </script>
 </body>
 </html>
