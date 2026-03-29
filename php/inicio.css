@@ -1,0 +1,342 @@
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to bottom, #1e293b, #0e141d);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.logo { 
+    width: 85px; 
+    height: auto;
+}
+
+header {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    background: #090f1a57;
+    backdrop-filter: blur(10px);
+    z-index: 99;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 25px;
+}
+
+nav {
+    margin-left: 540px;
+}
+
+nav a {
+    margin-left: 15px;
+    color: white;
+    text-decoration: none;
+}
+
+section {
+    padding: 100px 55px;
+    min-height: 100vh;
+}
+
+hr {
+    border: none;
+    height: 2px;
+    background-color: black;
+}
+
+/* inicio */
+main {
+    margin: 40px 30px 20px 25px;
+    flex: 1;
+}
+
+
+.conteudo-principal {
+    display: flex;
+    align-items: center; /* centraliza vertical */
+    justify-content: flex-start;
+    min-height: 80vh;
+}
+
+/* TEXTO */
+.texto {
+    width: 100%;
+    max-width: 650px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.texto h1 {
+    font-size: 48px;
+    font-weight: 700;
+}
+
+.texto-dois {
+    font-size: 18px;
+    line-height: 1.6;
+    opacity: 0.9;
+}
+
+/* BOTÕES */
+.botoes {
+    margin-top: 25px;
+    display: flex;
+    gap: 20px;
+}
+
+/* BOTÃO LOGIN (vazado) */
+.btn-outline {
+    padding: 16px 40px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    border: 2px solid #fff;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: 0.3s ease;
+}
+
+.btn-outline:hover {
+    background: #fff;
+    color: #000;
+}
+
+/* BOTÃO REGISTRO (cheio) */
+.btn-solid {
+    padding: 16px 40px;
+    font-size: 18px;
+    font-weight: 600;
+    background: #fff;
+    color: #000;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: 0.3s ease;
+}
+
+.btn-solid:hover {
+    background: #eaeaea;
+    transform: translateY(-3px);
+}
+
+.secao-cursos {
+    background: linear-gradient(to bottom, #192332, #101620);
+    padding: 100px, 55px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.secao-cursos h2 {
+    text-align: center;
+    margin-bottom: 50px;
+    font-size: 36px;
+    color: white;
+}
+
+.grade-cursos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.card-curso {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    aspect-ratio: 16 / 9;
+}
+
+.card-curso img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+}
+
+.nome-curso {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 30px 20px 15px 20px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 100%);
+    color: white;
+    font-size: 24px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.card-curso:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6)
+}
+
+.secao-sobre {
+    display: flex;
+    justify-content: center;
+    padding: 100px 55px;
+    background: #0f172a;
+}
+
+.sobre-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 60px;
+    max-width: 1200px;
+    width: 100%;
+}
+
+/* TEXTO */
+.sobre-texto {
+    flex: 1;
+}
+
+.sobre-texto h2 {
+    font-size: 42px;
+    margin-bottom: 20px;
+}
+
+.sobre-texto p {
+    font-size: 18px;
+    line-height: 1.7;
+    opacity: 0.9;
+    margin-bottom: 15px;
+}
+
+/* FRASE DE DESTAQUE */
+.destaque {
+    font-size: 20px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+/* IMAGENS */
+.sobre-imagens {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.img-sobre {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 15px;
+    transition: 0.3s ease;
+}
+
+/* EFEITO HOVER */
+.img-sobre:hover {
+    transform: scale(1.03);
+}
+
+.footer {
+    background: #04060aa4;
+    padding: 10px;
+    font-size: 12px;
+    width: 100%;
+}
+
+.social-links p {
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.icones {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.icones a {
+    color: white;
+    font-size: 25px;
+    transition: color 0.3s;
+}
+
+.icones a:hover {
+    color: #a1a1aa;
+}
+.botoes {
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+/* BOTÃO VAZADO (login) */
+.btn-outline {
+    padding: 16px 36px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    border: 2px solid #fff;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: 0.3s ease;
+}
+
+.btn-outline:hover {
+    background: #fff;
+    color: #000;
+}
+
+/* BOTÃO CHEIO (registro) */
+.btn-solid {
+    padding: 16px 36px;
+    font-size: 18px;
+    font-weight: 600;
+    background: #fff;
+    color: #000;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: 0.3s ease;
+}
+
+.btn-solid:hover {
+    background: #f1f1f1;
+    transform: translateY(-3px);
+}
+#home {
+    background: 
+        linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+        url("https://images.unsplash.com/photo-1507692049790-de58290a4334");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    color: #fff;
+    padding: 80px 0;
+}
+
+/* opcional: melhorar leitura do texto */
+.texto {
+    max-width: 600px;
+}
