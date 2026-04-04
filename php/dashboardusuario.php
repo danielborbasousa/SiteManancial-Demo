@@ -8,7 +8,7 @@ if(!isset($_SESSION["Usuario_logado"])) {
 // Módulo da página principal (dashboard)
 
 // Buscar vídeos do banco de dados
-$sql_videos = "SELECT * FROM ID_CONTENT WHERE IDCT_TIPO = 'video' ORDER BY IDCT_ORDEM";
+$sql_videos = "SELECT * FROM ID_CONTENT WHERE IDCT_TIPO = 'VIDEO' OR IDCT_TIPO = 'video' ORDER BY IDCT_ORDEM";
 $resultado_videos = mysqli_query($conn, $sql_videos);
 $videos = array();
 if($resultado_videos && mysqli_num_rows($resultado_videos) > 0) {
@@ -17,14 +17,32 @@ if($resultado_videos && mysqli_num_rows($resultado_videos) > 0) {
     }
 }
 
-// Remove videos locais que nao existem mais em disco
+// Remove vídeos com URL inválida e ajusta caminho local para execução via /php/
 $videos_validos = array();
 foreach($videos as $video_item) {
-    if(isset($video_item["IDCT_URL"]) && strpos($video_item["IDCT_URL"], "videos/") === 0) {
-        if(file_exists($video_item["IDCT_URL"])) {
+    $url_original = isset($video_item["IDCT_URL"]) ? trim($video_item["IDCT_URL"]) : "";
+
+    if($url_original == "") {
+        continue;
+    }
+
+    if(strpos($url_original, "videos/") === 0) {
+        $url_publica = "../" . $url_original;
+        if(file_exists($url_publica)) {
+            $video_item["IDCT_URL"] = $url_publica;
             $videos_validos[] = $video_item;
         }
-    } else {
+        continue;
+    }
+
+    if(strpos($url_original, "../videos/") === 0) {
+        if(file_exists($url_original)) {
+            $videos_validos[] = $video_item;
+        }
+        continue;
+    }
+
+    if(strpos($url_original, "http://") === 0 || strpos($url_original, "https://") === 0) {
         $videos_validos[] = $video_item;
     }
 }

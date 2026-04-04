@@ -5,16 +5,22 @@ if(!isset($_SESSION["Usuario_logado"])) {
     exit;
 }
 
-$url = isset($_GET["url"]) ? $_GET["url"] : "";
+$url = isset($_GET["url"]) ? trim($_GET["url"]) : "";
 $titulo = isset($_GET["titulo"]) ? $_GET["titulo"] : "Video";
 $descricao = isset($_GET["descricao"]) ? $_GET["descricao"] : "";
 
 // So permite videos locais dentro da pasta videos/
-if(strpos($url, "videos/") !== 0) {
+$arquivo_local = "";
+if(strpos($url, "videos/") === 0) {
+    $url = "../" . $url;
+    $arquivo_local = $url;
+} elseif(strpos($url, "../videos/") === 0) {
+    $arquivo_local = $url;
+} else {
     $url = "";
 }
 
-if($url != "" && !file_exists($url)) {
+if($url != "" && !file_exists($arquivo_local)) {
     $url = "";
 }
 ?>
