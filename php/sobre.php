@@ -4,6 +4,13 @@ if(!isset($_SESSION["Usuario_logado"])) {
     header("location:index.php");
     exit;
 }
+
+$painel_link = "dashboardusuario.php";
+$titulo_nav = "Missao Evangelica Manancial da Esperança";
+if(isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "admin") {
+    $painel_link = "dashboardadmin.php";
+    $titulo_nav = "Painel Administrativo";
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -17,12 +24,12 @@ if(!isset($_SESSION["Usuario_logado"])) {
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark w-100 p-3">
         <div class="container-fluid px-4">
-            <a class="navbar-brand fw-bold d-flex align-items-center" href="dashboardusuario.php">
-                <img src="../assets/logo.png" alt="Logotipo" class="logo me-2" /> Missao Evangelica Manancial da Esperança
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="<?php echo $painel_link; ?>">
+                <img src="../assets/logo.png" alt="Logotipo" class="logo me-2" /> <?php echo $titulo_nav; ?>
             </a>
             <div class="collapse navbar-collapse show">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="dashboardusuario.php">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo $painel_link; ?>">Inicio</a></li>
                     <li class="nav-item"><a class="nav-link active" href="sobre.php">Sobre</a></li>
                     <li class="nav-item"><a class="nav-link" href="contato.php">Contato</a></li>
                 </ul>
@@ -42,7 +49,7 @@ if(!isset($_SESSION["Usuario_logado"])) {
                 O objetivo e facilitar o acesso ao conteudo da igreja para membros e visitantes, usando uma
                 interface facil de navegar.
             </p>
-            <a href="dashboardusuario.php" class="btn btn-light mt-2">Voltar para o painel</a>
+            <a href="<?php echo $painel_link; ?>" class="btn btn-light mt-2">Voltar para o painel</a>
         </div>
     </main>
 </body>
