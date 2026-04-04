@@ -6,7 +6,7 @@ if(!isset($_SESSION["Usuario_logado"])) {
 }
 
 // Endpoint real do Formspree
-$formspreeEndpoint = "https://formspree.io/f/xblaplaq";
+$formspreeEndpoint = "https://formspree.io/f/xreoyrka";
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
