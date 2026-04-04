@@ -77,7 +77,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/styles.css">
 </head>
-<body class="d-flex align-items-center justify-content-center vh-100">
+<body class="d-flex align-items-center justify-content-center min-vh-100 py-4">
+
+    <a href="index.html" class="btn btn-outline-light btn-sm" style="position:fixed; top:16px; left:16px; z-index:9999;">Voltar para o site</a>
 
     <div class="auth-container text-center">
         <img src="../assets/logo.png" alt="Logotipo" class="logo mb-3" />
@@ -127,7 +129,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <button type="submit" class="btn btn-light w-100 py-2 fw-bold mb-4 d-block mx-auto">Cadastrar</button>
 
             <p class="text-center text-light mb-0">
-                Ja tem conta? <a href="index.php" class="auth-link">Entrar.</a>
+                Ja tem conta? <a href="index.php" class="auth-link">Fazer Login.</a>
             </p>
         </form>
     </div>
