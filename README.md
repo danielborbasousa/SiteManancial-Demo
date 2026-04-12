@@ -13,7 +13,7 @@ No PowerShell:
 
 ```powershell
 cd C:\xampp1\htdocs
-git clone <URL_DO_REPOSITORIO> SiteManancial-Demo
+git clone https://github.com/danielborbasousa/SiteManancial-Demo SiteManancial-Demo
 cd SiteManancial-Demo
 ```
 
