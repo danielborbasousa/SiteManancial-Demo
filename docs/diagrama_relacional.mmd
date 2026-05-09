@@ -1,0 +1,108 @@
+%% Diagrama relacional do SiteManancial-Demo (Mermaid ER)
+%% Abra este arquivo com um renderizador Mermaid para visualizar o ER.
+
+erDiagram
+    ID_FILIAL {
+        INT IDL_ID PK "PK"
+        VARCHAR IDL_NOME
+        VARCHAR IDL_CIDADE
+        CHAR IDL_ESTADO
+    }
+
+    ID_FIEL {
+        INT IDF_ID PK
+        VARCHAR IDF_NOME
+        VARCHAR IDF_TELEFONE
+        VARCHAR IDF_EMAIL
+        CHAR IDF_CPF
+        INT IDF_FILIAL_ID FK
+        VARCHAR IDF_FUNCAO
+        VARCHAR IDF_ENDERECO
+        VARCHAR IDF_SENHA_HASH
+        TINYINT IDF_ATIVO
+    }
+
+    ID_ADMIN {
+        INT IDA_ID PK
+        INT IDA_FIEL_ID FK
+        ENUM IDA_NIVEL
+        TINYINT IDA_ATIVO
+    }
+
+    ID_CURSO {
+        INT IDC_ID PK
+        VARCHAR IDC_TITULO
+        TEXT IDC_DESCRICAO
+        VARCHAR IDC_CAPA_URL
+        INT IDC_CARGA_HORARIA_MIN
+        ENUM IDC_STATUS
+        INT IDC_ADMIN_CRIADOR_ID FK
+    }
+
+    ID_MODULO {
+        INT IDM_ID PK
+        INT IDC_ID FK
+        VARCHAR IDM_TITULO
+        TEXT IDM_DESCRICAO
+        SMALLINT IDM_ORDEM
+    }
+
+    ID_CONTENT {
+        BIGINT IDCT_ID PK
+        INT IDC_ID FK
+        INT IDM_ID FK
+        ENUM IDCT_TIPO
+        VARCHAR IDCT_TITULO
+        TEXT IDCT_DESCRICAO
+        VARCHAR IDCT_URL
+        INT IDCT_DURACAO_SEGUNDOS
+        SMALLINT IDCT_ORDEM
+    }
+
+    ID_MATRICULA {
+        BIGINT IDMATR_ID PK
+        INT IDF_ID FK
+        INT IDC_ID FK
+        ENUM IDMATR_STATUS
+        DECIMAL IDMATR_PERCENTUAL
+    }
+
+    ID_PROGRESSO {
+        BIGINT IDPR_ID PK
+        BIGINT IDMATR_ID FK
+        BIGINT IDCT_ID FK
+        ENUM IDPR_STATUS
+        DECIMAL IDPR_PERCENTUAL
+        INT IDPR_TEMPO_ASSISTIDO_SEGUNDOS
+    }
+
+    ID_SESSAO {
+        BIGINT IDS_ID PK
+        INT IDF_ID FK
+        CHAR IDS_TOKEN
+        VARCHAR IDS_IP
+        VARCHAR IDS_USER_AGENT
+        DATETIME IDS_EXPIRA_EM
+    }
+
+    ID_RECUPERACAO_SENHA {
+        BIGINT IDR_ID PK
+        INT IDF_ID FK
+        CHAR IDR_TOKEN
+        DATETIME IDR_EXPIRA_EM
+        DATETIME IDR_USADO_EM
+    }
+
+    %% Relacionamentos
+    ID_FILIAL ||--o{ ID_FIEL : "possui"
+    ID_FIEL ||--o{ ID_ADMIN : "pode ser"
+    ID_ADMIN ||--o{ ID_CURSO : "cria"
+    ID_CURSO ||--o{ ID_MODULO : "tem"
+    ID_MODULO ||--o{ ID_CONTENT : "tem"
+    ID_CURSO ||--o{ ID_CONTENT : "contém"
+    ID_FIEL ||--o{ ID_MATRICULA : "matricula"
+    ID_CURSO ||--o{ ID_MATRICULA : "tem"
+    ID_MATRICULA ||--o{ ID_PROGRESSO : "registra"
+    ID_CONTENT ||--o{ ID_PROGRESSO : "relaciona"
+    ID_FIEL ||--o{ ID_SESSAO : "gera"
+    ID_FIEL ||--o{ ID_RECUPERACAO_SENHA : "gera"
