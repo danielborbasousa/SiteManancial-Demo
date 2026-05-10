@@ -55,12 +55,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $filial = mysqli_real_escape_string($conn, $filial);
         $funcao = mysqli_real_escape_string($conn, $funcao);
         $endereco = mysqli_real_escape_string($conn, $endereco);
-        $senha = mysqli_real_escape_string($conn, $senha);
 
-        $sql = "INSERT INTO ID_FIEL (IDF_NOME, IDF_EMAIL, IDF_TELEFONE, IDF_CPF, IDF_FILIAL, IDF_FUNCAO, IDF_ENDERECO, IDF_SENHA) VALUES ('$nome', '$email', '$telefone_limpo', '$cpf_limpo', '$filial', '$funcao', '$endereco', '$senha')";
+        if (banco_eh_robusto()) {
+            $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
+            $senha_hash = mysqli_real_escape_string($conn, $senha_hash);
+
+            $filial_id = "NULL";
+            $sql_filial = "SELECT IDL_ID FROM ID_FILIAL WHERE IDL_NOME = '$filial' LIMIT 1";
+            $resultado_filial = mysqli_query($conn, $sql_filial);
+            if ($resultado_filial && mysqli_num_rows($resultado_filial) == 1) {
+                $linha_filial = mysqli_fetch_assoc($resultado_filial);
+                $filial_id = (int) $linha_filial["IDL_ID"];
+            }
+
+            $sql = "INSERT INTO ID_FIEL (IDF_NOME, IDF_EMAIL, IDF_TELEFONE, IDF_CPF, IDF_FILIAL_ID, IDF_FUNCAO, IDF_ENDERECO, IDF_SENHA_HASH, IDF_ATIVO) VALUES ('$nome', '$email', '$telefone_limpo', '$cpf_limpo', $filial_id, '$funcao', '$endereco', '$senha_hash', 1)";
+        } else {
+            $senha = mysqli_real_escape_string($conn, $senha);
+            $sql = "INSERT INTO ID_FIEL (IDF_NOME, IDF_EMAIL, IDF_TELEFONE, IDF_CPF, IDF_FILIAL, IDF_FUNCAO, IDF_ENDERECO, IDF_SENHA) VALUES ('$nome', '$email', '$telefone_limpo', '$cpf_limpo', '$filial', '$funcao', '$endereco', '$senha')";
+        }
 
         if (mysqli_query($conn, $sql)) {
-            header("location:index.php");
+            header("location:../../login.php");
             exit;
         } else {
             $mensagem = "Erro ao cadastrar: " . mysqli_error($conn);
@@ -75,14 +90,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Criar Conta - Missao Evangelica</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../../css/styles.css">
 </head>
-<body class="d-flex align-items-center justify-content-center min-vh-100 py-4">
-
-    <a href="index.html" class="btn btn-outline-light btn-sm" style="position:fixed; top:16px; left:16px; z-index:9999;">Voltar para o site</a>
+<body class="d-flex align-items-center justify-content-center vh-100">
 
     <div class="auth-container text-center">
-        <img src="../assets/logo.png" alt="Logotipo" class="logo mb-3" />
+        <img src="../../assets/logo.png" alt="Logotipo" class="logo mb-3" />
         <h2 class="mb-4 fw-bold">Criar Conta</h2>
 
         <?php if ($mensagem != "") {
@@ -129,7 +142,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <button type="submit" class="btn btn-light w-100 py-2 fw-bold mb-4 d-block mx-auto">Cadastrar</button>
 
             <p class="text-center text-light mb-0">
-                Ja tem conta? <a href="index.php" class="auth-link">Fazer Login.</a>
+                Ja tem conta? <a href="../../login.php" class="auth-link">Entrar.</a>
             </p>
         </form>
     </div>

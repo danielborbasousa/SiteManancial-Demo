@@ -3,12 +3,19 @@ session_start();
 include("conexao.php");
 
 if(!isset($_SESSION["Usuario_logado"])) {
-    header("location:index.php");
+    header("location:login.php");
     exit;
 }
 
 $email = $_SESSION["Usuario_logado"];
-$sql = "SELECT * FROM ID_FIEL WHERE IDF_EMAIL = '$email'";
+$email_limpo = mysqli_real_escape_string($conn, $email);
+
+if (banco_eh_robusto()) {
+    $sql = "SELECT f.IDF_NOME, f.IDF_EMAIL, f.IDF_TELEFONE, f.IDF_CPF, f.IDF_FUNCAO, f.IDF_ENDERECO, COALESCE(fl.IDL_NOME, '') AS IDF_FILIAL_EXIBICAO FROM ID_FIEL f LEFT JOIN ID_FILIAL fl ON fl.IDL_ID = f.IDF_FILIAL_ID WHERE f.IDF_EMAIL = '$email_limpo' LIMIT 1";
+} else {
+    $sql = "SELECT * FROM ID_FIEL WHERE IDF_EMAIL = '$email_limpo' LIMIT 1";
+}
+
 $resultado = mysqli_query($conn, $sql);
 $usuario = mysqli_fetch_assoc($resultado);
 ?>
@@ -72,10 +79,18 @@ $usuario = mysqli_fetch_assoc($resultado);
                 <div class="mb-3">
                     <strong>Filial:</strong> 
                     <?php 
-                    if($usuario['IDF_FILIAL']) {
-                        echo $usuario['IDF_FILIAL'];
+                    if (banco_eh_robusto()) {
+                        if(isset($usuario['IDF_FILIAL_EXIBICAO']) && $usuario['IDF_FILIAL_EXIBICAO'] != '') {
+                            echo $usuario['IDF_FILIAL_EXIBICAO'];
+                        } else {
+                            echo "Nao informada";
+                        }
                     } else {
-                        echo "Nao informada";
+                        if($usuario['IDF_FILIAL']) {
+                            echo $usuario['IDF_FILIAL'];
+                        } else {
+                            echo "Nao informada";
+                        }
                     }
                     ?>
                 </div>

@@ -1,14 +1,14 @@
 <?php
 session_start(); // Inicia a sessão do usuário
-include("conexao.php"); // Inclui o arquivo de conexão com o banco de dados
+include("../conexao.php"); // Inclui o arquivo de conexão com o banco de dados
 if(!isset($_SESSION["Usuario_logado"])) {
-    header("location:index.php");
+    header("location:../../login.php");
     exit;
 }
 // Módulo da página principal (dashboard)
 
 // Buscar vídeos do banco de dados
-$sql_videos = "SELECT * FROM ID_CONTENT WHERE IDCT_TIPO = 'VIDEO' OR IDCT_TIPO = 'video' ORDER BY IDCT_ORDEM";
+$sql_videos = "SELECT * FROM ID_CONTENT WHERE LOWER(IDCT_TIPO) = 'video' ORDER BY IDCT_ORDEM";
 $resultado_videos = mysqli_query($conn, $sql_videos);
 $videos = array();
 if($resultado_videos && mysqli_num_rows($resultado_videos) > 0) {
@@ -17,43 +17,25 @@ if($resultado_videos && mysqli_num_rows($resultado_videos) > 0) {
     }
 }
 
-// Remove vídeos com URL inválida e ajusta caminho local para execução via /php/
+// Remove videos locais que nao existem mais em disco
 $videos_validos = array();
 foreach($videos as $video_item) {
-    $url_original = isset($video_item["IDCT_URL"]) ? trim($video_item["IDCT_URL"]) : "";
-
-    if($url_original == "") {
-        continue;
-    }
-
-    if(strpos($url_original, "videos/") === 0) {
-        $url_publica = "../" . $url_original;
-        if(file_exists($url_publica)) {
-            $video_item["IDCT_URL"] = $url_publica;
+    if(isset($video_item["IDCT_URL"]) && strpos($video_item["IDCT_URL"], "videos/") === 0) {
+        if(file_exists("../../" . $video_item["IDCT_URL"])) {
             $videos_validos[] = $video_item;
         }
-        continue;
-    }
-
-    if(strpos($url_original, "../videos/") === 0) {
-        if(file_exists($url_original)) {
-            $videos_validos[] = $video_item;
-        }
-        continue;
-    }
-
-    if(strpos($url_original, "http://") === 0 || strpos($url_original, "https://") === 0) {
+    } else {
         $videos_validos[] = $video_item;
     }
 }
 $videos = $videos_validos;
 
 // Fallback para demonstracao local quando nao houver video valido no banco
-if(count($videos) == 0 && file_exists("../videos/Neymar.MP4")) {
+if(count($videos) == 0 && file_exists("../../videos/Neymar.MP4")) {
     $videos[] = array(
         "IDCT_TITULO" => "Video de teste",
         "IDCT_DESCRICAO" => "Arquivo local para demonstracao",
-        "IDCT_URL" => "../videos/Neymar.MP4"
+        "IDCT_URL" => "../../videos/Neymar.MP4"
     );
 }
 
@@ -84,14 +66,14 @@ while(count($videos_feed) < 5) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel - Missão Evangélica Manancial da Esperança</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../../css/styles.css">
 </head>
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark position-absolute w-100 p-3">
         <!-- Barra de navegação com logo e links -->
         <div class="container-fluid px-4">
-            <a class="navbar-brand fw-bold d-flex align-items-center" href="#"><img src="../assets/logo.png" alt="Logotipo da Missão Evangélica Manancial da Esperança" class="logo me-2" /> Missão Evangélica Manancial da Esperança</a>
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="#"><img src="../../assets/logo.png" alt="Logotipo da Missão Evangélica Manancial da Esperança" class="logo me-2" /> Missão Evangélica Manancial da Esperança</a>
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item"><a class="nav-link" href="dashboardusuario.php">Inicio</a></li>
@@ -99,6 +81,9 @@ while(count($videos_feed) < 5) {
                     <li class="nav-item"><a class="nav-link" href="contato.php">Contato</a></li>
                 </ul>
                 <div class="d-flex align-items-center gap-4">
+                    <?php if (isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "admin") { ?>
+                        <a href="../admin/admin_conteudos.php" class="btn btn-warning btn-sm">Admin</a>
+                    <?php } ?>
                     <a href="busca.php" id="searchIcon" style="cursor: pointer; text-decoration: none;">🔍</a>
                     <a href="notificacoes.php" id="notifIcon" style="cursor: pointer; text-decoration: none;">🔔</a>
                     <a href="perfil.php" id="profileIcon" class="nav-icon" style="cursor: pointer; text-decoration: none; font-size: 1.25rem; line-height: 1; display: flex; align-items: center; justify-content: center;">👤</a>
@@ -136,7 +121,7 @@ while(count($videos_feed) < 5) {
 
             <?php if($video_inicial): ?>
                 <div class="mb-3" style="max-width: 520px; background: #000; border-radius: 8px; overflow: hidden;">
-                    <video id="miniPlayer" controls style="width: 100%; height: 200px; object-fit: cover;" src="<?php echo htmlspecialchars($video_inicial['IDCT_URL']); ?>">
+                    <video id="miniPlayer" controls style="width: 100%; height: 200px; object-fit: cover;" src="<?php echo htmlspecialchars(strpos($video_inicial['IDCT_URL'], 'videos/') === 0 ? '../../' . $video_inicial['IDCT_URL'] : $video_inicial['IDCT_URL']); ?>">
                         Seu navegador não suporta vídeo HTML5.
                     </video>
                     <div class="p-2">
@@ -159,7 +144,7 @@ while(count($videos_feed) < 5) {
                     <div class="stream-item" style="min-width: 230px;">
                         <div class="stream-thumbnail" style="height: 120px; <?php echo $tem_video ? 'cursor:pointer;' : 'opacity:0.7;'; ?>"
                             <?php if($tem_video): ?>
-                            onclick="var p=document.getElementById('miniPlayer'); if(p){p.src='<?php echo htmlspecialchars($url_video); ?>'; p.load();} document.getElementById('miniTitulo').innerText='<?php echo htmlspecialchars(addslashes($titulo_video)); ?>'; document.getElementById('miniDescricao').innerText='<?php echo htmlspecialchars(addslashes($descricao_video)); ?>';"
+                            onclick="var p=document.getElementById('miniPlayer'); if(p){p.src='<?php echo htmlspecialchars(strpos($url_video, 'videos/') === 0 ? '../../' . $url_video : $url_video, ENT_QUOTES); ?>'; p.load();} document.getElementById('miniTitulo').innerText='<?php echo htmlspecialchars(addslashes($titulo_video)); ?>'; document.getElementById('miniDescricao').innerText='<?php echo htmlspecialchars(addslashes($descricao_video)); ?>';"
                             <?php endif; ?>>
                             <?php if($tem_video): ?>▶<?php else: ?>Em breve<?php endif; ?>
                             <div class="play-circle"><div class="play-triangle"></div></div>

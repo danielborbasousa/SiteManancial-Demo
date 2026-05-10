@@ -27,7 +27,7 @@ Este documento descreve as tabelas principais, campos e relacionamentos usados n
   - `IDF_FILIAL_ID` INT — FK -> `ID_FILIAL(IDL_ID)`
   - `IDF_FUNCAO` VARCHAR(50)
   - `IDF_ENDERECO` VARCHAR(200)
-  - `IDF_SENHA_HASH` VARCHAR(255) — hash da senha (`password_hash` no PHP)
+  - `IDF_SENHA_HASH` VARCHAR(255) — hash da senha (SHA-256 na demonstracao robusta)
   - `IDF_ATIVO` TINYINT(1)
   - `IDF_EMAIL_VERIFICADO_EM` DATETIME
   - `IDF_ULTIMO_LOGIN_EM` DATETIME
@@ -133,7 +133,8 @@ Este documento descreve as tabelas principais, campos e relacionamentos usados n
 
 ## Observações gerais
 - Charset recomendado: `utf8mb4` para suportar emojis/acentos.
-- Senhas devem ser armazenadas com `password_hash()` e verificadas com `password_verify()`.
+- No modo robusto de demonstracao, a senha fica armazenada como hash SHA-256.
+- Em uma evolucao posterior, o projeto pode migrar para `password_hash()` e `password_verify()`.
 - Use `prepared statements` (mysqli_stmt ou PDO) para todas as consultas que recebem input do usuário.
 - Indices adicionais são recomendados para colunas usadas em filtros (ex.: `IDCT_TIPO`, `IDF_EMAIL`, `IDC_TITULO`).
 

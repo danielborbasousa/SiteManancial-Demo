@@ -1,26 +1,24 @@
 <?php
 session_start();
 if(!isset($_SESSION["Usuario_logado"])) {
-    header("location:index.php");
+    header("location:../../login.php");
     exit;
 }
 
-$url = isset($_GET["url"]) ? trim($_GET["url"]) : "";
+$url = isset($_GET["url"]) ? $_GET["url"] : "";
 $titulo = isset($_GET["titulo"]) ? $_GET["titulo"] : "Video";
 $descricao = isset($_GET["descricao"]) ? $_GET["descricao"] : "";
 
 // So permite videos locais dentro da pasta videos/
-$arquivo_local = "";
 if(strpos($url, "videos/") === 0) {
-    $url = "../" . $url;
-    $arquivo_local = $url;
-} elseif(strpos($url, "../videos/") === 0) {
-    $arquivo_local = $url;
-} else {
+    $url = "../../" . $url;
+}
+
+if(strpos($url, "../../videos/") !== 0) {
     $url = "";
 }
 
-if($url != "" && !file_exists($arquivo_local)) {
+if($url != "" && !file_exists($url)) {
     $url = "";
 }
 ?>
@@ -31,7 +29,7 @@ if($url != "" && !file_exists($arquivo_local)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($titulo); ?> - Player</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../../css/styles.css">
 </head>
 <body>
     <main class="container py-4">

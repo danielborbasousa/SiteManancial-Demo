@@ -144,7 +144,7 @@ JOIN ID_FIEL f ON f.IDF_ID = m.IDF_ID
 JOIN ID_CURSO c ON c.IDC_ID = m.IDC_ID;
 ```
 
-2. TRIGGER
+5. TRIGGER
 - atualizar automaticamente percentual total da matricula ao inserir/atualizar progresso;
 - registrar log de alteracao de status.
 

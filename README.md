@@ -1,76 +1,42 @@
 # SiteManancial-Demo
 
-Guia rapido para baixar e rodar localmente.
+Plataforma simples em PHP para exibir conteudos da igreja, com area de login, painel de usuario, area administrativa para videos e banco de dados em duas versoes: uma simples para demonstracao e outra robusta para apresentar a evolucao do projeto.
 
-## Requisitos
+## Estrutura principal
+- `login.php`: entrada da aplicacao.
+- `php/fiel/`: area do usuario comum.
+- `php/admin/`: area administrativa de conteudos.
+- `php/conexao.php`: configuracao do banco e chave `MODO_BANCO`.
+- `assets/`: imagens e recursos visuais.
+- `database/`: scripts SQL do banco simples e do banco robusto.
 
-- XAMPP (Apache + MySQL)
-- Git
-
-## 1) Baixar o projeto
-
-No PowerShell:
-
-```powershell
-cd C:\xampp1\htdocs
-git clone <URL_DO_REPOSITORIO> SiteManancial-Demo
-cd SiteManancial-Demo
-```
-
-## 2) Iniciar servicos
-
-No XAMPP Control Panel:
-
-1. Start em Apache
-2. Start em MySQL
-
-## 3) Criar banco de dados
-
-Arquivo recomendado para este projeto: Banco Igreja.txt.
-
-No MySQL Workbench (ou phpMyAdmin), execute o SQL do arquivo Banco Igreja.txt.
-Esse script cria o banco igreja_cursos e popula dados de teste.
-
-## 4) Ajustar conexao
-
-No arquivo conexao.php, use:
-
-```php
-$host = "localhost";
-$usuario = "root";
-$senha = "";
-$banco = "igreja_cursos";
-```
-
-Se sua maquina ja estiver usando outro nome de banco, ajuste apenas o valor de $banco.
-
-## 5) Rodar o sistema
-
-Abra no navegador:
+## Como rodar
+1. Inicie o Apache e o MySQL no XAMPP.
+2. Importe o banco desejado:
+   - `database/Banco Igreja.txt` para a versao basica.
+   - `database/Banco Igreja Robusto.sql` para a versao robusta.
+3. Ajuste `php/conexao.php` se precisar trocar usuario, senha ou o modo do banco.
+4. Abra no navegador:
 
 ```text
-http://localhost/SiteManancial-Demo/index.php
+http://localhost/SiteManancial-Demo/login.php
 ```
 
-## 6) Login de teste
+## Modo simples e modo robusto
+No arquivo `php/conexao.php`, altere:
 
-- joao@email.com / 123456
-- maria@email.com / 123456
-
-## 7) Videos internos (sem YouTube)
-
-1. Coloque o arquivo de video em videos/
-2. Cadastre no banco em ID_CONTENT com IDCT_TIPO = 'video' e IDCT_URL = caminho do arquivo
-
-Exemplo:
-
-```sql
-INSERT INTO ID_CONTENT (IDC_ID, IDM_ID, IDCT_TIPO, IDCT_TITULO, IDCT_DESCRICAO, IDCT_URL, IDCT_ORDEM)
-VALUES
-(1, 1, 'video', 'Video de teste', 'Arquivo local para demonstracao', 'videos/Neymar.MP4', 1);
+```php
+define('MODO_BANCO', 'simples');
 ```
 
-## 8) Problemas comuns
+- `simples`: usa a estrutura mais basica, indicada para a entrega e explicacao em sala.
+- `robusto`: usa o modelo com melhor organizacao, hash de senha e relacoes mais completas.
 
-- Access denied MySQL: confira usuario/senha e se o MySQL iniciou no XAMPP
-- Pagina nao abre: confira Apache iniciado e caminho em C:\xampp1\htdocs\SiteManancial-Demo
+## Login de teste
+- `joao@email.com` / `123456`
+- `maria@email.com` / `123456`
+
+## Observacoes
+- Os videos devem ficar em `videos/`.
+- O admin consegue enviar, listar, editar e excluir conteudos na area administrativa.
+- O projeto foi mantido com abordagem simples para facilitar a apresentacao da disciplina.

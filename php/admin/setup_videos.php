@@ -3,7 +3,7 @@
 include("conexao.php");
 
 // Limpar vídeos antigos
-$limpar = "DELETE FROM ID_CONTENT WHERE IDCT_TIPO = 'video' OR IDCT_TIPO = 'VIDEO'";
+$limpar = "DELETE FROM ID_CONTENT WHERE LOWER(IDCT_TIPO) = 'video'";
 mysqli_query($conn, $limpar);
 
 // Adicionar vídeo local de teste

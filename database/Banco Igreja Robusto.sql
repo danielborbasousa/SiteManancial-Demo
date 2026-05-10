@@ -244,7 +244,7 @@ WHERE NOT EXISTS (
 );
 
 -- Observacao importante:
--- A coluna IDF_SENHA_HASH deve armazenar hash gerado no PHP com password_hash().
+-- A coluna IDF_SENHA_HASH armazena hash SHA-256 de demonstracao.
 -- Nao gravar senha em texto puro.
 
 -- Exemplo de consulta para login seguro (executada no PHP com prepared statement):
@@ -267,7 +267,7 @@ SELECT
     (SELECT IDL_ID FROM ID_FILIAL WHERE IDL_NOME = 'Matriz' LIMIT 1),
     'Administrador',
     'Rua Central, 100',
-    '$2y$10$wH5fR9M5u1kpdXQkYw8vAuiiU9CDfWn2iXfVxIh6yHqG8Qn7x2mQy',
+    SHA2('123456', 256),
     1,
     NOW()
 WHERE NOT EXISTS (
@@ -286,7 +286,7 @@ SELECT
     (SELECT IDL_ID FROM ID_FILIAL WHERE IDL_NOME = 'Matriz' LIMIT 1),
     'Aluno',
     'Rua A, 123',
-    '$2y$10$2b4h6Q0k1K4S2YVjW0oV2u5vQf2fVnW2wWJ9Hf8S4pM0B7d8Yx4Yq',
+    SHA2('123456', 256),
     1,
     NOW()
 WHERE NOT EXISTS (
@@ -305,7 +305,7 @@ SELECT
     (SELECT IDL_ID FROM ID_FILIAL WHERE IDL_NOME = 'Matriz' LIMIT 1),
     'Aluno',
     'Rua B, 456',
-    '$2y$10$3f8kP9nR2L0dQ7bT1mUuE.4k9hS8jN6vD5xW4rZ2yA1cB0dE9fGHi',
+    SHA2('123456', 256),
     1,
     NOW()
 WHERE NOT EXISTS (
