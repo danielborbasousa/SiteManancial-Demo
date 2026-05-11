@@ -36,11 +36,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     auth_store_session($conn);
 
-    if ($eh_admin) {
-        header("Location: php/admin/admin_conteudos.php");
-    } else {
-        header("Location: php/fiel/dashboard.php");
-    }
+    // Sempre redireciona para o dashboard do fiel (removido acesso direto ao painel Admin)
+    header("Location: php/fiel/dashboard.php");
     exit;
 }
 ?>

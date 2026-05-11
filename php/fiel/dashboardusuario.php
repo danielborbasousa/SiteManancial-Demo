@@ -82,7 +82,7 @@ while(count($videos_feed) < 5) {
                 </ul>
                 <div class="d-flex align-items-center gap-4">
                     <?php if (isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "admin") { ?>
-                        <a href="../admin/admin_conteudos.php" class="btn btn-warning btn-sm">Admin</a>
+                        <!-- Botão Admin removido -->
                     <?php } ?>
                     <a href="busca.php" id="searchIcon" style="cursor: pointer; text-decoration: none;">🔍</a>
                     <a href="notificacoes.php" id="notifIcon" style="cursor: pointer; text-decoration: none;">🔔</a>
