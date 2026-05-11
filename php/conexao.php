@@ -1,6 +1,142 @@
 <?php
 // Módulo de conexão com o banco de dados
 
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
+if (!defined('SITE_BASE_URL')) {
+    define('SITE_BASE_URL', '/SiteManancial-Demo/');
+}
+
+if (!defined('SESSION_TIMEOUT_SECONDS')) {
+    define('SESSION_TIMEOUT_SECONDS', 3600);
+}
+
+function site_url($path = '') {
+    return rtrim(SITE_BASE_URL, '/') . '/' . ltrim($path, '/');
+}
+
+function auth_logout($reason = '') {
+    global $conn;
+
+    if (isset($_SESSION['Usuario_token']) && isset($_SESSION['Usuario_id'])) {
+        $token = mysqli_real_escape_string($conn, (string) $_SESSION['Usuario_token']);
+        $usuario_id = (int) $_SESSION['Usuario_id'];
+        @mysqli_query($conn, "UPDATE ID_SESSAO SET IDS_REVOGADA = 1 WHERE IDS_TOKEN = '$token' AND IDF_ID = $usuario_id LIMIT 1");
+    }
+
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
+
+    session_unset();
+    session_destroy();
+
+    $query = $reason !== '' ? '?reason=' . urlencode($reason) : '';
+    header('Location: ' . site_url('login.php') . $query);
+    exit;
+}
+
+function auth_store_session($database = null) {
+    global $conn;
+    $database = $database ?? $conn;
+
+    $usuario_id = auth_resolve_fiel_id();
+    if (!$database || $usuario_id <= 0 || !isset($_SESSION['Usuario_token'])) {
+        return;
+    }
+
+    $token = mysqli_real_escape_string($database, (string) $_SESSION['Usuario_token']);
+    $ip = mysqli_real_escape_string($database, $_SERVER['REMOTE_ADDR'] ?? '');
+    $agent = mysqli_real_escape_string($database, $_SERVER['HTTP_USER_AGENT'] ?? '');
+
+    $sql_upsert = "
+        INSERT INTO ID_SESSAO (IDF_ID, IDS_TOKEN, IDS_IP, IDS_USER_AGENT, IDS_EXPIRA_EM, IDS_REVOGADA)
+        VALUES ($usuario_id, '$token', '$ip', '$agent', DATE_ADD(NOW(), INTERVAL 1 HOUR), 0)
+        ON DUPLICATE KEY UPDATE
+            IDF_ID = VALUES(IDF_ID),
+            IDS_IP = VALUES(IDS_IP),
+            IDS_USER_AGENT = VALUES(IDS_USER_AGENT),
+            IDS_EXPIRA_EM = VALUES(IDS_EXPIRA_EM),
+            IDS_REVOGADA = 0
+    ";
+    @mysqli_query($database, $sql_upsert);
+}
+
+function auth_resolve_fiel_id() {
+    global $conn;
+
+    if (!isset($_SESSION['Usuario_id'])) {
+        return 0;
+    }
+
+    $usuario_id = (int) $_SESSION['Usuario_id'];
+
+    $sql_fiel = "SELECT IDF_ID FROM ID_FIEL WHERE IDF_ID = $usuario_id LIMIT 1";
+    $res_fiel = mysqli_query($conn, $sql_fiel);
+    if ($res_fiel && mysqli_num_rows($res_fiel) > 0) {
+        return $usuario_id;
+    }
+
+    $sql_admin = "SELECT IDA_FIEL_ID FROM ID_ADMIN WHERE IDA_ID = $usuario_id LIMIT 1";
+    $res_admin = mysqli_query($conn, $sql_admin);
+    if ($res_admin && mysqli_num_rows($res_admin) > 0) {
+        $row_admin = mysqli_fetch_assoc($res_admin);
+        $resolved_id = (int) ($row_admin['IDA_FIEL_ID'] ?? 0);
+        if ($resolved_id > 0) {
+            $_SESSION['Usuario_id'] = $resolved_id;
+            return $resolved_id;
+        }
+    }
+
+    return 0;
+}
+
+function auth_touch($database = null) {
+    global $conn;
+    $database = $database ?? $conn;
+    
+    if (!isset($_SESSION['Usuario_logado'])) {
+        return;
+    }
+
+    if (!isset($_SESSION['Usuario_login_at'])) {
+        $_SESSION['Usuario_login_at'] = time();
+    }
+
+    $_SESSION['Usuario_last_activity'] = time();
+    
+    // Atualizar last_activity no banco de dados
+    $usuario_id = auth_resolve_fiel_id();
+
+    if ($database && $usuario_id > 0) {
+        $sql_touch = "UPDATE ID_FIEL SET IDF_LAST_ACTIVITY = NOW() WHERE IDF_ID = $usuario_id LIMIT 1";
+        @mysqli_query($database, $sql_touch);
+        auth_store_session($database);
+    }
+}
+
+function auth_require(array $allowedRoles = array()) {
+    global $conn;
+    
+    if (!isset($_SESSION['Usuario_logado'])) {
+        auth_logout();
+    }
+
+    if (!empty($allowedRoles)) {
+        $role = $_SESSION['Usuario_tipo'] ?? '';
+        if (!in_array($role, $allowedRoles, true)) {
+            if ($role === 'admin') {
+                header('Location: ' . site_url('php/admin/admin_conteudos.php'));
+            } else {
+                header('Location: ' . site_url('php/fiel/dashboard.php'));
+            }
+            exit;
+        }
+    }
+}
+
 if (!defined('MODO_BANCO')) {
     define('MODO_BANCO', 'simples'); // troque para 'robusto' para usar o SQL completo
 }
