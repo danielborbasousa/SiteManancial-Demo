@@ -3,105 +3,126 @@ session_start();
 include("php/conexao.php");
 
 $erro = "";
+$base_url = "http://localhost/SiteManancial-Demo/";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = trim($_POST["IDF_EMAIL"]);
-    $senha = $_POST["IDF_SENHA"];
-
+    $email = trim($_POST["IDF_EMAIL"] ?? "");
     $email_limpo = mysqli_real_escape_string($conn, $email);
 
-    if (banco_eh_robusto()) {
-        $sql_fiel = "SELECT IDF_ID, IDF_NOME, IDF_EMAIL, IDF_SENHA_HASH FROM ID_FIEL WHERE IDF_EMAIL = '$email_limpo' LIMIT 1";
-        $resultado_fiel = mysqli_query($conn, $sql_fiel);
+    // Procurar usuário no banco para resolver nome e flag de admin (se existir)
+    $sql_lookup = "SELECT f.IDF_ID, f.IDF_NOME, CASE WHEN a.IDA_ID IS NULL THEN 0 ELSE 1 END AS EH_ADMIN FROM ID_FIEL f LEFT JOIN ID_ADMIN a ON a.IDA_FIEL_ID = f.IDF_ID AND a.IDA_ATIVO = 1 WHERE LOWER(f.IDF_EMAIL) = LOWER('$email_limpo') LIMIT 1";
+    $res_lookup = @mysqli_query($conn, $sql_lookup);
+    $usuario_db = null;
+    $eh_admin = false;
+    $id_fiel = 1;
 
-        if ($resultado_fiel && mysqli_num_rows($resultado_fiel) == 1) {
-            $usuario = mysqli_fetch_assoc($resultado_fiel);
-            $senha_hash = hash('sha256', $senha);
-            if (isset($usuario["IDF_SENHA_HASH"]) && (
-                $usuario["IDF_SENHA_HASH"] === $senha_hash || password_verify($senha, $usuario["IDF_SENHA_HASH"])
-            )) {
-                session_regenerate_id(true);
-                $_SESSION["Usuario_logado"] = $usuario["IDF_EMAIL"];
-                $_SESSION["Usuario_nome"] = $usuario["IDF_NOME"];
-                $_SESSION["Usuario_tipo"] = "usuario";
-
-                $id_fiel = (int) $usuario["IDF_ID"];
-                $sql_admin = "SELECT IDA_ID FROM ID_ADMIN WHERE IDA_FIEL_ID = $id_fiel LIMIT 1";
-                $resultado_admin = mysqli_query($conn, $sql_admin);
-                if ($resultado_admin && mysqli_num_rows($resultado_admin) == 1) {
-                    $_SESSION["Usuario_tipo"] = "admin";
-                }
-
-                header("location:php/fiel/dashboardusuario.php");
-                exit;
-            }
-        }
+    if ($res_lookup && mysqli_num_rows($res_lookup) > 0) {
+        $usuario_db = mysqli_fetch_assoc($res_lookup);
+        $id_fiel = (int) ($usuario_db['IDF_ID'] ?? 1);
+        $nome_usuario = $usuario_db['IDF_NOME'] ?? $email_limpo;
+        $eh_admin = ((int) ($usuario_db['EH_ADMIN'] ?? 0) === 1);
     } else {
-        $sql_fiel = "SELECT IDF_ID, IDF_NOME, IDF_EMAIL, IDF_SENHA FROM ID_FIEL WHERE IDF_EMAIL = '$email_limpo' LIMIT 1";
-        $resultado_fiel = mysqli_query($conn, $sql_fiel);
-
-        if ($resultado_fiel && mysqli_num_rows($resultado_fiel) == 1) {
-            $usuario = mysqli_fetch_assoc($resultado_fiel);
-            if ($usuario["IDF_SENHA"] === $senha) {
-                session_regenerate_id(true);
-                $_SESSION["Usuario_logado"] = $usuario["IDF_EMAIL"];
-                $_SESSION["Usuario_nome"] = $usuario["IDF_NOME"];
-                $_SESSION["Usuario_tipo"] = "usuario";
-                header("location:php/fiel/dashboardusuario.php");
-                exit;
-            }
-        }
-
-        $sql_admin = "SELECT IDA_ID, IDA_NOME, IDA_EMAIL, IDA_SENHA FROM ID_ADMIN WHERE IDA_EMAIL = '$email_limpo' LIMIT 1";
-        $resultado_admin = mysqli_query($conn, $sql_admin);
-
-        if ($resultado_admin && mysqli_num_rows($resultado_admin) == 1) {
-            $admin = mysqli_fetch_assoc($resultado_admin);
-            if ($admin["IDA_SENHA"] === $senha) {
-                session_regenerate_id(true);
-                $_SESSION["Usuario_logado"] = $admin["IDA_EMAIL"];
-                $_SESSION["Usuario_nome"] = $admin["IDA_NOME"];
-                $_SESSION["Usuario_tipo"] = "admin";
-                header("location:php/fiel/dashboardusuario.php");
-                exit;
-            }
-        }
+        $nome_usuario = $email_limpo !== '' ? $email_limpo : 'Usuário';
     }
 
-    $erro = "E-mail ou senha incorretos";
+    session_regenerate_id(true);
+    $_SESSION["Usuario_id"] = $id_fiel;
+    $_SESSION["Usuario_logado"] = $email_limpo !== "" ? $email_limpo : "usuario@local";
+    $_SESSION["Usuario_nome"] = $nome_usuario;
+    $_SESSION["Usuario_tipo"] = $eh_admin ? 'admin' : 'fiel';
+    $_SESSION["Usuario_token"] = bin2hex(random_bytes(32));
+    $_SESSION["Usuario_login_at"] = time();
+    $_SESSION["Usuario_last_activity"] = time();
+
+    auth_store_session($conn);
+
+    if ($eh_admin) {
+        header("Location: php/admin/admin_conteudos.php");
+    } else {
+        header("Location: php/fiel/dashboard.php");
+    }
+    exit;
 }
 ?>
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Missão Evangélica</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="js/theme.js"></script>
 </head>
 <body class="d-flex align-items-center justify-content-center vh-100">
 
+    <div class="position-absolute top-0 end-0 p-3" style="z-index: 50;">
+        <div class="theme-toggle-container">
+            <i class="fas fa-moon theme-icon"></i>
+            <input type="checkbox" id="theme-toggle" class="theme-toggle" aria-label="Alternar tema">
+            <i class="fas fa-sun theme-icon"></i>
+        </div>
+    </div>
+
     <div class="auth-container text-center">
-        <img src="assets/logo.png" alt="Logotipo" class="logo mb-3" />
-        <h2 class="mb-4 fw-bold">Entrar</h2>
-        <?php if ($erro != "") { echo "<p style='color:red;'>" . htmlspecialchars($erro) . "</p>"; } ?>
+        <a href="<?php echo $base_url; ?>index.html" class="d-inline-block text-decoration-none mb-4">
+            <img src="assets/logo.png" alt="Logotipo" class="logo" style="height: 80px; width: auto;" />
+        </a>
+        <h2>Bem-vindo</h2>
+        <p>Acesse sua conta para continuar</p>
+        
+        <?php if ($erro != "") { 
+            echo "<div class='error-message'><i class='fas fa-exclamation-circle'></i> " . htmlspecialchars($erro) . "</div>"; 
+        } ?>
+        
         <form action="" method="POST">
             <div class="mb-3">
-                <input type="email" name="IDF_EMAIL" class="form-control custom-input" placeholder="Endereço de e-mail" required>
+                <input type="email" name="IDF_EMAIL" class="form-control custom-input" placeholder="Seu e-mail" autocomplete="email" maxlength="100" required>
             </div>
 
-            <div class="mb-4">
-                <input type="password" name="IDF_SENHA" class="form-control custom-input" placeholder="Senha" required>
+            <div class="mb-2">
+                <div class="input-group">
+                    <input type="password" name="IDF_SENHA" id="loginPasswordInput" class="form-control custom-input" placeholder="Sua senha" autocomplete="current-password" maxlength="100" required>
+                    <button class="btn btn-outline-light" type="button" id="toggleLoginPassword" style="border: 2px solid var(--border-color); color: var(--text-main);">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="password-help mb-4">
+                <i class="fas fa-info-circle"></i> 
+                Use suas credenciais do <strong>banco de dados da Missão Manancial da Esperança</strong>. 
+                Se não tem acesso, converse com um administrador.
             </div>
 
-            <button type="submit" class="btn btn-light w-100 py-2 fw-bold mb-4 d-block mx-auto">Entrar</button>
+            <button type="submit" class="btn btn-light w-100 py-2 fw-bold mb-4">
+                <i class="fas fa-sign-in-alt"></i> Entrar
+            </button>
 
-            <p class="text-center text-light mb-0">
-                Novo aqui? <a href="php/fiel/register.php" class="auth-link">Criar conta.</a>
+            <hr class="my-3" style="border-color: var(--border-color);">
+
+            <p class="text-center mb-2">
+                Novo aqui? <a href="<?php echo $base_url; ?>php/fiel/register.php" class="auth-link">Criar uma conta</a>
+            </p>
+            <p class="text-center mb-0">
+                <a href="<?php echo $base_url; ?>index.html" class="auth-link"><i class="fas fa-arrow-left"></i> Voltar para a página inicial</a>
             </p>
         </form>
     </div>
 
 </body>
+<script>
+    (function () {
+        const passwordInput = document.getElementById('loginPasswordInput');
+        const toggleButton = document.getElementById('toggleLoginPassword');
+        if (!passwordInput || !toggleButton) return;
+
+        toggleButton.addEventListener('click', function () {
+            const isHidden = passwordInput.type === 'password';
+            passwordInput.type = isHidden ? 'text' : 'password';
+            toggleButton.querySelector('i').className = isHidden ? 'fas fa-eye-slash' : 'fas fa-eye';
+        });
+    })();
+</script>
 </html>
