@@ -1,0 +1,22 @@
+# Sistema e IDE
+/.vscode/
+/.idea/
+*.log
+*.env
+.DS_Store
+
+# Dependências
+/node_modules/
+/vendor/
+
+# Build
+/dist/
+
+# Arquivos de mídia grandes
+/videos/
+
+# Dados sensíveis ou backups
+/*.sql
+
+# Sistema Windows
+Thumbs.db
