@@ -3,6 +3,12 @@ include("../conexao.php");
 
 auth_require();
 
+// Redirecionar admin para seu painel
+if (isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "admin") {
+    header("location: ../admin/dashboard.php");
+    exit;
+}
+
 // Buscar vídeos
 $sql_videos = "SELECT IDCT_ID, IDCT_TITULO, IDCT_DESCRICAO, IDCT_URL FROM ID_CONTENT WHERE LOWER(IDCT_TIPO) = 'video' ORDER BY IDCT_ID DESC LIMIT 12";
 $resultado_videos = mysqli_query($conn, $sql_videos);

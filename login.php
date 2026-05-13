@@ -10,7 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email_limpo = mysqli_real_escape_string($conn, $email);
 
     // Procurar usuário no banco para resolver nome e flag de admin (se existir)
-    $sql_lookup = "SELECT f.IDF_ID, f.IDF_NOME, CASE WHEN a.IDA_ID IS NULL THEN 0 ELSE 1 END AS EH_ADMIN FROM ID_FIEL f LEFT JOIN ID_ADMIN a ON a.IDA_FIEL_ID = f.IDF_ID AND a.IDA_ATIVO = 1 WHERE LOWER(f.IDF_EMAIL) = LOWER('$email_limpo') LIMIT 1";
+    $sql_lookup = "SELECT f.IDF_ID, f.IDF_NOME, f.IDF_STATUS, CASE WHEN a.IDA_ID IS NULL THEN 0 ELSE 1 END AS EH_ADMIN FROM ID_FIEL f LEFT JOIN ID_ADMIN a ON a.IDA_FIEL_ID = f.IDF_ID AND a.IDA_ATIVO = 1 WHERE LOWER(f.IDF_EMAIL) = LOWER('$email_limpo') LIMIT 1";
     $res_lookup = @mysqli_query($conn, $sql_lookup);
     $usuario_db = null;
     $eh_admin = false;
@@ -18,31 +18,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($res_lookup && mysqli_num_rows($res_lookup) > 0) {
         $usuario_db = mysqli_fetch_assoc($res_lookup);
-        $id_fiel = (int) ($usuario_db['IDF_ID'] ?? 1);
-        $nome_usuario = $usuario_db['IDF_NOME'] ?? $email_limpo;
-        $eh_admin = ((int) ($usuario_db['EH_ADMIN'] ?? 0) === 1);
+        $status_usuario = $usuario_db['IDF_STATUS'] ?? 'pendente';
+        
+        // Verificar status do usuário
+        if ($status_usuario === 'pendente') {
+            $erro = "Sua conta está aguardando aprovação. Por favor, aguarde o administrador aprovar seu acesso.";
+        } elseif ($status_usuario === 'negado') {
+            $erro = "Sua conta foi rejeitada. Entre em contato com o administrador para mais informações.";
+        } else {
+            // Status é 'aprovado', continuar com o login
+            $id_fiel = (int) ($usuario_db['IDF_ID'] ?? 1);
+            $nome_usuario = $usuario_db['IDF_NOME'] ?? $email_limpo;
+            $eh_admin = ((int) ($usuario_db['EH_ADMIN'] ?? 0) === 1);
+
+            session_regenerate_id(true);
+            $_SESSION["Usuario_id"] = $id_fiel;
+            $_SESSION["Usuario_logado"] = $email_limpo !== "" ? $email_limpo : "usuario@local";
+            $_SESSION["Usuario_nome"] = $nome_usuario;
+            $_SESSION["Usuario_tipo"] = $eh_admin ? 'admin' : 'fiel';
+            $_SESSION["Usuario_token"] = bin2hex(random_bytes(32));
+            $_SESSION["Usuario_login_at"] = time();
+            $_SESSION["Usuario_last_activity"] = time();
+
+            auth_store_session($conn);
+
+            // Redireciona para o dashboard apropriado baseado no tipo de usuário
+            if ($eh_admin) {
+                header("Location: php/admin/dashboard.php");
+            } else {
+                header("Location: php/fiel/dashboard.php");
+            }
+            exit;
+        }
     } else {
         $nome_usuario = $email_limpo !== '' ? $email_limpo : 'Usuário';
     }
-
-    session_regenerate_id(true);
-    $_SESSION["Usuario_id"] = $id_fiel;
-    $_SESSION["Usuario_logado"] = $email_limpo !== "" ? $email_limpo : "usuario@local";
-    $_SESSION["Usuario_nome"] = $nome_usuario;
-    $_SESSION["Usuario_tipo"] = $eh_admin ? 'admin' : 'fiel';
-    $_SESSION["Usuario_token"] = bin2hex(random_bytes(32));
-    $_SESSION["Usuario_login_at"] = time();
-    $_SESSION["Usuario_last_activity"] = time();
-
-    auth_store_session($conn);
-
-    // Redireciona para o dashboard apropriado baseado no tipo de usuário
-    if ($eh_admin) {
-        header("Location: php/admin/dashboard.php");
-    } else {
-        header("Location: php/fiel/dashboard.php");
-    }
-    exit;
 }
 ?>
 <!DOCTYPE html>

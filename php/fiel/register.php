@@ -21,8 +21,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $cpf = trim($_POST["IDF_CPF"]);
     $filial = trim($_POST["IDF_FILIAL"]);
     $funcao = trim($_POST["IDF_FUNCAO"]);
-    $endereco = trim($_POST["IDF_ENDERECO"]);
     $senha = $_POST["IDF_SENHA"];
+    $senha_confirma = $_POST["IDF_SENHA_CONFIRMA"];
 
     $telefone_limpo = preg_replace('/\D/', '', $telefone);
     $cpf_limpo = preg_replace('/\D/', '', $cpf);
@@ -43,10 +43,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mensagem = "Filial invalida. Use entre 2 e " . $lim_filial . " caracteres.";
     } elseif (strlen($funcao) < 2 || strlen($funcao) > $lim_funcao) {
         $mensagem = "Funcao invalida. Use entre 2 e " . $lim_funcao . " caracteres.";
-    } elseif (strlen($endereco) < 5 || strlen($endereco) > $lim_endereco) {
-        $mensagem = "Endereco invalido. Use entre 5 e " . $lim_endereco . " caracteres.";
     } elseif (strlen($senha) < 6 || strlen($senha) > $lim_senha) {
         $mensagem = "Senha invalida. Use entre 6 e " . $lim_senha . " caracteres.";
+    } elseif ($senha !== $senha_confirma) {
+        $mensagem = "As senhas nao conferem. Tente novamente.";
     } else {
         $nome = mysqli_real_escape_string($conn, $nome);
         $email = mysqli_real_escape_string($conn, $email);
@@ -54,7 +54,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $cpf_limpo = mysqli_real_escape_string($conn, $cpf_limpo);
         $filial = mysqli_real_escape_string($conn, $filial);
         $funcao = mysqli_real_escape_string($conn, $funcao);
-        $endereco = mysqli_real_escape_string($conn, $endereco);
 
         if (banco_eh_robusto()) {
             $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
@@ -68,10 +67,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $filial_id = (int) $linha_filial["IDL_ID"];
             }
 
-            $sql = "INSERT INTO ID_FIEL (IDF_NOME, IDF_EMAIL, IDF_TELEFONE, IDF_CPF, IDF_FILIAL_ID, IDF_FUNCAO, IDF_ENDERECO, IDF_SENHA_HASH, IDF_ATIVO) VALUES ('$nome', '$email', '$telefone_limpo', '$cpf_limpo', $filial_id, '$funcao', '$endereco', '$senha_hash', 1)";
+            $sql = "INSERT INTO ID_FIEL (IDF_NOME, IDF_EMAIL, IDF_TELEFONE, IDF_CPF, IDF_FILIAL_ID, IDF_FUNCAO, IDF_ENDERECO, IDF_SENHA_HASH, IDF_STATUS, IDF_ATIVO) VALUES ('$nome', '$email', '$telefone_limpo', '$cpf_limpo', $filial_id, '$funcao', '', '$senha_hash', 'pendente', 1)";
         } else {
             $senha = mysqli_real_escape_string($conn, $senha);
-            $sql = "INSERT INTO ID_FIEL (IDF_NOME, IDF_EMAIL, IDF_TELEFONE, IDF_CPF, IDF_FILIAL, IDF_FUNCAO, IDF_ENDERECO, IDF_SENHA) VALUES ('$nome', '$email', '$telefone_limpo', '$cpf_limpo', '$filial', '$funcao', '$endereco', '$senha')";
+            $sql = "INSERT INTO ID_FIEL (IDF_NOME, IDF_EMAIL, IDF_TELEFONE, IDF_CPF, IDF_FILIAL, IDF_FUNCAO, IDF_ENDERECO, IDF_SENHA, IDF_STATUS) VALUES ('$nome', '$email', '$telefone_limpo', '$cpf_limpo', '$filial', '$funcao', '', '$senha', 'pendente')";
         }
 
         if (mysqli_query($conn, $sql)) {
@@ -150,12 +149,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
             </div>
 
-            <div>
-                <input type="text" name="IDF_ENDERECO" class="form-control custom-input" placeholder="Endereco" minlength="5" maxlength="200" required>
-            </div>
+            <div class="auth-form-grid auth-form-grid--two">
+                <div>
+                    <input type="password" name="IDF_SENHA" class="form-control custom-input" placeholder="Criar senha" minlength="6" maxlength="100" required>
+                </div>
 
-            <div>
-                <input type="password" name="IDF_SENHA" class="form-control custom-input" placeholder="Criar senha" minlength="6" maxlength="100" required>
+                <div>
+                    <input type="password" name="IDF_SENHA_CONFIRMA" class="form-control custom-input" placeholder="Confirmar senha" minlength="6" maxlength="100" required>
+                </div>
             </div>
 
             <div class="auth-form-actions">
