@@ -1,3 +1,4 @@
+DROP DATABASE igreja_cursos;
 CREATE DATABASE igreja_cursos;
 
 -- Seleciona o banco
@@ -38,12 +39,11 @@ CREATE TABLE ID_FIEL (
 -- ============================
 CREATE TABLE ID_ADMIN (
     IDA_ID INT AUTO_INCREMENT PRIMARY KEY,
-    IDA_NOME VARCHAR(100) NOT NULL,
-    IDA_EMAIL VARCHAR(100) NOT NULL,
-    IDA_FILIAL VARCHAR(100),
-    IDA_SENHA VARCHAR(100) NOT NULL,
-    IDA_NIVEL VARCHAR(20),
-    IDA_ATIVO TINYINT(1) NOT NULL DEFAULT 1
+    IDA_FIEL_ID INT NOT NULL,
+    IDA_NIVEL VARCHAR(20) DEFAULT 'EDITOR',
+    IDA_ATIVO TINYINT(1) NOT NULL DEFAULT 1,
+    UNIQUE KEY UK_IDA_FIEL_ID (IDA_FIEL_ID),
+    FOREIGN KEY (IDA_FIEL_ID) REFERENCES ID_FIEL(IDF_ID) ON DELETE CASCADE
 );
 
 -- ============================
@@ -234,14 +234,14 @@ VALUES
 
 INSERT INTO ID_FIEL (IDF_NOME, IDF_TELEFONE, IDF_EMAIL, IDF_CPF, IDF_FILIAL, IDF_FUNCAO, IDF_ENDERECO, IDF_SENHA, IDF_STATUS)
 VALUES
+('Administrador Geral', '11900000001', 'admin@igreja.com', '12345678900', 'Matriz', 'Administrador', 'Rua Central, 100', '123456', 'aprovado'),
 ('Joao Silva', '11999999999', 'joao@email.com', '11122233344', 'Matriz', 'Aluno', 'Rua A, 123', '123456', 'aprovado'),
 ('Maria Oliveira', '11888888888', 'maria@email.com', '55566677788', 'Filial Centro', 'Aluno', 'Rua B, 456', '123456', 'aprovado'),
 ('Carlos Souza', '11777777777', 'carlos@email.com', '99988877766', 'Matriz', 'Lider', 'Rua C, 789', '123456', 'aprovado');
 
-INSERT INTO ID_ADMIN (IDA_NOME, IDA_EMAIL, IDA_FILIAL, IDA_SENHA, IDA_NIVEL)
+INSERT INTO ID_ADMIN (IDA_FIEL_ID, IDA_NIVEL, IDA_ATIVO)
 VALUES
-('Administrador Geral', 'admin@igreja.com', 'Matriz', '123456', 'SUPER'),
-('Editor Conteudo', 'editor@igreja.com', 'Filial Centro', '123456', 'EDITOR');
+(1, 'SUPER', 1);
 
 INSERT INTO ID_CATEGORIA (IDCAT_NOME, IDCAT_DESCRICAO)
 VALUES
@@ -275,9 +275,9 @@ VALUES
 
 INSERT INTO ID_MATRICULA (IDF_ID, IDC_ID, IDMATR_STATUS, IDMATR_PERCENTUAL)
 VALUES
-(1, 1, 'ATIVA', 40.00),
-(2, 1, 'ATIVA', 15.00),
-(3, 2, 'ATIVA', 70.00);
+(2, 1, 'ATIVA', 40.00),
+(3, 1, 'ATIVA', 15.00),
+(4, 2, 'ATIVA', 70.00);
 
 INSERT INTO ID_PROGRESSO (IDMATR_ID, IDCT_ID, IDPR_STATUS, IDPR_PERCENTUAL)
 VALUES
