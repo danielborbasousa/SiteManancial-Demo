@@ -104,20 +104,30 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Conteudo - Missao Evangelica</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="../../css/styles.css">
+    <script src="../../js/theme.js"></script>
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark w-100 p-3">
+<body style="transition: background 0.3s ease;">
+    <nav class="navbar navbar-expand-lg navbar-dark w-100 p-3" style="background: rgba(7,16,29,0.98); border-bottom: 1px solid var(--border-color); transition: all 0.3s ease;">
         <div class="container-fluid px-4">
-            <a class="navbar-brand fw-bold d-flex align-items-center" href="../fiel/dashboard.php">
-                <img src="../../assets/logo.png" alt="Logotipo" class="logo me-2" /> Missao Evangelica Manancial da Esperanca
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="dashboard.php">
+                <img src="../../assets/logo.png" alt="Logotipo" class="logo me-2" /> Admin Panel
             </a>
+            <div class="d-flex gap-2 align-items-center ms-auto">
+                <div class="theme-toggle-container">
+                    <i class="fas fa-moon theme-icon" style="font-size: 1rem;"></i>
+                    <input type="checkbox" id="theme-toggle" class="theme-toggle" aria-label="Alternar tema" style="width: 40px; height: 22px;">
+                    <i class="fas fa-sun theme-icon" style="font-size: 1rem;"></i>
+                </div>
+                <a href="dashboard.php" class="btn btn-sm btn-outline-light">Voltar ao Painel</a>
+            </div>
         </div>
     </nav>
 
@@ -128,7 +138,6 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
                     <h1 class="mb-1">Editar Video</h1>
                     <p class="mb-0 text-muted">Ajuste titulo, descricao, ordem e arquivo do conteudo</p>
                 </div>
-                <a href="admin_conteudos.php" class="btn btn-outline-light">Voltar</a>
             </div>
 
             <?php if ($mensagem !== "") { ?>
@@ -173,7 +182,7 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
                     </div>
                     <div class="col-12 d-flex gap-2">
                         <button type="submit" class="btn btn-light fw-bold">Salvar alteracoes</button>
-                        <a href="admin_conteudos.php" class="btn btn-secondary">Voltar</a>
+                        <a href="dashboard.php" class="btn btn-outline-light">Voltar ao Painel</a>
                     </div>
                 </div>
             </form>

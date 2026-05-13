@@ -117,7 +117,7 @@ if ($res_users && mysqli_num_rows($res_users) > 0) {
                     <input type="checkbox" id="theme-toggle" class="theme-toggle" aria-label="Alternar tema" style="width: 40px; height: 22px;">
                     <i class="fas fa-sun theme-icon" style="font-size: 1rem;"></i>
                 </div>
-                <a href="admin_conteudos.php" class="btn btn-sm btn-outline-light">Voltar</a>
+                <a href="dashboard.php" class="btn btn-sm btn-outline-light">Voltar ao Painel</a>
             </div>
         </div>
     </nav>

@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $acao = isset($_POST["acao"]) ? trim($_POST["acao"]) : "";
     $motivo = isset($_POST["motivo"]) ? trim($_POST["motivo"]) : "";
 
-    if ($usuario_id <= 0 || !in_array($acao, array('aprovar', 'rejeitar'))) {
+    if ($usuario_id <= 0 || !in_array($acao, array('aprovar', 'rejeitar', 'remover_permissao', 'dar_permissao'))) {
         $erro = "Requisição inválida.";
     } else {
         // Buscar dados do usuário
@@ -21,7 +21,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         if ($res_user && mysqli_num_rows($res_user) > 0) {
             $user = mysqli_fetch_assoc($res_user);
-            $novo_status = ($acao === 'aprovar') ? 'aprovado' : 'negado';
+            
+            // Mapear ação para novo status
+            $novo_status = '';
+            if ($acao === 'aprovar' || $acao === 'dar_permissao') {
+                $novo_status = 'aprovado';
+            } elseif ($acao === 'rejeitar' || $acao === 'remover_permissao') {
+                $novo_status = 'negado';
+            }
             
             // Atualizar status do usuário
             $sql_update = "UPDATE ID_FIEL SET IDF_STATUS = '$novo_status' WHERE IDF_ID = $usuario_id LIMIT 1";
@@ -33,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 @mysqli_query($conn, $sql_sol);
                 
                 // Criar notificação para o usuário
-                if ($acao === 'aprovar') {
+                if ($novo_status === 'aprovado') {
                     $notif_titulo = "Acesso Aprovado!";
                     $notif_msg = "Sua solicitação de acesso foi aprovada! Acesse a plataforma com suas credenciais.";
                 } else {
@@ -43,7 +50,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $sql_notif = "INSERT INTO ID_NOTIFICACAO (IDF_ID, IDN_TITULO, IDN_MENSAGEM, IDN_TIPO) VALUES ($usuario_id, '$notif_titulo', '$notif_msg', 'resposta_acesso')";
                 @mysqli_query($conn, $sql_notif);
                 
-                $mensagem = "Usuário " . ($acao === 'aprovar' ? 'aprovado' : 'rejeitado') . " com sucesso!";
+                // Mensagem de sucesso
+                if ($acao === 'aprovar' || $acao === 'dar_permissao') {
+                    $mensagem = "Usuário aprovado com sucesso!";
+                } else {
+                    $mensagem = "Usuário rejeitado com sucesso!";
+                }
             } else {
                 $erro = "Erro ao processar solicitação.";
             }
@@ -118,7 +130,7 @@ if ($res_historico && mysqli_num_rows($res_historico) > 0) {
                     <input type="checkbox" id="theme-toggle" class="theme-toggle" aria-label="Alternar tema" style="width: 40px; height: 22px;">
                     <i class="fas fa-sun theme-icon" style="font-size: 1rem;"></i>
                 </div>
-                <a href="admin_conteudos.php" class="btn btn-sm btn-outline-light">Voltar</a>
+                <a href="dashboard.php" class="btn btn-sm btn-outline-light">Voltar ao Painel</a>
             </div>
         </div>
     </nav>
@@ -276,6 +288,7 @@ if ($res_historico && mysqli_num_rows($res_historico) > 0) {
                                             <th>Respondido em</th>
                                             <th>Por</th>
                                             <th>Motivo</th>
+                                            <th>Ações</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -293,11 +306,85 @@ if ($res_historico && mysqli_num_rows($res_historico) > 0) {
                                                 <td><small><?php echo $user["IDSA_RESPONDIDO_EM"] ? date('d/m/Y H:i', strtotime($user["IDSA_RESPONDIDO_EM"])) : "N/A"; ?></small></td>
                                                 <td><small><?php echo htmlspecialchars($user["ADMIN_NOME"] ?? "Sistema"); ?></small></td>
                                                 <td><small><?php echo htmlspecialchars($user["IDSA_MOTIVO_NEGACAO"] ?? "-"); ?></small></td>
+                                                <td>
+                                                    <?php if ($user["IDF_STATUS"] === "aprovado") { ?>
+                                                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#removerPermissaoModal<?php echo $user["IDF_ID"]; ?>" title="Remover Permissão">
+                                                            <i class="fas fa-ban"></i>
+                                                        </button>
+                                                    <?php } else { ?>
+                                                        <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#darPermissaoModal<?php echo $user["IDF_ID"]; ?>" title="Dar Permissão">
+                                                            <i class="fas fa-check"></i>
+                                                        </button>
+                                                    <?php } ?>
+                                                </td>
                                             </tr>
                                         <?php } ?>
                                     </tbody>
                                 </table>
                             </div>
+
+                            <!-- MODAIS DE AÇÃO DO HISTÓRICO -->
+                            <?php foreach ($usuarios_historico as $user) { ?>
+                                <!-- Modal Remover Permissão -->
+                                <div class="modal fade" id="removerPermissaoModal<?php echo $user["IDF_ID"]; ?>" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content" style="background: var(--bg-light); border: 1px solid var(--border-color);">
+                                            <div class="modal-header" style="border-bottom: 1px solid var(--border-color);">
+                                                <h5 class="modal-title">Remover Permissão</h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <form method="POST">
+                                                <div class="modal-body">
+                                                    <p>Deseja remover a permissão de <strong><?php echo htmlspecialchars($user["IDF_NOME"]); ?></strong>?</p>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Motivo (opcional):</label>
+                                                        <textarea class="form-control custom-input" name="motivo" rows="3" placeholder="Informe o motivo da revogação..."></textarea>
+                                                    </div>
+                                                    <div class="alert alert-warning" role="alert">
+                                                        <i class="fas fa-exclamation-triangle me-2"></i>
+                                                        <small>O usuário será notificado sobre a remoção de permissão.</small>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer" style="border-top: 1px solid var(--border-color);">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                    <button type="submit" class="btn btn-danger" name="acao" value="remover_permissao">
+                                                        <input type="hidden" name="usuario_id" value="<?php echo $user["IDF_ID"]; ?>">
+                                                        <i class="fas fa-ban me-1"></i>Remover
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Modal Dar Permissão -->
+                                <div class="modal fade" id="darPermissaoModal<?php echo $user["IDF_ID"]; ?>" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content" style="background: var(--bg-light); border: 1px solid var(--border-color);">
+                                            <div class="modal-header" style="border-bottom: 1px solid var(--border-color);">
+                                                <h5 class="modal-title">Dar Permissão</h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <form method="POST">
+                                                <div class="modal-body">
+                                                    <p>Deseja dar permissão para <strong><?php echo htmlspecialchars($user["IDF_NOME"]); ?></strong> acessar a plataforma?</p>
+                                                    <div class="alert alert-info" role="alert">
+                                                        <i class="fas fa-info-circle me-2"></i>
+                                                        <small>O usuário receberá uma notificação sobre a aprovação.</small>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer" style="border-top: 1px solid var(--border-color);">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                    <button type="submit" class="btn btn-success" name="acao" value="dar_permissao">
+                                                        <input type="hidden" name="usuario_id" value="<?php echo $user["IDF_ID"]; ?>">
+                                                        <i class="fas fa-check me-1"></i>Aprovar
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php } ?>
                         <?php } else { ?>
                             <div class="text-center py-5">
                                 <p class="text-muted">Nenhum histórico disponível</p>

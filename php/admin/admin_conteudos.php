@@ -108,26 +108,29 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Conteudos - Missao Evangelica</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="../../css/styles.css">
+    <script src="../../js/theme.js"></script>
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark w-100 p-3">
+<body style="transition: background 0.3s ease;">
+    <nav class="navbar navbar-expand-lg navbar-dark w-100 p-3" style="background: rgba(7,16,29,0.98); border-bottom: 1px solid var(--border-color); transition: all 0.3s ease;">
         <div class="container-fluid px-4">
-            <a class="navbar-brand fw-bold d-flex align-items-center" href="../fiel/dashboard.php">
-                <img src="../../assets/logo.png" alt="Logotipo" class="logo me-2" /> Missao Evangelica Manancial da Esperanca
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="dashboard.php">
+                <img src="../../assets/logo.png" alt="Logotipo" class="logo me-2" /> Admin Panel
             </a>
-            <div class="collapse navbar-collapse show">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="../fiel/dashboard.php">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="admin_conteudos.php">Admin</a></li>
-                </ul>
-                <a href="../fiel/sair.php" class="btn btn-danger btn-sm">Sair</a>
+            <div class="d-flex gap-2 align-items-center ms-auto">
+                <div class="theme-toggle-container">
+                    <i class="fas fa-moon theme-icon" style="font-size: 1rem;"></i>
+                    <input type="checkbox" id="theme-toggle" class="theme-toggle" aria-label="Alternar tema" style="width: 40px; height: 22px;">
+                    <i class="fas fa-sun theme-icon" style="font-size: 1rem;\"></i>
+                </div>
+                <a href="dashboard.php" class="btn btn-sm btn-outline-light">Voltar ao Painel</a>
             </div>
         </div>
     </nav>
@@ -139,7 +142,6 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
                     <h1 class="mb-1">Administrar Videos</h1>
                     <p class="mb-0 text-muted">Envio, edicao e exclusao simples de conteudos</p>
                 </div>
-                <a href="../fiel/dashboard.php" class="btn btn-outline-light">Voltar ao painel</a>
             </div>
 
             <div class="row g-3 mb-4">

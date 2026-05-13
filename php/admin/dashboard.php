@@ -82,6 +82,16 @@ if ($res) {
     }
 }
 
+// Usuários pendentes
+$usuarios_pendentes = array();
+$sql = "SELECT IDF_ID, IDF_NOME, IDF_EMAIL, IDF_TELEFONE, IDF_CPF, IDF_FUNCAO, IDF_FILIAL_ID, IDF_CRIADO_EM FROM ID_FIEL WHERE IDF_STATUS = 'pendente' ORDER BY IDF_CRIADO_EM DESC LIMIT 10";
+$res = mysqli_query($conn, $sql);
+if ($res) {
+    while ($row = mysqli_fetch_assoc($res)) {
+        $usuarios_pendentes[] = $row;
+    }
+}
+
 // Vídeos recentes
 $videos_recentes = array();
 $sql = "SELECT IDCT_ID, IDCT_TITULO, IDCT_CRIADO_EM FROM ID_CONTENT WHERE LOWER(IDCT_TIPO) = 'video' ORDER BY IDCT_CRIADO_EM DESC LIMIT 5";
@@ -670,7 +680,7 @@ if ($res) {
                     </a>
                 </li>
                 <li class="sidebar-menu-item">
-                    <a href="setup_videos.php" class="sidebar-link">
+                    <a href="admin_gerenciar_usuarios.php" class="sidebar-link">
                         <i class="fas fa-cog"></i>
                         <span>Configurações</span>
                     </a>
@@ -853,6 +863,103 @@ if ($res) {
                     </div>
                 </a>
             </div>
+
+            <!-- PENDING NOTIFICATIONS -->
+            <?php if (count($usuarios_pendentes) > 0): ?>
+                <div class="data-table" style="margin-top: 2rem; border-left: 4px solid var(--admin-warning);">
+                    <div class="data-table-header">
+                        <p class="data-table-title">
+                            <i class="fas fa-bell"></i>
+                            Solicitações Pendentes (<?php echo count($usuarios_pendentes); ?>)
+                        </p>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>E-mail</th>
+                                <th>Função</th>
+                                <th>Data</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($usuarios_pendentes as $user): ?>
+                                <tr style="background: rgba(245, 158, 11, 0.05);">
+                                    <td><strong><?php echo htmlspecialchars($user['IDF_NOME']); ?></strong></td>
+                                    <td><?php echo htmlspecialchars($user['IDF_EMAIL']); ?></td>
+                                    <td><?php echo htmlspecialchars($user['IDF_FUNCAO'] ?? 'N/A'); ?></td>
+                                    <td><?php echo date('d/m/Y H:i', strtotime($user['IDF_CRIADO_EM'])); ?></td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#verDadosModal<?php echo $user['IDF_ID']; ?>" style="padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+                                            <i class="fas fa-eye me-1"></i>Ver Dados
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- Modal Ver Dados -->
+                                <div class="modal fade" id="verDadosModal<?php echo $user['IDF_ID']; ?>" tabindex="-1">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content" style="background: var(--bg-light); border: 1px solid var(--border-color);">
+                                            <div class="modal-header" style="border-bottom: 1px solid var(--border-color);">
+                                                <h5 class="modal-title"><i class="fas fa-user me-2"></i>Dados do Usuário - <?php echo htmlspecialchars($user['IDF_NOME']); ?></h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row mb-3">
+                                                    <div class="col-md-6">
+                                                        <strong>Nome:</strong><br>
+                                                        <span style="color: var(--text-muted);"><?php echo htmlspecialchars($user['IDF_NOME']); ?></span>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <strong>E-mail:</strong><br>
+                                                        <span style="color: var(--text-muted);"><?php echo htmlspecialchars($user['IDF_EMAIL']); ?></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mb-3">
+                                                    <div class="col-md-6">
+                                                        <strong>Telefone:</strong><br>
+                                                        <span style="color: var(--text-muted);"><?php echo htmlspecialchars($user['IDF_TELEFONE'] ?? 'N/A'); ?></span>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <strong>CPF:</strong><br>
+                                                        <span style="color: var(--text-muted);"><?php echo htmlspecialchars($user['IDF_CPF'] ?? 'N/A'); ?></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mb-3">
+                                                    <div class="col-md-6">
+                                                        <strong>Função:</strong><br>
+                                                        <span style="color: var(--text-muted);"><?php echo htmlspecialchars($user['IDF_FUNCAO'] ?? 'N/A'); ?></span>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <strong>Data de Solicitação:</strong><br>
+                                                        <span style="color: var(--text-muted);"><?php echo date('d/m/Y H:i', strtotime($user['IDF_CRIADO_EM'])); ?></span>
+                                                    </div>
+                                                </div>
+
+                                                <hr style="border-color: var(--border-color);">
+
+                                                <div class="alert alert-info" role="alert">
+                                                    <i class="fas fa-info-circle me-2"></i>
+                                                    Verifique os dados acima com os registros da filial para confirmar a identidade do usuário.
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer" style="border-top: 1px solid var(--border-color);">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                                <a href="admin_aprovar_usuarios.php" class="btn btn-primary">
+                                                    <i class="fas fa-check me-2"></i>Ir para Aprovações
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
 
             <!-- RECENT USERS -->
             <?php if (count($usuarios_recentes) > 0): ?>
