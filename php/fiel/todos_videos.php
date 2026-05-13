@@ -71,7 +71,6 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
                         <input type="checkbox" id="theme-toggle" class="theme-toggle" aria-label="Alternar tema" style="width: 40px; height: 22px;">
                         <i class="fas fa-sun theme-icon" style="font-size: 1rem;"></i>
                     </div>
-                    <a href="<?php echo site_url('php/fiel/sair.php'); ?>" class="btn btn-sm btn-danger">Sair</a>
                 </div>
             </div>
         </div>

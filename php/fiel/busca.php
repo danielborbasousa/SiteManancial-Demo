@@ -33,7 +33,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     <li class="nav-item"><a class="nav-link" href="sobre.php">Sobre</a></li>
                     <li class="nav-item"><a class="nav-link" href="contato.php">Contato</a></li>
                 </ul>
-                <a href="sair.php" class="btn btn-danger btn-sm">Sair</a>
             </div>
         </div>
     </nav>
