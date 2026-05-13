@@ -1,9 +1,8 @@
 <?php
 session_start();
-if(!isset($_SESSION["Usuario_logado"])) {
-    header("location:../../login.php");
-    exit;
-}
+include("../conexao.php");
+auth_require();
+
 
 $url = isset($_GET["url"]) ? $_GET["url"] : "";
 $titulo = isset($_GET["titulo"]) ? $_GET["titulo"] : "Video";
@@ -35,7 +34,7 @@ if($url != "" && !file_exists($url)) {
     <main class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h4 class="mb-0"><?php echo htmlspecialchars($titulo); ?></h4>
-            <a href="dashboardusuario.php" class="btn btn-outline-light btn-sm">Voltar</a>
+            <a href="dashboard.php" class="btn btn-outline-light btn-sm">Voltar</a>
         </div>
 
         <?php if($url != ""): ?>

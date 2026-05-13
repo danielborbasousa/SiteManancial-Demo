@@ -149,10 +149,8 @@ VALUES
 
 INSERT INTO ID_CONTENT (IDC_ID, IDM_ID, IDCT_TIPO, IDCT_TITULO, IDCT_DESCRICAO, IDCT_URL, IDCT_ORDEM)
 VALUES
-(1, 1, 'VIDEO', 'Aula 1', 'Boas-vindas do curso', 'video_aula1.mp4', 1),
 (1, 1, 'DOCUMENTO', 'Apostila 1', 'Material de apoio', 'apostila1.pdf', 2),
-(1, 2, 'VIDEO', 'Aula 2', 'Conteudo pratico', 'video_aula2.mp4', 1),
-(2, 3, 'VIDEO', 'Aula 1 Oracao', 'Introducao a oracao', 'video_oracao1.mp4', 1);
+(1, 2, 'DOCUMENTO', 'Guia de Pratica', 'Material de apoio pratico', 'guia_pratica.pdf', 1);
 
 INSERT INTO ID_MATRICULA (IDF_ID, IDC_ID, IDMATR_STATUS, IDMATR_PERCENTUAL)
 VALUES

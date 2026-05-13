@@ -8,7 +8,7 @@ if (!isset($_SESSION["Usuario_logado"])) {
 }
 
 if (!isset($_SESSION["Usuario_tipo"]) || $_SESSION["Usuario_tipo"] !== "admin") {
-    header("location:../fiel/dashboardusuario.php");
+    header("location:../fiel/dashboard.php");
     exit;
 }
 
@@ -119,12 +119,12 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark w-100 p-3">
         <div class="container-fluid px-4">
-            <a class="navbar-brand fw-bold d-flex align-items-center" href="../fiel/dashboardusuario.php">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="../fiel/dashboard.php">
                 <img src="../../assets/logo.png" alt="Logotipo" class="logo me-2" /> Missao Evangelica Manancial da Esperanca
             </a>
             <div class="collapse navbar-collapse show">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="../fiel/dashboardusuario.php">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../fiel/dashboard.php">Inicio</a></li>
                     <li class="nav-item"><a class="nav-link active" href="admin_conteudos.php">Admin</a></li>
                 </ul>
                 <a href="../fiel/sair.php" class="btn btn-danger btn-sm">Sair</a>
@@ -139,7 +139,7 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
                     <h1 class="mb-1">Administrar Videos</h1>
                     <p class="mb-0 text-muted">Envio, edicao e exclusao simples de conteudos</p>
                 </div>
-                <a href="../fiel/dashboardusuario.php" class="btn btn-outline-light">Voltar ao painel</a>
+                <a href="../fiel/dashboard.php" class="btn btn-outline-light">Voltar ao painel</a>
             </div>
 
             <div class="row g-3 mb-4">

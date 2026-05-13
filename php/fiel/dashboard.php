@@ -19,15 +19,6 @@ if($resultado_videos && mysqli_num_rows($resultado_videos) > 0) {
     }
 }
 
-if (count($videos) === 0 && file_exists("../../videos/Neymar.MP4")) {
-    $videos[] = array(
-        "IDCT_ID" => 0,
-        "IDCT_TITULO" => "Vídeo de teste",
-        "IDCT_DESCRICAO" => "Arquivo local para demonstração inicial",
-        "IDCT_URL" => "videos/Neymar.MP4"
-    );
-}
-
 // Estatísticas do usuário
 $usuario_nome = $_SESSION["Usuario_nome"] ?? "Usuário";
 $usuario_email = $_SESSION["Usuario_logado"] ?? "";

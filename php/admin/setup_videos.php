@@ -1,6 +1,6 @@
 <?php
 // Script de setup - adiciona vídeos ao banco de dados
-include("conexao.php");
+include("../conexao.php");
 
 // Limpar vídeos antigos
 $limpar = "DELETE FROM ID_CONTENT WHERE LOWER(IDCT_TIPO) = 'video'";

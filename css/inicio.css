@@ -1,0 +1,716 @@
+/* ==========================================
+   ESTILOS DA LANDING PAGE - MANANCIAPP
+   ========================================== */
+
+:root {
+    /* Tema Escuro (padrão) */
+    --bg-dark: #07101d;
+    --bg-light: #152238;
+    --text-main: #ffffff;
+    --text-muted: #94a3b8;
+    --card-bg: #475569;
+    --auth-bg: #1e293b;
+    --primary: #3b82f6;
+    --primary-light: #60a5fa;
+    --accent: #10b981;
+    --input-bg: #334155;
+    --border-color: rgba(96, 165, 250, 0.2);
+}
+
+/* Tema Claro */
+:root[data-theme="light"] {
+    --bg-dark: #f8fafc;
+    --bg-light: #f1f5f9;
+    --text-main: #0f172a;
+    --text-muted: #475569;
+    --card-bg: #e2e8f0;
+    --auth-bg: #ffffff;
+    --primary: #2563eb;
+    --primary-light: #3b82f6;
+    --accent: #059669;
+    --input-bg: #e2e8f0;
+    --border-color: rgba(59, 130, 246, 0.3);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-light) 100%);
+    color: var(--text-main);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* ==========================================
+   THEME TOGGLE
+   ========================================== */
+
+.theme-toggle-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.theme-toggle {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 50px;
+    height: 28px;
+    background: linear-gradient(90deg, #475569 0%, #94a3b8 100%);
+    border: 2px solid var(--primary-light);
+    border-radius: 14px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.theme-toggle::before {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.theme-toggle:checked {
+    background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%);
+}
+
+.theme-toggle:checked::before {
+    left: 26px;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+}
+
+.theme-icon {
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+/* ==========================================
+   HEADER E NAVEGAÇÃO
+   ========================================== */
+
+header {
+    background: linear-gradient(to bottom, rgba(7, 16, 29, 0.98) 0%, rgba(21, 34, 56, 0.90) 100%);
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+}
+
+:root[data-theme="light"] header {
+    background: linear-gradient(to bottom, rgba(248, 250, 252, 0.98) 0%, rgba(241, 245, 249, 0.90) 100%);
+}
+
+.header-shell {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    order: 1;
+}
+
+.header img.logo {
+    height: 54px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.header h2 {
+    font-size: 1.45rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 0.1em;
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    align-items: center;
+    order: 2;
+    flex: 1;
+    min-width: 0;
+}
+
+nav a {
+    color: var(--text-main);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    white-space: nowrap;
+}
+
+nav a:hover {
+    color: var(--primary-light);
+    background: rgba(59, 130, 246, 0.15);
+    transform: translateY(-2px);
+}
+
+nav a.nav-login {
+    background: rgba(59, 130, 246, 0.2);
+    border: 2px solid var(--primary-light);
+}
+
+nav a.nav-register {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    border: 2px solid var(--primary-light);
+    color: white;
+}
+
+nav a.nav-login:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+nav a.nav-register:hover {
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+    border-color: var(--accent);
+}
+
+.nav-login-mobile,
+.nav-register-mobile {
+    display: none;
+}
+
+/* ==========================================
+   SEÇÃO HOME (HERO)
+   ========================================== */
+
+#home {
+    padding: 3rem 1rem 4rem;
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+main {
+    max-width: 1200px;
+    width: 100%;
+}
+
+.conteudo-principal {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 3rem;
+    flex-wrap: wrap;
+}
+
+.texto {
+    flex: 1;
+    min-width: 300px;
+}
+
+.hero-image {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 300px;
+}
+
+.hero-image .logo-hero {
+    max-width: 100%;
+    height: auto;
+    max-height: 300px;
+    filter: drop-shadow(0 10px 30px rgba(96, 165, 250, 0.3));
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+.texto-um {
+    font-size: 2.8rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+.texto-dois {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    line-height: 1.8;
+}
+
+.botoes {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+}
+
+.btn-outline,
+.btn-solid {
+    padding: 0.85rem 2.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 2px solid transparent;
+    cursor: pointer;
+    text-align: center;
+    min-width: 180px;
+    justify-content: center;
+}
+
+.btn-outline {
+    border: 2px solid var(--primary-light);
+    color: var(--primary-light);
+    background: transparent;
+}
+
+.btn-outline:hover {
+    background: rgba(96, 165, 250, 0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(96, 165, 250, 0.3);
+}
+
+.btn-solid {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: white;
+    border: 2px solid var(--primary);
+}
+
+.btn-solid:hover {
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+}
+
+hr {
+    border: none;
+    border-top: 2px solid rgba(96, 165, 250, 0.2);
+    margin: 2rem 0;
+}
+
+/* ==========================================
+   SEÇÃO CURSOS
+   ========================================== */
+
+#cursos {
+    padding: 4rem 1rem;
+}
+
+.secao-cursos {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.secao-cursos h2 {
+    font-size: 2.3rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.secao-descricao {
+    text-align: center;
+    color: var(--text-muted);
+    margin-bottom: 3rem;
+    font-size: 1.1rem;
+}
+
+.grade-cursos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 2rem;
+    padding: 0 1rem;
+}
+
+.card-curso {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(96, 165, 250, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+}
+
+.curso-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.card-curso:hover .curso-img {
+    transform: scale(1.1);
+}
+
+.card-curso:hover {
+    background: rgba(96, 165, 250, 0.08);
+    border-color: var(--primary-light);
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(96, 165, 250, 0.25);
+}
+
+.nome-curso {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.curso-desc {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    text-align: center;
+    margin: 0.5rem 1rem 1rem;
+}
+
+/* ==========================================
+   SEÇÃO SOBRE
+   ========================================== */
+
+#sobre {
+    padding: 4rem 1rem;
+}
+
+.secao-sobre {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.sobre-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    padding: 0 1rem;
+}
+
+.sobre-texto h2 {
+    font-size: 2.3rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1.5rem;
+}
+
+.sobre-texto .destaque {
+    font-size: 1.4rem;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.sobre-texto p {
+    color: var(--text-muted);
+    margin-bottom: 1.2rem;
+    line-height: 1.8;
+}
+
+.sobre-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 1.5rem;
+    background: rgba(96, 165, 250, 0.1);
+    border: 1px solid rgba(96, 165, 250, 0.2);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+    background: rgba(96, 165, 250, 0.15);
+    border-color: var(--primary-light);
+}
+
+.stat-item strong {
+    display: block;
+    font-size: 2rem;
+    color: var(--primary-light);
+    margin-bottom: 0.5rem;
+}
+
+.stat-item span {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.sobre-imagens {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.img-sobre {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(96, 165, 250, 0.2);
+}
+
+.img-sobre:hover {
+    transform: scale(1.05);
+    border-color: var(--primary-light);
+    box-shadow: 0 10px 30px rgba(96, 165, 250, 0.3);
+}
+
+/* ==========================================
+   FOOTER
+   ========================================== */
+
+footer {
+    background: rgba(7, 16, 29, 0.98);
+    color: var(--text-muted);
+    text-align: center;
+    padding: 3rem 1rem;
+    border-top: 1px solid rgba(96, 165, 250, 0.2);
+    margin-top: 4rem;
+}
+
+footer p {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+/* ==========================================
+   RESPONSIVIDADE
+   ========================================== */
+
+@media (max-width: 1024px) {
+    nav {
+        gap: 0.6rem;
+    }
+
+    nav a {
+        padding: 0.5rem 0.9rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-shell {
+        flex-wrap: nowrap;
+    }
+
+    .header {
+        order: 1;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .header h2 {
+        font-size: 1.2rem;
+        display: none;
+    }
+
+    .header img.logo {
+        height: 48px;
+    }
+
+    nav {
+        order: 2;
+        flex: 0 1 auto;
+        gap: 0.5rem;
+        justify-content: flex-end;
+    }
+
+    nav a {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.85rem;
+    }
+
+    nav a.nav-login {
+        display: none;
+    }
+
+    nav a.nav-register {
+        display: none;
+    }
+
+    .nav-login-mobile,
+    .nav-register-mobile {
+        display: inline-flex;
+    }
+
+    .theme-toggle {
+        width: 45px;
+        height: 25px;
+    }
+
+    .theme-toggle::before {
+        width: 18px;
+        height: 18px;
+    }
+
+    .theme-toggle:checked::before {
+        left: 23px;
+    }
+
+    .conteudo-principal {
+        flex-direction: column;
+    }
+
+    .texto-um {
+        font-size: 2rem;
+    }
+
+    .texto-dois {
+        font-size: 1rem;
+    }
+
+    .botoes {
+        flex-direction: column;
+    }
+
+    .btn-outline,
+    .btn-solid {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .secao-cursos h2,
+    .sobre-texto h2 {
+        font-size: 1.8rem;
+    }
+
+    .grade-cursos {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+    }
+
+    .sobre-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .sobre-imagens {
+        grid-template-columns: 1fr;
+    }
+
+    .sobre-stats {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .header h2 {
+        font-size: 1.2rem;
+    }
+
+    .header img.logo {
+        height: 50px;
+    }
+
+    nav {
+        gap: 0.5rem;
+        justify-content: space-between;
+    }
+
+    nav a {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+    }
+
+    .nav-login-mobile,
+    .nav-register-mobile {
+        padding: 0.45rem 0.7rem;
+    }
+
+    .texto-um {
+        font-size: 1.5rem;
+    }
+
+    .texto-dois {
+        font-size: 0.95rem;
+    }
+
+    .secao-cursos h2,
+    .sobre-texto h2 {
+        font-size: 1.4rem;
+    }
+
+    .grade-cursos {
+        grid-template-columns: 1fr;
+    }
+
+    .card-curso {
+        min-height: 250px;
+    }
+
+    .btn-outline,
+    .btn-solid {
+        padding: 0.7rem 1.5rem;
+        font-size: 0.95rem;
+    }
+}
+

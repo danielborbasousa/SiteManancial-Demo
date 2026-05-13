@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missão Evangélica Manancial da Esperança - Plataforma de Crescimento Espiritual</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/inicio.css">
+    <script src="js/theme.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: all 0.3s ease;
+            line-height: 1.6;
+        }
+
+        /* NAVBAR OPACA */
+        header {
+            background: rgba(7, 16, 29, 0.98) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid rgba(96, 165, 250, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-shell {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header img {
+            height: 50px;
+            filter: drop-shadow(0 2px 4px rgba(96, 165, 250, 0.3));
+        }
+
+        .header h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+            margin: 0;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        nav a:hover {
+            color: #60a5fa;
+            transform: translateY(-2px);
+        }
+
+        nav .nav-login, nav .nav-register {
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        nav .nav-login {
+            border: 2px solid #60a5fa;
+            color: #60a5fa;
+        }
+
+        nav .nav-login:hover {
+            background: rgba(96, 165, 250, 0.2);
+            color: #60a5fa;
+        }
+
+        nav .nav-register {
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            color: white;
+        }
+
+        nav .nav-register:hover {
+            opacity: 0.9;
+            box-shadow: 0 8px 20px rgba(96, 165, 250, 0.4);
+        }
+
+        /* HERO SECTION */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(7,16,29,0.9) 0%, rgba(21,34,56,0.8) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(96,165,250,0.1) 0%, transparent 70%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(30px, 30px); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 800px;
+            padding: 0 2rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 10vw, 4.5rem);
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .hero .subtitle {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            color: white;
+            box-shadow: 0 10px 30px rgba(96, 165, 250, 0.3);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 15px 40px rgba(96, 165, 250, 0.5);
+            transform: translateY(-3px);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid #60a5fa;
+            color: #60a5fa;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(96, 165, 250, 0.1);
+            color: #60a5fa;
+            text-decoration: none;
+        }
+
+        /* SEÇÕES */
+        .section {
+            padding: 5rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+        }
+
+        /* CARDS */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .feature-card {
+            background: var(--bg-light);
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #60a5fa, #a78bfa, #ec4899);
+        }
+
+        .feature-card:hover {
+            background: rgba(96, 165, 250, 0.05);
+            border-color: rgba(96, 165, 250, 0.4);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(96, 165, 250, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #60a5fa;
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            line-height: 1.8;
+        }
+
+        /* SECTION SOBRE */
+        #sobre {
+            background: rgba(96, 165, 250, 0.05);
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .about-text h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .about-text p {
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+            line-height: 1.9;
+        }
+
+        .about-list {
+            list-style: none;
+            margin: 2rem 0;
+        }
+
+        .about-list li {
+            padding: 0.8rem 0;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .about-list i {
+            color: #10b981;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .header-shell {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            nav {
+                justify-content: center;
+                gap: 1rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        /* FOOTER */
+        footer {
+            background: rgba(7, 16, 29, 0.95);
+            border-top: 1px solid rgba(96, 165, 250, 0.2);
+            padding: 3rem 2rem 1rem;
+            margin-top: 5rem;
+            color: var(--text-muted);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            color: var(--text-main);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .footer-section p, .footer-section a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a:hover {
+            color: #60a5fa;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(96, 165, 250, 0.1);
+            padding-top: 2rem;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .theme-toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-shell">
+            <div class="header">
+                <img src="assets/logo.png" alt="Logo Missão Manancial">
+                <h2>Missão Manancial</h2>
+            </div>
+            <nav>
+                <a href="#home"><i class="fas fa-home"></i> Home</a>
+                <a href="#cursos"><i class="fas fa-book"></i> Cursos</a>
+                <a href="#sobre"><i class="fas fa-heart"></i> Sobre</a>
+                <a href="/SiteManancial-Demo/login.php" class="nav-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+                <a href="/SiteManancial-Demo/php/fiel/register.php" class="nav-register"><i class="fas fa-user-plus"></i> Criar Conta</a>
+                <div class="theme-toggle-container">
+                    <i class="fas fa-moon theme-icon" style="font-size: 1rem;"></i>
+                    <input type="checkbox" id="theme-toggle" class="theme-toggle" aria-label="Alternar tema" style="width: 40px; height: 22px;">
+                    <i class="fas fa-sun theme-icon" style="font-size: 1rem;"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <i class="fas fa-cross" style="font-size: 4rem; color: #60a5fa; margin-bottom: 1rem; opacity: 0.8;"></i>
+            <h1>Crescimento Espiritual em Comunidade</h1>
+            <p class="subtitle">Plataforma dedicada ao fortalecimento da fé e compartilhamento de conhecimento espiritual</p>
+            <div class="hero-buttons">
+                <a href="/SiteManancial-Demo/php/fiel/register.php" class="btn-primary">
+                    <i class="fas fa-paper-plane"></i> Comece Agora
+                </a>
+                <a href="#sobre" class="btn-secondary">
+                    <i class="fas fa-info-circle"></i> Saiba Mais
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO CURSOS -->
+    <section id="cursos" class="section">
+        <h2 class="section-title"><i class="fas fa-book-open me-2" style="color: #60a5fa;"></i>Cursos Disponíveis</h2>
+        <p class="section-subtitle">Explore nossos conteúdos educacionais desenvolvidos para fortalecer sua jornada espiritual</p>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <i class="fas fa-prayer-hands feature-icon"></i>
+                <h3>Fundamentos da Fé</h3>
+                <p>Aprenda os princípios essenciais da Bíblia e desenvolva uma base sólida para sua vida espiritual com ensinamentos práticos.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-heart-hands feature-icon"></i>
+                <h3>Vida em Comunidade</h3>
+                <p>Descubra como viver em harmonia e crescimento conjunto, fortalecendo os laços fraternais e a missão coletiva.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-bible feature-icon"></i>
+                <h3>Estudo Bíblico Aprofundado</h3>
+                <p>Mergulhe em análises detalhadas das escrituras, entendendo contextos históricos e aplicações práticas para hoje.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-hand-holding-heart feature-icon"></i>
+                <h3>Discipulado Cristão</h3>
+                <p>Desenvolva-se como discípulo de Cristo através de mentorias e estudos que transformam vidas e comunidades.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-light-bulb feature-icon"></i>
+                <h3>Liderança Espiritual</h3>
+                <p>Prepare-se para liderar com sabedoria e integridade, impactando positivamente sua esfera de influência.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-people-group feature-icon"></i>
+                <h3>Ministérios e Serviço</h3>
+                <p>Encontre seu chamado e aprenda como servir aos outros com dedicação, amor e excelência em diversas áreas.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEÇÃO SOBRE -->
+    <section id="sobre" class="section">
+        <div class="about-content">
+            <div>
+                <div style="width: 100%; height: 400px; background: linear-gradient(135deg, rgba(96,165,250,0.2) 0%, rgba(167,139,250,0.2) 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(96,165,250,0.2);">
+                    <i class="fas fa-church" style="font-size: 150px; color: #60a5fa; opacity: 0.3;"></i>
+                </div>
+            </div>
+            <div class="about-text">
+                <h2 class="section-title">Sobre Missão Manancial</h2>
+                <p>A Missão Evangélica Manancial da Esperança é uma comunidade dedicada ao fortalecimento da fé cristã, promovendo crescimento espiritual através de ensinamentos bíblicos sólidos, comunhão autêntica e serviço comunitário.</p>
+                <p>Nossa plataforma digital foi desenvolvida para aproximar nossos membros, facilitar o acesso a conteúdo educacional de qualidade e fortalecer os laços que nos unem como corpo de Cristo.</p>
+                
+                <h4 style="margin-top: 2rem; color: var(--text-main); font-weight: 700;">Nossos Valores</h4>
+                <ul class="about-list">
+                    <li><i class="fas fa-check-circle"></i> <strong>Fé Bíblica:</strong> Fundamentados nas escrituras sagradas</li>
+                    <li><i class="fas fa-check-circle"></i> <strong>Comunidade:</strong> Crescimento conjunto e apoio mútuo</li>
+                    <li><i class="fas fa-check-circle"></i> <strong>Serviço:</strong> Dedicação ao próximo e à missão</li>
+                    <li><i class="fas fa-check-circle"></i> <strong>Excelência:</strong> Qualidade em tudo que fazemos</li>
+                    <li><i class="fas fa-check-circle"></i> <strong>Inclusão:</strong> Bem-vindo de todas as pessoas</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4><i class="fas fa-church me-2"></i>Missão Manancial</h4>
+                <p>Plataforma de crescimento espiritual dedicada ao fortalecimento da fé cristã em comunidade.</p>
+            </div>
+            <div class="footer-section">
+                <h4><i class="fas fa-link me-2"></i>Links Rápidos</h4>
+                <a href="#home">Home</a>
+                <a href="#cursos">Cursos</a>
+                <a href="#sobre">Sobre</a>
+                <a href="/SiteManancial-Demo/login.php">Login</a>
+                <a href="/SiteManancial-Demo/php/fiel/register.php">Criar Conta</a>
+            </div>
+            <div class="footer-section">
+                <h4><i class="fas fa-hands-praying me-2"></i>Contato</h4>
+                <p><i class="fas fa-phone me-2"></i> +55 (11) 9999-9999</p>
+                <p><i class="fas fa-envelope me-2"></i> contato@manancial.com.br</p>
+                <p><i class="fas fa-map-marker-alt me-2"></i> São Paulo, SP</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024-2026 Missão Evangélica Manancial da Esperança. Todos os direitos reservados. | Desenvolvido com <i class="fas fa-heart" style="color: #ec4899;"></i></p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,14 +1,16 @@
 <?php
+$painel_link = "dashboard.php";
 session_start();
+include("../conexao.php");
+auth_require();
+
 if(!isset($_SESSION["Usuario_logado"])) {
-    header("location:login.php");
+    header("location:../../login.php");
     exit;
 }
-
-$painel_link = "dashboardusuario.php";
 $titulo_nav = "Missao Evangelica Manancial da Esperança";
 if(isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "admin") {
-    $painel_link = "dashboardadmin.php";
+    $painel_link = "../admin/admin_conteudos.php";
     $titulo_nav = "Painel Administrativo";
 }
 

@@ -8,7 +8,7 @@ if (!isset($_SESSION["Usuario_logado"])) {
 }
 
 if (!isset($_SESSION["Usuario_tipo"]) || $_SESSION["Usuario_tipo"] !== "admin") {
-    header("location:../fiel/dashboardusuario.php");
+    header("location:../fiel/dashboard.php");
     exit;
 }
 
@@ -115,7 +115,7 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark w-100 p-3">
         <div class="container-fluid px-4">
-            <a class="navbar-brand fw-bold d-flex align-items-center" href="../fiel/dashboardusuario.php">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="../fiel/dashboard.php">
                 <img src="../../assets/logo.png" alt="Logotipo" class="logo me-2" /> Missao Evangelica Manancial da Esperanca
             </a>
         </div>

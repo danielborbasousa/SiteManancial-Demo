@@ -36,8 +36,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     auth_store_session($conn);
 
-    // Sempre redireciona para o dashboard do fiel (removido acesso direto ao painel Admin)
-    header("Location: php/fiel/dashboard.php");
+    // Redireciona para o dashboard apropriado baseado no tipo de usuário
+    if ($eh_admin) {
+        header("Location: php/admin/dashboard.php");
+    } else {
+        header("Location: php/fiel/dashboard.php");
+    }
     exit;
 }
 ?>
@@ -52,7 +56,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="js/theme.js"></script>
 </head>
-<body class="d-flex align-items-center justify-content-center vh-100">
+<body class="auth-page">
+
+    <a href="<?php echo $base_url; ?>index.html" class="auth-back-link">
+        <i class="fas fa-arrow-left"></i>
+        Voltar para a página inicial
+    </a>
 
     <div class="position-absolute top-0 end-0 p-3" style="z-index: 50;">
         <div class="theme-toggle-container">
@@ -62,23 +71,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 
-    <div class="auth-container text-center">
-        <a href="<?php echo $base_url; ?>index.html" class="d-inline-block text-decoration-none mb-4">
-            <img src="assets/logo.png" alt="Logotipo" class="logo" style="height: 80px; width: auto;" />
-        </a>
-        <h2>Bem-vindo</h2>
-        <p>Acesse sua conta para continuar</p>
-        
+    <section class="auth-panel auth-panel--compact auth-panel--heroless">
+        <div class="auth-brand-row">
+            <img src="assets/logo.png" alt="Logotipo" class="logo" />
+            <div class="auth-brand-copy">
+                <h2>Bem-vindo</h2>
+                <p>Acesse sua conta para continuar.</p>
+            </div>
+        </div>
+
+        <div class="auth-compact-divider"></div>
+
         <?php if ($erro != "") { 
-            echo "<div class='error-message'><i class='fas fa-exclamation-circle'></i> " . htmlspecialchars($erro) . "</div>"; 
+            echo "<div class='error-message mb-3'><i class='fas fa-exclamation-circle'></i> " . htmlspecialchars($erro) . "</div>"; 
         } ?>
-        
-        <form action="" method="POST">
-            <div class="mb-3">
+
+        <form action="" method="POST" class="auth-form-grid">
+            <div>
                 <input type="email" name="IDF_EMAIL" class="form-control custom-input" placeholder="Seu e-mail" autocomplete="email" maxlength="100" required>
             </div>
 
-            <div class="mb-2">
+            <div>
                 <div class="input-group">
                     <input type="password" name="IDF_SENHA" id="loginPasswordInput" class="form-control custom-input" placeholder="Sua senha" autocomplete="current-password" maxlength="100" required>
                     <button class="btn btn-outline-light" type="button" id="toggleLoginPassword" style="border: 2px solid var(--border-color); color: var(--text-main);">
@@ -87,26 +100,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
             </div>
             
-            <div class="password-help mb-4">
+            <div class="password-help auth-note">
                 <i class="fas fa-info-circle"></i> 
-                Use suas credenciais do <strong>banco de dados da Missão Manancial da Esperança</strong>. 
-                Se não tem acesso, converse com um administrador.
+                Use suas credenciais do <strong>banco de dados da Missão Manancial da Esperança</strong>.
             </div>
 
-            <button type="submit" class="btn btn-light w-100 py-2 fw-bold mb-4">
-                <i class="fas fa-sign-in-alt"></i> Entrar
-            </button>
+            <div class="auth-form-actions">
+                <button type="submit" class="btn auth-submit w-100 py-2">
+                    <i class="fas fa-sign-in-alt me-2"></i> Entrar
+                </button>
 
-            <hr class="my-3" style="border-color: var(--border-color);">
-
-            <p class="text-center mb-2">
-                Novo aqui? <a href="<?php echo $base_url; ?>php/fiel/register.php" class="auth-link">Criar uma conta</a>
-            </p>
-            <p class="text-center mb-0">
-                <a href="<?php echo $base_url; ?>index.html" class="auth-link"><i class="fas fa-arrow-left"></i> Voltar para a página inicial</a>
-            </p>
+                <p class="text-center mb-1">
+                    Novo aqui? <a href="<?php echo $base_url; ?>php/fiel/register.php" class="auth-link">Criar uma conta</a>
+                </p>
+            </div>
         </form>
-    </div>
+    </section>
 
 </body>
 <script>

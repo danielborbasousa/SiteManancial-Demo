@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("conexao.php");
+include("../conexao.php");
 
 $mensagem = "";
 
@@ -91,61 +91,82 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Criar Conta - Missao Evangelica</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-<body class="d-flex align-items-center justify-content-center vh-100">
+<body class="auth-page">
 
-    <div class="auth-container text-center">
-        <img src="../../assets/logo.png" alt="Logotipo" class="logo mb-3" />
-        <h2 class="mb-4 fw-bold">Criar Conta</h2>
+    <a href="../../index.html" class="auth-back-link">
+        <i class="fas fa-arrow-left"></i>
+        Voltar para a página inicial
+    </a>
+
+    <section class="auth-panel auth-panel--wide auth-panel--heroless">
+        <div class="auth-brand-row">
+            <img src="../../assets/logo.png" alt="Logotipo" class="logo" />
+            <div class="auth-brand-copy">
+                <h2>Criar Conta</h2>
+                <p>Preencha os dados abaixo para acessar a plataforma.</p>
+            </div>
+        </div>
+
+        <div class="auth-compact-divider"></div>
 
         <?php if ($mensagem != "") {
             $cor_mensagem = "#38bdf8";
             if (strpos($mensagem, "invalido") !== false || strpos($mensagem, "nao pode") !== false || strpos($mensagem, "Erro") !== false) {
                 $cor_mensagem = "#ff6b6b";
             }
-            echo "<p style='color:" . $cor_mensagem . ";'>" . $mensagem . "</p>";
+            echo "<div class='mb-3' style='color:" . $cor_mensagem . "; font-weight:600;'>" . htmlspecialchars($mensagem) . "</div>";
         } ?>
 
-        <form action="" method="POST">
-            <div class="mb-3">
-                <input type="text" name="IDF_NOME" class="form-control custom-input" placeholder="Nome completo" pattern="[A-Za-zÀ-ÿ\s]+" title="Use apenas letras e espacos" minlength="3" maxlength="100" required>
+        <form action="" method="POST" class="auth-form-grid">
+            <div class="auth-form-grid auth-form-grid--two">
+                <div>
+                    <input type="text" name="IDF_NOME" class="form-control custom-input" placeholder="Nome completo" pattern="[A-Za-zÀ-ÿ\s]+" title="Use apenas letras e espacos" minlength="3" maxlength="100" required>
+                </div>
+
+                <div>
+                    <input type="email" name="IDF_EMAIL" class="form-control custom-input" placeholder="Endereco de e-mail" maxlength="100" required>
+                </div>
             </div>
 
-            <div class="mb-3">
-                <input type="email" name="IDF_EMAIL" class="form-control custom-input" placeholder="Endereco de e-mail" maxlength="100" required>
+            <div class="auth-form-grid auth-form-grid--two">
+                <div>
+                    <input type="text" id="IDF_TELEFONE" name="IDF_TELEFONE" class="form-control custom-input" placeholder="(11) 99999-9999" pattern="\([0-9]{2}\) [0-9]{4,5}-[0-9]{4}" title="Use o formato (11) 99999-9999" inputmode="numeric" minlength="14" maxlength="15" required>
+                </div>
+
+                <div>
+                    <input type="text" id="IDF_CPF" name="IDF_CPF" class="form-control custom-input" placeholder="000.000.000-00" pattern="[0-9]{3}\.[0-9]{3}\.[0-9]{3}-[0-9]{2}" title="Use o formato 000.000.000-00" inputmode="numeric" minlength="14" maxlength="14" required>
+                </div>
             </div>
 
-            <div class="mb-3">
-                <input type="text" id="IDF_TELEFONE" name="IDF_TELEFONE" class="form-control custom-input" placeholder="(11) 99999-9999" pattern="\([0-9]{2}\) [0-9]{4,5}-[0-9]{4}" title="Use o formato (11) 99999-9999" inputmode="numeric" minlength="14" maxlength="15" required>
+            <div class="auth-form-grid auth-form-grid--two">
+                <div>
+                    <input type="text" name="IDF_FILIAL" class="form-control custom-input" placeholder="Filial" minlength="2" maxlength="100" required>
+                </div>
+
+                <div>
+                    <input type="text" name="IDF_FUNCAO" class="form-control custom-input" placeholder="Função" minlength="2" maxlength="50" required>
+                </div>
             </div>
 
-            <div class="mb-3">
-                <input type="text" id="IDF_CPF" name="IDF_CPF" class="form-control custom-input" placeholder="000.000.000-00" pattern="[0-9]{3}\.[0-9]{3}\.[0-9]{3}-[0-9]{2}" title="Use o formato 000.000.000-00" inputmode="numeric" minlength="14" maxlength="14" required>
-            </div>
-
-            <div class="mb-3">
-                <input type="text" name="IDF_FILIAL" class="form-control custom-input" placeholder="Filial" minlength="2" maxlength="100" required>
-            </div>
-
-            <div class="mb-3">
-                <input type="text" name="IDF_FUNCAO" class="form-control custom-input" placeholder="Função" minlength="2" maxlength="50" required>
-            </div>
-
-            <div class="mb-3">
+            <div>
                 <input type="text" name="IDF_ENDERECO" class="form-control custom-input" placeholder="Endereco" minlength="5" maxlength="200" required>
             </div>
 
-            <div class="mb-4">
+            <div>
                 <input type="password" name="IDF_SENHA" class="form-control custom-input" placeholder="Criar senha" minlength="6" maxlength="100" required>
             </div>
 
-            <button type="submit" class="btn btn-light w-100 py-2 fw-bold mb-4 d-block mx-auto">Cadastrar</button>
+            <div class="auth-form-actions">
+                <button type="submit" class="btn auth-submit w-100 py-2">Cadastrar</button>
 
-            <p class="text-center text-light mb-0">
-                Ja tem conta? <a href="../../login.php" class="auth-link">Entrar.</a>
-            </p>
+                <p class="text-center text-light mb-0">
+                    Já tem conta? <a href="../../login.php" class="auth-link">Entrar.</a>
+                </p>
+            </div>
         </form>
-    </div>
+    </section>
 
     <script>
         function mascaraCPF(valor) {

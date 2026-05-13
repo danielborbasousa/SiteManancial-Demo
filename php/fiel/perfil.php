@@ -1,6 +1,7 @@
 <?php
 session_start();
-include("conexao.php");
+include("../conexao.php");
+auth_require();
 
 if(!isset($_SESSION["Usuario_logado"])) {
     header("location:login.php");
@@ -31,12 +32,12 @@ $usuario = mysqli_fetch_assoc($resultado);
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark w-100 p-3">
         <div class="container-fluid px-4">
-            <a class="navbar-brand fw-bold d-flex align-items-center" href="dashboardusuario.php">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="dashboard.php">
                 <img src="../assets/logo.png" alt="Logotipo" class="logo me-2" /> Missao Evangelica Manancial da Esperança
             </a>
             <div class="collapse navbar-collapse show">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="dashboardusuario.php">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="dashboard.php">Inicio</a></li>
                     <li class="nav-item"><a class="nav-link" href="sobre.php">Sobre</a></li>
                     <li class="nav-item"><a class="nav-link" href="contato.php">Contato</a></li>
                 </ul>
@@ -116,7 +117,7 @@ $usuario = mysqli_fetch_assoc($resultado);
                 </div>
             <?php } ?>
 
-            <a href="dashboardusuario.php" class="btn btn-light">Voltar para o painel</a>
+            <a href="dashboard.php" class="btn btn-light">Voltar para o painel</a>
         </div>
     </main>
 </body>
