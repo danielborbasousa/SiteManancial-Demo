@@ -1,62 +1,110 @@
 # SiteManancial-Demo
 
-Plataforma em PHP para a Missão Evangélica Manancial da Esperança, com landing page pública, cadastro, login, painel do usuário, player de vídeo e área administrativa de conteúdos.
+Sistema web em PHP para a Missão Evangélica Manancial da Esperança. O projeto reúne landing page pública, cadastro, login, fluxo de aprovação de usuários, painel do fiel, área administrativa e reprodução de vídeos locais.
+
+## Visão geral
+
+O projeto foi estruturado para funcionar com dois perfis de banco de dados:
+
+- `simples`: versão mais direta, ideal para testes, demonstração e implantação rápida.
+- `robusto`: versão completa, com relacionamentos mais consistentes, tipos mais restritos e apoio a auditoria.
+
+A aplicação identifica o modo ativo em `php/conexao.php` e adapta algumas consultas conforme a estrutura do banco.
 
 ## Fluxo principal
-1. Acesse a landing em `index.html`.
-2. Vá para `login.php` ou `php/fiel/register.php`.
-3. Após autenticação, o usuário entra em `php/fiel/dashboard.php`.
-4. O admin entra no mesmo fluxo e acessa `php/admin/admin_conteudos.php` para gerenciar vídeos e acompanhar usuários.
+
+1. O visitante acessa a página inicial em `index.html`.
+2. O novo usuário se cadastra em `php/fiel/register.php`.
+3. O sistema grava o perfil com status `pendente` para aprovação do administrador.
+4. O admin avalia as solicitações em `php/admin/admin_aprovar_usuarios.php`.
+5. Depois de aprovado, o usuário faz login em `login.php` e acessa `php/fiel/dashboard.php`.
+6. O administrador usa o painel em `php/admin/` para gerenciar conteúdos, permissões, usuários e aprovações.
+
+## Funcionalidades atuais
+
+- Landing page pública com acesso ao login e cadastro.
+- Cadastro de fiéis com validação de nome, e-mail, CPF, telefone e confirmação de senha.
+- Autenticação com bloqueio de contas pendentes ou negadas.
+- Aprovação e recusa de novos cadastros pelo admin.
+- Área do fiel com dashboard, perfil, notificações, busca e lista de vídeos.
+- Área administrativa para conteúdos, aprovação de usuários, permissões e visão do usuário.
+- Tema claro/escuro com persistência no navegador.
+- Vídeos locais exibidos diretamente a partir da pasta `videos/`.
 
 ## Estrutura principal
-- `index.html`: landing page pública.
-- `login.php`: autenticação e entrada da aplicação.
-- `php/fiel/`: área do usuário.
-- `php/admin/`: área administrativa de conteúdos.
-- `php/conexao.php`: conexão com o banco, `MODO_BANCO` e guard de sessão.
-- `videos/`: arquivos de vídeo exibidos no player.
-- `docs/`: regras, requisitos e materiais de apoio.
 
-## Como rodar
+- `index.html`: entrada pública do site.
+- `login.php`: autenticação e redirecionamento por perfil.
+- `php/conexao.php`: conexão com o banco, modo do banco e utilitários de sessão.
+- `php/fiel/`: telas do usuário final.
+- `php/admin/`: telas administrativas.
+- `css/`: estilos da interface.
+- `js/`: comportamento de tema e interações.
+- `database/`: scripts SQL do banco simples e do banco robusto.
+- `docs/`: documentação do projeto, regras e modelagem.
+- `videos/`: arquivos de mídia usados no player.
+
+## Banco de dados
+
+### Banco simples
+
+Arquivo: `database/Banco Igreja.txt`
+
+Versão enxuta para subir rapidamente o sistema. Mantém a base funcional do cadastro, login, aprovação e conteúdos, com estrutura mais simples para quem quer começar sem complexidade extra.
+
+### Banco robusto
+
+Arquivo: `database/Banco Igreja Robusto.sql`
+
+Versão completa, com estrutura mais rígida, chaves estrangeiras, índices, restrições e tabelas adicionais para evolução do sistema.
+
+### Observação importante
+
+Algumas telas possuem consultas condicionais para funcionar nos dois bancos. Se o modo do banco for alterado, confira também as rotas administrativas e o fluxo de aprovação de usuários.
+
+## Como executar localmente
+
 1. Inicie o Apache e o MySQL no XAMPP.
-2. Importe o banco desejado:
-   - `database/Banco Igreja.txt` para a versão básica.
-   - `database/Banco Igreja Robusto.sql` para a versão robusta.
-3. Ajuste `php/conexao.php` se precisar trocar usuário, senha ou o modo do banco.
-4. Abra `http://localhost/SiteManancial-Demo/index.html`.
+2. Importe um dos bancos disponíveis em `database/`.
+3. Ajuste as credenciais em `php/conexao.php` se necessário.
+4. Defina o modo do banco no arquivo `php/conexao.php`.
+5. Acesse `http://localhost/SiteManancial-Demo/index.html`.
 
-## Modo simples e modo robusto
-No arquivo `php/conexao.php`, altere:
+## Configuração do modo do banco
+
+No arquivo `php/conexao.php`, o modo é controlado por uma constante semelhante a:
 
 ```php
 define('MODO_BANCO', 'simples');
 ```
 
-- `simples`: usa a estrutura mais básica, indicada para apresentação e testes rápidos.
-- `robusto`: usa o modelo com hash de senha, relacionamentos e organização melhorada.
+Use `simples` para a versão básica e `robusto` para a estrutura completa.
 
-## Regras importantes
-- Nome não aceita números.
-- E-mail precisa ser válido.
+## Contas de teste
+
+- Admin: `admin@igreja.com` / `123456`
+- Usuário: `joao@email.com` / `123456`
+- Usuário: `maria@email.com` / `123456`
+
+## Regras e validações
+
+- O nome não aceita números.
+- O e-mail precisa ser válido.
 - CPF e telefone têm validação e máscara.
-- Cadastro exige confirmação de senha e aceite dos termos.
-- Perfil do usuário é somente leitura.
+- O cadastro exige confirmação de senha e aceite dos termos.
+- O perfil do usuário é somente leitura.
 - A sessão expira por inatividade após 1 hora.
-- Vídeos locais devem ficar em `videos/`.
+- Novos cadastros entram como `pendente` até a aprovação do admin.
 
-## Login de teste
-- `joao@email.com` / `123456`
-- `maria@email.com` / `123456`
+## Documentação complementar
 
-## Observações
-- O vídeo inicial de demonstração é `videos/Neymar.MP4` quando não houver conteúdo no banco.
-- O admin pode enviar, listar, editar e excluir conteúdos pela área administrativa.
-- Os links de volta foram ajustados para evitar telas mortas no fluxo do usuário.
+- `docs/regras_de_negocio_requisitos.md`: regras e requisitos do sistema.
+- `docs/dicionario_de_dados.md`: descrição dos campos do banco.
+- `docs/diagrama_relacional.mmd`: diagrama do relacionamento entre tabelas.
+- `docs/melhorias_propostas.md`: evolução planejada do projeto.
 
-## Guia rápido para subir no GitHub
+## Observações finais
 
-- Objetivo: organizar o repositório para facilitar revisão, deploy e colaboração.
-- Não versionar arquivos grandes (vídeos) — usar armazenamento externo e referenciar em `videos/` apenas como local de desenvolvimento.
-- Sugestão de pastas para o repositório (explicação curta): veja `REPO_STRUCTURE.md`.
-
-Se for reorganizar os arquivos (mover `php/` para `src/php/`, por exemplo), crie um branch `repo-cleanup` e atualize os includes/path relativos antes de abrir o PR.
+- O vídeo inicial de demonstração é usado quando não há conteúdo cadastrado.
+- Os arquivos de vídeo devem ficar em `videos/` durante o desenvolvimento.
+- Antes de reorganizar pastas ou alterar caminhos, revise os includes e os links relativos da aplicação.
