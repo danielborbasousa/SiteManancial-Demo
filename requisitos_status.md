@@ -10,10 +10,10 @@ RF05 | Presente | Aprovação manual via admin (`php/admin/admin_aprovar_usuario
 RF06 | Presente | Fila de solicitações visível no admin.
 RF07 | Parcial | Admin visualiza dados para validação; sem integração automática com registros da igreja.
 RF08 | Presente | Bloqueio de login para `pendente` e `negado` implementado.
-RF09 | Ausente | Não há mensagem automática clara após cadastro com o texto exigido.
+RF09 | Presente | Mensagem clara exibida após cadastro via fluxo de login (`php/fiel/register.php` → `login.php`).
 RF10 | Presente | Notificação de aprovação criada em tabela de notificações.
 RF11 | Presente | Notificação de recusa criada com motivo possível.
-RF12 | Ausente | Não foram encontradas rotinas de envio de e‑mail (SMTP/`mail()`).
+RF12 | Presente | Rotina de envio de e-mail implementada no fluxo de aprovação/recusa (`php/conexao.php` + `php/admin/admin_aprovar_usuarios.php`).
 RF13 | Presente | Dashboard do fiel existe (`php/fiel/`).
 RF14 | Presente | Perfil do fiel simplificado (somente leitura).
 RF15 | Presente | Perfil somente leitura (usuário não edita diretamente).

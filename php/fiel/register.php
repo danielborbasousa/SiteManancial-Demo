@@ -74,6 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         if (mysqli_query($conn, $sql)) {
+            $_SESSION['cadastro_sucesso'] = 'Sua solicitação foi recebida e está aguardando aprovação.';
             header("location:../../login.php");
             exit;
         } else {

@@ -16,7 +16,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $erro = "Requisição inválida.";
     } else {
         // Buscar dados do usuário
-        $sql_user = "SELECT IDF_ID, IDF_NOME, IDF_EMAIL FROM ID_FIEL WHERE IDF_ID = $usuario_id LIMIT 1";
+        $sql_user = "
+            SELECT 
+                f.IDF_ID, f.IDF_NOME, f.IDF_EMAIL, f.IDF_TELEFONE, f.IDF_CPF,
+                f.IDF_FUNCAO, f.IDF_ENDERECO, f.IDF_STATUS, f.IDF_ATIVO,
+                f.IDF_CRIADO_EM, COALESCE(fl.IDL_NOME, f.IDF_FILIAL, 'N/A') AS IDF_FILIAL_EXIBICAO
+            FROM ID_FIEL f
+            LEFT JOIN ID_FILIAL fl ON fl.IDL_ID = f.IDF_FILIAL_ID
+            WHERE f.IDF_ID = $usuario_id
+            LIMIT 1
+        ";
         $res_user = mysqli_query($conn, $sql_user);
         
         if ($res_user && mysqli_num_rows($res_user) > 0) {
@@ -49,12 +58,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
                 $sql_notif = "INSERT INTO ID_NOTIFICACAO (IDF_ID, IDN_TITULO, IDN_MENSAGEM, IDN_TIPO) VALUES ($usuario_id, '$notif_titulo', '$notif_msg', 'resposta_acesso')";
                 @mysqli_query($conn, $sql_notif);
+
+                $login_link = site_url('login.php');
+                $assunto_email = $novo_status === 'aprovado' ? 'Seu acesso foi aprovado' : 'Seu cadastro foi recusado';
+                $nome_email = htmlspecialchars($user['IDF_NOME']);
+                if ($novo_status === 'aprovado') {
+                    $texto_email = "Olá, {$user['IDF_NOME']}!\n\nSeu cadastro foi aprovado. Acesse a plataforma no link abaixo:\n{$login_link}\n\nAtenciosamente,\nEquipe SiteManancial";
+                    $html_email = '<div style="font-family: Arial, sans-serif; color: #0f172a; line-height: 1.6;">'
+                        . '<h2 style="margin: 0 0 16px; color: #1d4ed8;">Cadastro aprovado</h2>'
+                        . '<p>Olá, <strong>' . $nome_email . '</strong>.</p>'
+                        . '<p>Seu cadastro foi aprovado. Você já pode acessar a plataforma pelo link abaixo:</p>'
+                        . '<p><a href="' . $login_link . '" style="color: #1d4ed8; font-weight: bold;">' . $login_link . '</a></p>'
+                        . '<p>Atenciosamente,<br>Equipe SiteManancial</p>'
+                        . '</div>';
+                } else {
+                    $texto_email = "Olá, {$user['IDF_NOME']}!\n\nSeu cadastro foi recusado." . (!empty($motivo) ? "\nMotivo: $motivo" : "") . "\n\nAtenciosamente,\nEquipe SiteManancial";
+                    $html_email = '<div style="font-family: Arial, sans-serif; color: #0f172a; line-height: 1.6;">'
+                        . '<h2 style="margin: 0 0 16px; color: #b91c1c;">Cadastro recusado</h2>'
+                        . '<p>Olá, <strong>' . $nome_email . '</strong>.</p>'
+                        . '<p>Seu cadastro foi recusado.' . (!empty($motivo) ? ' Motivo: ' . htmlspecialchars($motivo) : '') . '</p>'
+                        . '<p>Se necessário, entre em contato com a administração.</p>'
+                        . '<p>Atenciosamente,<br>Equipe SiteManancial</p>'
+                        . '</div>';
+                }
+                $email_enviado = enviar_email_sistema($user['IDF_EMAIL'], $assunto_email, $html_email, $texto_email);
                 
                 // Mensagem de sucesso
                 if ($acao === 'aprovar' || $acao === 'dar_permissao') {
-                    $mensagem = "Usuário aprovado com sucesso!";
+                    $mensagem = "Usuário aprovado com sucesso!" . ($email_enviado ? " E-mail enviado." : " Aviso: o e-mail não pôde ser enviado automaticamente.");
                 } else {
-                    $mensagem = "Usuário rejeitado com sucesso!";
+                    $mensagem = "Usuário rejeitado com sucesso!" . ($email_enviado ? " E-mail enviado." : " Aviso: o e-mail não pôde ser enviado automaticamente.");
                 }
             } else {
                 $erro = "Erro ao processar solicitação.";
@@ -66,17 +99,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 // Buscar usuários pendentes
-$sql_pendentes = "
-    SELECT 
-        f.IDF_ID, f.IDF_NOME, f.IDF_EMAIL, f.IDF_TELEFONE, f.IDF_CPF, 
-        f.IDF_FILIAL_ID, f.IDF_FUNCAO, f.IDF_ENDERECO, 
-        f.IDF_CRIADO_EM, f.IDF_STATUS,
-        fil.IDL_NOME
-    FROM ID_FIEL f
-    LEFT JOIN ID_FILIAL fil ON f.IDF_FILIAL_ID = fil.IDL_ID
-    WHERE f.IDF_STATUS = 'pendente'
-    ORDER BY f.IDF_CRIADO_EM DESC
-";
+$usa_banco_robusto = tabela_tem_coluna($conn, 'ID_FIEL', 'IDF_FILIAL_ID') && tabela_tem_coluna($conn, 'ID_FIEL', 'IDF_CRIADO_EM');
+
+if ($usa_banco_robusto) {
+    $sql_pendentes = "
+        SELECT 
+            f.IDF_ID, f.IDF_NOME, f.IDF_EMAIL, f.IDF_TELEFONE, f.IDF_CPF, 
+            f.IDF_FILIAL_ID, f.IDF_FUNCAO, f.IDF_ENDERECO, 
+            f.IDF_CRIADO_EM, f.IDF_STATUS,
+            fil.IDL_NOME
+        FROM ID_FIEL f
+        LEFT JOIN ID_FILIAL fil ON f.IDF_FILIAL_ID = fil.IDL_ID
+        WHERE f.IDF_STATUS = 'pendente'
+        ORDER BY f.IDF_CRIADO_EM DESC
+    ";
+} else {
+    $sql_pendentes = "
+        SELECT 
+            f.IDF_ID, f.IDF_NOME, f.IDF_EMAIL, f.IDF_TELEFONE, f.IDF_CPF, 
+            f.IDF_FILIAL, f.IDF_FUNCAO, f.IDF_ENDERECO, 
+            NULL AS IDF_CRIADO_EM, f.IDF_STATUS,
+            f.IDF_FILIAL AS IDL_NOME
+        FROM ID_FIEL f
+        WHERE f.IDF_STATUS = 'pendente'
+        ORDER BY f.IDF_ID DESC
+    ";
+}
 $res_pendentes = mysqli_query($conn, $sql_pendentes);
 $usuarios_pendentes = array();
 if ($res_pendentes && mysqli_num_rows($res_pendentes) > 0) {
@@ -189,7 +237,19 @@ if ($res_historico && mysqli_num_rows($res_historico) > 0) {
                                                     </tr>
                                                     <tr>
                                                         <td><strong>Solicitado em:</strong></td>
-                                                        <td><?php echo date('d/m/Y H:i', strtotime($user["IDF_CRIADO_EM"])); ?></td>
+                                                        <td><?php echo !empty($user["IDF_CRIADO_EM"]) ? date('d/m/Y H:i', strtotime($user["IDF_CRIADO_EM"])) : 'N/A'; ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Endereço:</strong></td>
+                                                        <td><?php echo htmlspecialchars($user["IDF_ENDERECO"] ?? "N/A"); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Status:</strong></td>
+                                                        <td><?php echo htmlspecialchars($user["IDF_STATUS"] ?? "N/A"); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Ativo:</strong></td>
+                                                        <td><?php echo !empty($user["IDF_ATIVO"]) ? "Sim" : "Não"; ?></td>
                                                     </tr>
                                                 </table>
                                             </div>

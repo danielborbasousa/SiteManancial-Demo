@@ -3,6 +3,10 @@ session_start();
 include("php/conexao.php");
 
 $erro = "";
+$sucesso = $_SESSION['cadastro_sucesso'] ?? "";
+if ($sucesso !== "") {
+    unset($_SESSION['cadastro_sucesso']);
+}
 $base_url = "http://localhost/SiteManancial-Demo/";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -91,6 +95,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
 
         <div class="auth-compact-divider"></div>
+
+        <?php if ($sucesso !== "") { ?>
+            <div class="alert alert-info mb-3" role="alert">
+                <i class="fas fa-info-circle me-2"></i><?php echo htmlspecialchars($sucesso); ?>
+            </div>
+        <?php } ?>
 
         <?php if ($erro != "") { 
             echo "<div class='error-message mb-3'><i class='fas fa-exclamation-circle'></i> " . htmlspecialchars($erro) . "</div>"; 

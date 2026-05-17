@@ -84,7 +84,9 @@ if ($res) {
 
 // Usuários pendentes
 $usuarios_pendentes = array();
-$sql = "SELECT IDF_ID, IDF_NOME, IDF_EMAIL, IDF_TELEFONE, IDF_CPF, IDF_FUNCAO, IDF_FILIAL_ID, IDF_CRIADO_EM FROM ID_FIEL WHERE IDF_STATUS = 'pendente' ORDER BY IDF_CRIADO_EM DESC LIMIT 10";
+$sql = tabela_tem_coluna($conn, 'ID_FIEL', 'IDF_FILIAL_ID') && tabela_tem_coluna($conn, 'ID_FIEL', 'IDF_CRIADO_EM')
+    ? "SELECT IDF_ID, IDF_NOME, IDF_EMAIL, IDF_TELEFONE, IDF_CPF, IDF_FUNCAO, IDF_ENDERECO, IDF_STATUS, IDF_ATIVO, IDF_FILIAL_ID, IDF_CRIADO_EM, IDF_FILIAL FROM ID_FIEL WHERE IDF_STATUS = 'pendente' ORDER BY IDF_CRIADO_EM DESC LIMIT 10"
+    : "SELECT IDF_ID, IDF_NOME, IDF_EMAIL, IDF_TELEFONE, IDF_CPF, IDF_FUNCAO, IDF_ENDERECO, IDF_STATUS, IDF_ATIVO, IDF_FILIAL AS IDL_NOME, NULL AS IDF_CRIADO_EM FROM ID_FIEL WHERE IDF_STATUS = 'pendente' ORDER BY IDF_ID DESC LIMIT 10";
 $res = mysqli_query($conn, $sql);
 if ($res) {
     while ($row = mysqli_fetch_assoc($res)) {
@@ -889,7 +891,7 @@ if ($res) {
                                     <td><strong><?php echo htmlspecialchars($user['IDF_NOME']); ?></strong></td>
                                     <td><?php echo htmlspecialchars($user['IDF_EMAIL']); ?></td>
                                     <td><?php echo htmlspecialchars($user['IDF_FUNCAO'] ?? 'N/A'); ?></td>
-                                    <td><?php echo date('d/m/Y H:i', strtotime($user['IDF_CRIADO_EM'])); ?></td>
+                                    <td><?php echo !empty($user['IDF_CRIADO_EM']) ? date('d/m/Y H:i', strtotime($user['IDF_CRIADO_EM'])) : 'N/A'; ?></td>
                                     <td>
                                         <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#verDadosModal<?php echo $user['IDF_ID']; ?>" style="padding: 0.35rem 0.75rem; font-size: 0.85rem;">
                                             <i class="fas fa-eye me-1"></i>Ver Dados
@@ -935,7 +937,29 @@ if ($res) {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <strong>Data de Solicitação:</strong><br>
-                                                        <span style="color: var(--text-muted);"><?php echo date('d/m/Y H:i', strtotime($user['IDF_CRIADO_EM'])); ?></span>
+                                                        <span style="color: var(--text-muted);"><?php echo !empty($user['IDF_CRIADO_EM']) ? date('d/m/Y H:i', strtotime($user['IDF_CRIADO_EM'])) : 'N/A'; ?></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mb-3">
+                                                    <div class="col-md-6">
+                                                        <strong>Endereço:</strong><br>
+                                                        <span style="color: var(--text-muted);"><?php echo htmlspecialchars($user['IDF_ENDERECO'] ?? 'N/A'); ?></span>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <strong>Status:</strong><br>
+                                                        <span style="color: var(--text-muted);"><?php echo htmlspecialchars($user['IDF_STATUS'] ?? 'N/A'); ?></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mb-3">
+                                                    <div class="col-md-6">
+                                                        <strong>Ativo:</strong><br>
+                                                        <span style="color: var(--text-muted);"><?php echo !empty($user['IDF_ATIVO']) ? 'Sim' : 'Não'; ?></span>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <strong>Filial:</strong><br>
+                                                        <span style="color: var(--text-muted);"><?php echo htmlspecialchars($user['IDL_NOME'] ?? $user['IDF_FILIAL'] ?? 'N/A'); ?></span>
                                                     </div>
                                                 </div>
 
