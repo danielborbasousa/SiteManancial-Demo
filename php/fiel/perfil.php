@@ -30,7 +30,7 @@ $usuario = mysqli_fetch_assoc($resultado);
     <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark w-100 p-3">
+    <nav class="navbar navbar-expand-lg w-100 p-3">
         <div class="container-fluid px-4">
             <a class="navbar-brand fw-bold d-flex align-items-center" href="dashboard.php">
                 <img src="../assets/logo.png" alt="Logotipo" class="logo me-2" /> Missao Evangelica Manancial da Esperança
@@ -116,7 +116,7 @@ $usuario = mysqli_fetch_assoc($resultado);
                 </div>
             <?php } ?>
 
-            <a href="dashboard.php" class="btn btn-light">Voltar para o painel</a>
+            <a href="dashboard.php" class="btn btn-outline-primary">Voltar para o painel</a>
         </div>
     </main>
 </body>

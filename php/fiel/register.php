@@ -162,7 +162,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="auth-form-actions">
                 <button type="submit" class="btn auth-submit w-100 py-2">Cadastrar</button>
 
-                <p class="text-center text-light mb-0">
+                <p class="text-center mb-0" style="color: var(--text-muted);">
                     Já tem conta? <a href="../../login.php" class="auth-link">Entrar.</a>
                 </p>
             </div>

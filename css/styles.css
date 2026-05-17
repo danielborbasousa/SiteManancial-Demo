@@ -252,9 +252,9 @@ body {
 }
 
 .custom-input {
-    background: linear-gradient(135deg, #2d3e52 0%, #334155 100%);
-    border: 2px solid rgba(96, 165, 250, 0.3) !important;
-    color: white !important;
+    background: var(--input-bg);
+    border: 2px solid var(--border-color) !important;
+    color: var(--text-main) !important;
     padding: 0.95rem 1.15rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 10px;
@@ -263,7 +263,7 @@ body {
 }
 
 .custom-input::placeholder {
-    color: #94a3b8;
+    color: var(--text-muted);
     transition: color 0.3s ease;
 }
 
@@ -808,6 +808,48 @@ body {
     outline: none;
     box-shadow: 0 0 0 8px rgba(59,130,246,0.08);
 }
+
+/* Make bootstrap's btn-outline-light adapt to theme variables */
+.btn-outline-light {
+    background: transparent !important;
+    color: var(--text-main) !important;
+    border-color: var(--border-color) !important;
+}
+.btn-outline-light:hover {
+    background: rgba(59,130,246,0.06) !important;
+    color: var(--primary-light) !important;
+}
+
+/* Auth panel light-theme overrides */
+:root[data-theme="light"] .auth-panel {
+    background: var(--auth-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-main) !important;
+    box-shadow: 0 8px 30px rgba(15,23,42,0.04) !important;
+}
+:root[data-theme="light"] .auth-hero {
+    background: linear-gradient(135deg, rgba(248,250,252,0.6), rgba(241,245,249,0.5)) !important;
+    color: var(--text-main) !important;
+}
+
+/* Admin theme light-mode overrides */
+:root[data-theme="light"] .admin-sidebar {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+    border-right: 1px solid rgba(15,23,42,0.06) !important;
+}
+:root[data-theme="light"] .sidebar-logo h5 { color: var(--primary-light) !important; }
+:root[data-theme="light"] .sidebar-logo small { color: var(--text-muted) !important; }
+:root[data-theme="light"] .sidebar-link { color: var(--text-muted) !important; }
+:root[data-theme="light"] .sidebar-link:hover { background: rgba(59,130,246,0.06) !important; color: var(--text-main) !important; }
+
+:root[data-theme="light"] .admin-main { background: linear-gradient(135deg, var(--bg-light) 0%, #ffffff 100%) !important; }
+:root[data-theme="light"] .admin-header { background: rgba(255,255,255,0.9) !important; border-bottom: 1px solid var(--border-color) !important; }
+:root[data-theme="light"] .stat-card { background: rgba(255,255,255,0.96) !important; border: 1px solid var(--border-color) !important; }
+:root[data-theme="light"] .stat-value { color: var(--text-main) !important; }
+:root[data-theme="light"] .data-table, :root[data-theme="light"] .action-card { background: rgba(255,255,255,0.95) !important; border: 1px solid var(--border-color) !important; }
+
+/* Ensure general elements with text-light class don't force dark text on light theme */
+:root[data-theme="light"] .text-light { color: var(--text-muted) !important; }
 
 /* Utility responsive container adjustments */
 .container-fluid, .container {
