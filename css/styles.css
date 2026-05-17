@@ -361,6 +361,26 @@ body {
     width: min(100%, 760px);
 }
 
+/* Reduce input sizing on wide auth panels to avoid oversized fields */
+.auth-panel--wide {
+    max-width: 900px;
+    padding: clamp(1rem, 2.5vw, 2rem);
+}
+.auth-form-grid .custom-input,
+.auth-panel--wide .custom-input {
+    padding: 0.75rem 0.95rem;
+    font-size: 0.98rem;
+    min-height: 44px;
+    border-radius: 8px;
+}
+.auth-form-grid--two { gap: 0.9rem; }
+
+/* Make the submit button slightly smaller on auth wide panels */
+.auth-panel--wide .auth-submit { min-height: 48px; font-size: 0.98rem; }
+
+/* Ensure the back link doesn't overlap on small screens */
+.auth-back-link { max-width: 92%; }
+
 .auth-panel--heroless {
     margin: 0 auto;
 }

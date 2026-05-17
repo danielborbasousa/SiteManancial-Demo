@@ -91,8 +91,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="../../js/theme.js"></script>
 </head>
 <body class="auth-page">
+
+    <div class="position-absolute top-0 end-0 p-3" style="z-index: 50;">
+        <div class="theme-toggle-container">
+            <i class="fas fa-moon theme-icon"></i>
+            <input type="checkbox" id="theme-toggle" class="theme-toggle" aria-label="Alternar tema">
+            <i class="fas fa-sun theme-icon"></i>
+        </div>
+    </div>
 
     <a href="../../index.html" class="auth-back-link">
         <i class="fas fa-arrow-left"></i>
