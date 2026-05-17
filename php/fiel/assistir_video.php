@@ -4,9 +4,23 @@ include("../conexao.php");
 auth_require();
 
 
+// Aceita tanto `url` direto quanto `id` do conteúdo (mais comum nas listagens)
 $url = isset($_GET["url"]) ? $_GET["url"] : "";
 $titulo = isset($_GET["titulo"]) ? $_GET["titulo"] : "Video";
 $descricao = isset($_GET["descricao"]) ? $_GET["descricao"] : "";
+
+// Se foi passado um id, buscar no banco a URL/título/descrição correspondentes
+$id = isset($_GET["id"]) ? (int) $_GET["id"] : 0;
+if ($id > 0 && $url === "") {
+    $sql = "SELECT IDCT_URL, IDCT_TITULO, IDCT_DESCRICAO FROM ID_CONTENT WHERE IDCT_ID = $id LIMIT 1";
+    $res = mysqli_query($conn, $sql);
+    if ($res && mysqli_num_rows($res) == 1) {
+        $row = mysqli_fetch_assoc($res);
+        $url = $row['IDCT_URL'] ?? '';
+        $titulo = $row['IDCT_TITULO'] ?? $titulo;
+        $descricao = $row['IDCT_DESCRICAO'] ?? $descricao;
+    }
+}
 
 // So permite videos locais dentro da pasta videos/
 if(strpos($url, "videos/") === 0) {
