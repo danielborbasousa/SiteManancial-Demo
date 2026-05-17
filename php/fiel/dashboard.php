@@ -35,7 +35,7 @@ $eh_admin = isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "a
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Missão Evangélica Manancial da Esperança</title>
+    <title>Missão Manancial | Início</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="../../css/styles.css">
@@ -63,10 +63,10 @@ $eh_admin = isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "a
 </head>
 <body style="transition: background 0.3s ease;">
     <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-dark w-100 p-3">
         <div class="container-fluid px-4">
             <a class="navbar-brand fw-bold d-flex align-items-center" href="dashboard.php">
-                <img src="../../assets/logo.png" alt="Logo" style="height: 50px; margin-right: 1rem;">
+                <img src="../../assets/logo.png" alt="Logo" style="height:50px; margin-right:1rem;">
                 <span>Missão Manancial</span>
             </a>
             
@@ -82,8 +82,6 @@ $eh_admin = isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "a
                 </ul>
 
                 <div class="d-flex align-items-center gap-3">
-                    <!-- Botão Admin removido da navbar pública -->
-                    
                     <a href="busca.php" class="text-decoration-none" style="font-size: 1.2rem; color: var(--primary-light);">
                         <i class="fas fa-search"></i>
                     </a>
@@ -97,7 +95,6 @@ $eh_admin = isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "a
                         <input type="checkbox" id="theme-toggle" class="theme-toggle" aria-label="Alternar tema" style="width: 40px; height: 22px;">
                         <i class="fas fa-sun theme-icon" style="font-size: 1rem;"></i>
                     </div>
-                    
                     <div class="dropdown">
                         <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
                             <i class="fas fa-user me-2"></i><?php echo htmlspecialchars(substr($usuario_nome, 0, 10)); ?>

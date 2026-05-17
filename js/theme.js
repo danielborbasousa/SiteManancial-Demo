@@ -78,3 +78,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+// Fullscreen removed — feature deprecated per UX request

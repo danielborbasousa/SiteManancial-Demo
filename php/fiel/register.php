@@ -88,7 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criar Conta - Missao Evangelica</title>
+    <title>Missão Manancial | Criar conta</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -96,7 +96,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body class="auth-page">
 
-    <div class="position-absolute top-0 end-0 p-3" style="z-index: 50;">
+    <div class="position-absolute top-0 end-0 p-3" style="z-index: 50; display:flex; gap:8px; align-items:center;">
         <div class="theme-toggle-container">
             <i class="fas fa-moon theme-icon"></i>
             <input type="checkbox" id="theme-toggle" class="theme-toggle" aria-label="Alternar tema">
@@ -113,7 +113,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="auth-brand-row">
             <img src="../../assets/logo.png" alt="Logotipo" class="logo" />
             <div class="auth-brand-copy">
-                <h2>Criar Conta</h2>
+                <h2>Criar conta</h2>
                 <p>Preencha os dados abaixo para acessar a plataforma.</p>
             </div>
         </div>
