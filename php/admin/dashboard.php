@@ -669,7 +669,7 @@ if ($res) {
                 </li>
                 <li class="sidebar-menu-item">
                     <a href="admin_visao_usuario.php" class="sidebar-link">
-                        <i class="fas fa-user-eye"></i>
+                        <i class="fas fa-tasks"></i>
                         <span>Ver Progresso</span>
                     </a>
                 </li>
