@@ -2,7 +2,9 @@
 /* Variáveis CSS para cores e temas */
 :root {
     --bg-dark: #07101d;
+    --navbar-height: clamp(56px, 6.5vh, 84px);
     --bg-light: #152238;
+    --surface: linear-gradient(90deg, rgba(7,16,29,0.96), rgba(21,34,56,0.92));
     --text-main: #ffffff;
     --text-muted: #94a3b8;
     --card-bg: #475569;
@@ -70,6 +72,7 @@
 :root[data-theme="light"] {
     --bg-dark: #f8fafc;
     --bg-light: #f1f5f9;
+    --surface: linear-gradient(90deg, #ffffff, #f8fafc);
     --text-main: #0f172a;
     --text-muted: #475569;
     --card-bg: #e2e8f0;
@@ -99,16 +102,35 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
     overflow-x: hidden;
+    /* reserve space for sticky navbar to avoid content overlap */
+    padding-top: calc(var(--navbar-height) + 8px);
 }
 
 /* Personalização da navbar */
 .navbar {
-    background: linear-gradient(90deg, var(--bg-dark), var(--bg-dark)) !important;
-    background-color: var(--bg-dark) !important;
+    background: var(--surface) !important;
+    background-color: unset !important;
     border-bottom: 1px solid rgba(255,255,255,0.03);
     box-shadow: 0 6px 20px rgba(2,6,23,0.6);
     z-index: 1000;
+    height: var(--navbar-height);
+    position: sticky;
+    top: 0;
+    display: block;
 }
+
+/* Ensure navbar contents are arranged responsively */
+.navbar .container-fluid {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.navbar .navbar-brand { flex: 0 0 auto; display: flex; align-items: center; gap: .6rem; }
+.navbar-nav { display:flex; gap: .6rem; align-items:center; flex-wrap:wrap; }
+.navbar .nav-item { white-space: nowrap; }
 /* Ícones na navbar */
 .nav-icon {
     width: 32px;
@@ -276,6 +298,8 @@ body {
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    /* auth pages typically include their own back link; avoid extra top padding */
+    padding-top: 1.5rem;
 }
 
 .auth-page::before,
@@ -801,4 +825,55 @@ img { max-width: 100%; height: auto; }
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
+}
+
+/* Navbar link colors follow variables so theme changes propagate */
+.navbar, .navbar a, .navbar .nav-link, .navbar .navbar-brand {
+    color: var(--text-main) !important;
+}
+.navbar .nav-link { color: var(--text-muted) !important; }
+.navbar .nav-link:hover { color: var(--text-main) !important; }
+
+/* Strong overrides to beat inline styles in templates */
+:root[data-theme="light"] .navbar, :root[data-theme="light"] nav.navbar, :root[data-theme="light"] .navbar.navbar-expand-lg {
+    background: var(--surface) !important;
+    box-shadow: 0 6px 18px rgba(15,23,42,0.06) !important;
+}
+:root[data-theme="light"] .navbar .nav-link, :root[data-theme="light"] .navbar .navbar-brand, :root[data-theme="light"] .navbar a {
+    color: var(--text-muted) !important;
+}
+:root[data-theme="light"] .navbar .nav-link:hover, :root[data-theme="light"] .navbar a:hover {
+    color: var(--text-main) !important;
+}
+
+/* Footer that adapts to theme */
+.site-footer {
+    background: var(--surface) !important;
+    color: var(--text-muted) !important;
+    border-top: 1px solid rgba(96,165,250,0.06);
+    margin-top: 4rem;
+    padding: 3rem 0;
+}
+.site-footer h6 { color: var(--primary-light); }
+.site-footer a { color: var(--text-muted); }
+.site-footer a:hover { color: var(--text-main); text-decoration: underline; }
+
+/* Light theme tweaks for navbar/footer readability */
+:root[data-theme="light"] .site-footer hr, :root[data-theme="light"] .site-footer .divider { border-color: rgba(15,23,42,0.06) !important; }
+
+/* Override inline HR styles used in some templates */
+.site-footer hr { border-color: var(--border-color) !important; }
+
+/* auth-back-link lighter background in light theme */
+:root[data-theme="light"] .auth-back-link {
+    background: rgba(255,255,255,0.98) !important;
+    color: var(--text-main) !important;
+    border-color: rgba(15,23,42,0.06) !important;
+}
+
+/* Ensure elements with inline dark backgrounds are overridden when light theme active */
+:root[data-theme="light"] [style*="background: rgba(7,16,29"],
+:root[data-theme="light"] [style*="background: #000"],
+:root[data-theme="light"] [style*="background: var(--bg-dark)"] {
+    background: transparent !important;
 }
