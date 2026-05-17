@@ -31,7 +31,7 @@ $usuario_email = $_SESSION["Usuario_logado"] ?? "";
 $eh_admin = isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "admin";
 ?>
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="dark">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -56,9 +56,9 @@ $eh_admin = isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "a
         .stat-box:hover { background: rgba(96,165,250,0.15); }
         .stat-number { font-size: 1.8rem; font-weight: 700; color: var(--primary-light); }
         .stat-label { font-size: 0.9rem; color: var(--text-muted); margin-top: 0.5rem; }
-        .navbar { background: rgba(7,16,29,0.98); border-bottom: 1px solid var(--border-color); transition: all 0.3s ease; }
-        .nav-link { color: var(--text-main) !important; transition: color 0.3s ease; }
-        .nav-link:hover { color: var(--primary-light) !important; }
+        /* navbar styling is controlled by css/styles.css to follow the selected theme */
+        .nav-link { transition: color 0.3s ease; }
+        .nav-link:hover { color: var(--primary-light); }
     </style>
 </head>
 <body style="transition: background 0.3s ease;">
@@ -213,7 +213,7 @@ $eh_admin = isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "a
     </main>
 
     <!-- FOOTER -->
-    <footer style="background: rgba(7,16,29,0.95); border-top: 1px solid rgba(96,165,250,0.2); margin-top: 4rem; padding: 3rem 0;">
+    <footer class="site-footer">
         <div class="container-fluid px-4">
             <div class="row g-4">
                 <div class="col-md-4">
