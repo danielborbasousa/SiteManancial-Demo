@@ -30,8 +30,10 @@ class ThemeManager {
         // Aplica ao HTML
         document.documentElement.setAttribute('data-theme', theme);
 
-        // Atualiza o toggle se existir
+        // Atualiza os toggles na página
         this.updateToggle(theme);
+        // Dispara evento customizado para outras partes da aplicação
+        document.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme } }));
     }
 
     getCurrentTheme() {
@@ -46,11 +48,18 @@ class ThemeManager {
     }
 
     updateToggle(theme) {
-        const toggle = document.getElementById('theme-toggle');
-        if (toggle) {
-            toggle.checked = theme === this.LIGHT_THEME;
-            toggle.setAttribute('aria-label', `Ativar tema ${theme === this.DARK_THEME ? 'claro' : 'escuro'}`);
-        }
+        const toggles = Array.from(document.querySelectorAll('.theme-toggle, #theme-toggle'));
+        toggles.forEach((toggle) => {
+            try {
+                // Para inputs do tipo checkbox
+                if (toggle.type === 'checkbox') {
+                    toggle.checked = theme === this.LIGHT_THEME;
+                }
+                toggle.setAttribute('aria-label', theme === this.DARK_THEME ? 'Ativar tema claro' : 'Ativar tema escuro');
+            } catch (e) {
+                // ignore
+            }
+        });
     }
 }
 
@@ -59,13 +68,13 @@ const themeManager = new ThemeManager();
 
 // Escuta mudanças no toggle
 document.addEventListener('DOMContentLoaded', () => {
-    const toggle = document.getElementById('theme-toggle');
-    if (toggle) {
+    const toggles = Array.from(document.querySelectorAll('.theme-toggle, #theme-toggle'));
+    toggles.forEach((toggle) => {
+        // normalize event listener for checkboxes
         toggle.addEventListener('change', (e) => {
             e.preventDefault();
             const newTheme = themeManager.toggleTheme();
-            // Dispara evento customizado para outras partes da aplicação
-            document.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme: newTheme } }));
+            // themeManager already dispatches 'themeChanged'
         });
-    }
+    });
 });
