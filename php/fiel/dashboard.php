@@ -45,7 +45,8 @@ $eh_admin = isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "a
         .video-card { background: rgba(255,255,255,0.04); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; transition: all 0.3s; cursor: pointer; }
         .video-card:hover { background: rgba(96,165,250,0.1); border-color: var(--primary-light); transform: translateY(-8px); box-shadow: 0 12px 30px rgba(96,165,250,0.2); }
         .video-thumbnail { position: relative; height: 160px; background: #000; display: flex; align-items: center; justify-content: center; color: var(--primary-light); overflow: hidden; }
-        .video-thumbnail img { width: 100%; height: 100%; object-fit: cover; }
+        .video-thumbnail video { width: 100%; height: 100%; object-fit: cover; display: block; background: #0b1220; }
+        .video-preview-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(7,16,29,0.05), rgba(7,16,29,0.28)); z-index: 1; pointer-events: none; }
         .video-play-btn { position: absolute; font-size: 2.5rem; opacity: 0.8; transition: all 0.3s; }
         .video-card:hover .video-play-btn { opacity: 1; transform: scale(1.2); }
         .video-info { padding: 1.5rem; }
@@ -169,11 +170,30 @@ $eh_admin = isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "a
                             $link_video = $tem_id
                                 ? "assistir_video.php?id=" . (int) $video["IDCT_ID"]
                                 : "assistir_video.php?url=" . urlencode($video["IDCT_URL"] ?? "") . "&titulo=" . urlencode($video["IDCT_TITULO"] ?? "Vídeo") . "&descricao=" . urlencode($video["IDCT_DESCRICAO"] ?? "");
+                            $preview_url = "";
+                            if (!empty($video["IDCT_URL"])) {
+                                if (strpos($video["IDCT_URL"], "videos/") === 0) {
+                                    $arquivo_local = "../../" . $video["IDCT_URL"];
+                                    if (file_exists($arquivo_local)) {
+                                        $preview_url = $arquivo_local;
+                                    }
+                                } else {
+                                    $preview_url = $video["IDCT_URL"];
+                                }
+                            }
                         ?>
                         <div class="col-md-6 col-lg-4">
                             <div class="video-card">
                                 <div class="video-thumbnail">
-                                    <i class="fas fa-play video-play-btn"></i>
+                                    <?php if ($preview_url !== "") { ?>
+                                        <video muted playsinline preload="metadata" onloadedmetadata="if (this.currentTime < 0.15) { try { this.currentTime = 0.15; } catch (e) {} } this.pause();">
+                                            <source src="<?php echo htmlspecialchars($preview_url); ?>">
+                                        </video>
+                                        <div class="video-preview-overlay"></div>
+                                    <?php } else { ?>
+                                        <i class="fas fa-play video-play-btn"></i>
+                                    <?php } ?>
+                                    <i class="fas fa-play video-play-btn" style="z-index: 2;"></i>
                                 </div>
                                 <div class="video-info">
                                     <div class="video-title"><?php echo htmlspecialchars($video["IDCT_TITULO"]); ?></div>
@@ -195,18 +215,6 @@ $eh_admin = isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "a
             <?php } ?>
         </section>
 
-        <!-- CHAMADA PARA AÇÃO -->
-        <div class="alert alert-info" style="background: rgba(96,165,250,0.1); border: 2px solid rgba(96,165,250,0.3); border-radius: 12px;">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <h5 class="mb-2"><i class="fas fa-lightbulb me-2"></i>Saiba Mais Sobre a Missão</h5>
-                    <p class="mb-0">Conheça a história e valores da Missão Evangélica Manancial da Esperança. Faça parte dessa comunidade!</p>
-                </div>
-                <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                    <a href="sobre.php" class="btn btn-light">Conhecer Mais →</a>
-                </div>
-            </div>
-        </div>
     </main>
 
     <!-- FOOTER -->

@@ -110,14 +110,33 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
                 <?php if (count($videos) > 0) { ?>
                     <div class="row g-4 mb-5">
                         <?php foreach ($videos as $video) { ?>
+                            <?php
+                                $preview_url = "";
+                                if (!empty($video["IDCT_URL"])) {
+                                    if (strpos($video["IDCT_URL"], "videos/") === 0) {
+                                        $arquivo_local = "../../" . $video["IDCT_URL"];
+                                        if (file_exists($arquivo_local)) {
+                                            $preview_url = $arquivo_local;
+                                        }
+                                    } else {
+                                        $preview_url = $video["IDCT_URL"];
+                                    }
+                                }
+                            ?>
                             <div class="col-lg-3 col-md-4 col-sm-6">
-                                <a href="assistir_video.php?id=<?php echo (int) $video["IDCT_ID"]; ?>" style="text-decoration: none; color: inherit;">
-                                    <div style="background: var(--bg-light); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; transition: all 0.3s ease; cursor: pointer; height: 100%; display: flex; flex-direction: column;" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 40px rgba(96,165,250,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                                        <div style="background: var(--bg-light); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; transition: all 0.3s ease; height: 100%; display: flex; flex-direction: column;" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 40px rgba(96,165,250,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                                         
                                         <!-- THUMBNAIL -->
                                         <div style="height: 180px; background: #000; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
-                                            <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle, rgba(96,165,250,0.2) 0%, transparent 70%);"></div>
-                                            <i class="fas fa-play-circle" style="font-size: 3.5rem; color: #60a5fa; z-index: 2;"></i>
+                                            <?php if ($preview_url !== "") { ?>
+                                                <video muted playsinline preload="metadata" style="width:100%; height:100%; object-fit:cover; display:block; background:#0b1220;" onloadedmetadata="if (this.currentTime < 0.15) { try { this.currentTime = 0.15; } catch (e) {} } this.pause();">
+                                                    <source src="<?php echo htmlspecialchars($preview_url); ?>">
+                                                </video>
+                                                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(180deg, rgba(7,16,29,0.05), rgba(7,16,29,0.28)); z-index: 1;"></div>
+                                            <?php } else { ?>
+                                                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle, rgba(96,165,250,0.2) 0%, transparent 70%);"></div>
+                                            <?php } ?>
+                                            <i class="fas fa-play-circle" style="font-size: 3.5rem; color: #60a5fa; z-index: 2; position: relative;"></i>
                                         </div>
 
                                         <!-- CONTEÚDO -->
@@ -137,12 +156,11 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
 
                                         <!-- BOTÃO -->
                                         <div style="padding: 0.8rem; border-top: 1px solid var(--border-color);">
-                                            <button class="btn btn-sm btn-light w-100" style="background: linear-gradient(135deg, #60a5fa, #a78bfa); border: none; color: white;">
+                                            <a href="assistir_video.php?id=<?php echo (int) $video["IDCT_ID"]; ?>" class="btn btn-sm btn-light w-100" style="background: linear-gradient(135deg, #60a5fa, #a78bfa); border: none; color: white;">
                                                 <i class="fas fa-play me-1"></i>Assistir
-                                            </button>
+                                            </a>
                                         </div>
                                     </div>
-                                </a>
                             </div>
                         <?php } ?>
                     </div>

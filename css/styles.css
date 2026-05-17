@@ -924,14 +924,17 @@ img { max-width: 100%; height: auto; }
 /* Footer that adapts to theme */
 .site-footer {
     background: var(--surface) !important;
-    color: var(--text-muted) !important;
+    color: #e2e8f0 !important;
     border-top: 1px solid rgba(96,165,250,0.06);
     margin-top: 4rem;
     padding: 3rem 0;
 }
-.site-footer h6 { color: var(--primary-light); }
-.site-footer a { color: var(--text-muted); }
-.site-footer a:hover { color: var(--text-main); text-decoration: underline; }
+.site-footer h6 { color: #93c5fd !important; }
+.site-footer a { color: #f8fafc !important; }
+.site-footer a:hover { color: #ffffff !important; text-decoration: underline; }
+.site-footer p,
+.site-footer li,
+.site-footer .text-muted { color: #e2e8f0 !important; opacity: 1 !important; }
 
 /* Light theme tweaks for navbar/footer readability */
 :root[data-theme="light"] .site-footer hr, :root[data-theme="light"] .site-footer .divider { border-color: rgba(15,23,42,0.06) !important; }
