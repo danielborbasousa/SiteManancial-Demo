@@ -14,7 +14,13 @@ if (!isset($_SESSION["Usuario_tipo"]) || $_SESSION["Usuario_tipo"] !== "admin") 
 
 $mensagem = "";
 $erro = "";
-$upload_dir = "../../videos/";
+// Caminho absoluto para a pasta de videos, evita problemas com paths relativos
+$base_root = realpath(__DIR__ . '/../../');
+if ($base_root !== false) {
+    $upload_dir = $base_root . DIRECTORY_SEPARATOR . 'videos' . DIRECTORY_SEPARATOR;
+} else {
+    $upload_dir = __DIR__ . '/../../videos/';
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["acao"]) && $_POST["acao"] === "salvar") {
     $titulo = trim($_POST["IDCT_TITULO"]);
@@ -27,8 +33,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["acao"]) && $_POST["aca
 
     if ($titulo === "") {
         $erro = "Informe o titulo do video.";
-    } elseif (!isset($_FILES["arquivo"]) || $_FILES["arquivo"]["error"] !== UPLOAD_ERR_OK) {
-        $erro = "Envie um arquivo de video valido.";
+    } elseif (!isset($_FILES["arquivo"])) {
+        $erro = "Nenhum arquivo foi enviado.";
+    } elseif ($_FILES["arquivo"]["error"] !== UPLOAD_ERR_OK) {
+        $code = $_FILES["arquivo"]["error"];
+        switch ($code) {
+            case UPLOAD_ERR_INI_SIZE:
+                $msg = "O arquivo excede upload_max_filesize no servidor.";
+                break;
+            case UPLOAD_ERR_FORM_SIZE:
+                $msg = "O arquivo excede o tamanho permitido pelo formulário.";
+                break;
+            case UPLOAD_ERR_PARTIAL:
+                $msg = "O upload foi parcial.";
+                break;
+            case UPLOAD_ERR_NO_FILE:
+                $msg = "Nenhum arquivo enviado.";
+                break;
+            case UPLOAD_ERR_NO_TMP_DIR:
+                $msg = "Pasta temporária ausente no servidor.";
+                break;
+            case UPLOAD_ERR_CANT_WRITE:
+                $msg = "Falha ao gravar o arquivo no disco.";
+                break;
+            case UPLOAD_ERR_EXTENSION:
+                $msg = "Upload interrompido por extensão PHP.";
+                break;
+            default:
+                $msg = "Erro no upload (código $code).";
+        }
+        $erro = $msg;
     } else {
         $nome_original = basename($_FILES["arquivo"]["name"]);
         $extensao = strtolower(pathinfo($nome_original, PATHINFO_EXTENSION));
@@ -38,13 +72,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["acao"]) && $_POST["aca
             $erro = "Formato de video nao permitido.";
         } else {
             if (!is_dir($upload_dir)) {
-                mkdir($upload_dir, 0777, true);
+                @mkdir($upload_dir, 0777, true);
             }
 
             $nome_arquivo = time() . "_" . preg_replace('/[^a-zA-Z0-9_-]/', '_', pathinfo($nome_original, PATHINFO_FILENAME)) . "." . $extensao;
             $destino = $upload_dir . $nome_arquivo;
 
-            if (move_uploaded_file($_FILES["arquivo"]["tmp_name"], $destino)) {
+            if (!is_uploaded_file($_FILES["arquivo"]["tmp_name"])) {
+                $erro = "Arquivo temporário não encontrado: " . ($_FILES["arquivo"]["tmp_name"] ?? 'n/a');
+            } elseif (move_uploaded_file($_FILES["arquivo"]["tmp_name"], $destino)) {
                 $url_salva = "videos/" . $nome_arquivo;
 
                 $titulo_db = mysqli_real_escape_string($conn, $titulo);
@@ -62,7 +98,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["acao"]) && $_POST["aca
                     $erro = "Erro ao salvar no banco.";
                 }
             } else {
-                $erro = "Nao foi possivel salvar o arquivo.";
+                $erro = "Nao foi possivel salvar o arquivo. Tmp: " . ($_FILES["arquivo"]["tmp_name"] ?? 'n/a') . " Dest: " . $destino;
             }
         }
     }
