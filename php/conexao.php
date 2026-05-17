@@ -17,6 +17,27 @@ function site_url($path = '') {
     return rtrim(SITE_BASE_URL, '/') . '/' . ltrim($path, '/');
 }
 
+function enviar_email_sistema($destinatario, $assunto, $mensagem_html, $mensagem_texto = '') {
+    if (!function_exists('mail') || trim($destinatario) === '') {
+        return false;
+    }
+
+    $assunto_formatado = '=?UTF-8?B?' . base64_encode($assunto) . '?=';
+    $headers = array();
+    $headers[] = 'MIME-Version: 1.0';
+    $headers[] = 'Content-type: text/html; charset=UTF-8';
+    $headers[] = 'From: SiteManancial <no-reply@localhost>';
+    $headers[] = 'Reply-To: no-reply@localhost';
+    $headers[] = 'X-Mailer: PHP/' . phpversion();
+
+    $html = $mensagem_html;
+    if ($mensagem_texto !== '') {
+        $html .= '<hr><pre style="font-family: Arial, sans-serif; white-space: pre-wrap; color: #334155;">' . htmlspecialchars($mensagem_texto) . '</pre>';
+    }
+
+    return @mail($destinatario, $assunto_formatado, $html, implode("\r\n", $headers));
+}
+
 function auth_logout($reason = '') {
     global $conn;
 
