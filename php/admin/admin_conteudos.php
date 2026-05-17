@@ -22,6 +22,27 @@ if ($base_root !== false) {
     $upload_dir = __DIR__ . '/../../videos/';
 }
 
+// Helpers de diagnóstico de upload
+function parse_size($size) {
+    $unit = preg_replace('/[^bkmgtpezy]/i', '', $size);
+    $num = preg_replace('/[^0-9\.]/', '', $size);
+    if ($num === '') return 0;
+    $num = (float) $num;
+    if ($unit) {
+        return (int) ($num * pow(1024, stripos('bkmgtpezy', $unit[0])));
+    }
+    return (int)$num;
+}
+
+$ini_upload_max = ini_get('upload_max_filesize') ?: 'unknown';
+$ini_post_max = ini_get('post_max_size') ?: 'unknown';
+$ini_max_files = ini_get('max_file_uploads') ?: 'unknown';
+$upload_tmp_dir = ini_get('upload_tmp_dir') ?: sys_get_temp_dir();
+$content_length = isset($_SERVER['CONTENT_LENGTH']) ? (int) $_SERVER['CONTENT_LENGTH'] : null;
+$parsed_upload_max = is_string($ini_upload_max) ? parse_size($ini_upload_max) : 0;
+$parsed_post_max = is_string($ini_post_max) ? parse_size($ini_post_max) : 0;
+
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["acao"]) && $_POST["acao"] === "salvar") {
     $titulo = trim($_POST["IDCT_TITULO"]);
     $descricao = trim($_POST["IDCT_DESCRICAO"]);
@@ -34,7 +55,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["acao"]) && $_POST["aca
     if ($titulo === "") {
         $erro = "Informe o titulo do video.";
     } elseif (!isset($_FILES["arquivo"])) {
-        $erro = "Nenhum arquivo foi enviado.";
+        // Possível causa: arquivo maior que post_max_size or upload_max_filesize
+        if ($content_length !== null && $parsed_post_max > 0 && $content_length > $parsed_post_max) {
+            $erro = "O upload excede 'post_max_size' (" . $ini_post_max . ") - atual: " . ($content_length) . " bytes. Ajuste php.ini e reinicie o servidor.";
+        } else {
+            $erro = "Nenhum arquivo foi enviado. Verifique 'post_max_size' e 'upload_max_filesize' no php.ini.";
+        }
     } elseif ($_FILES["arquivo"]["error"] !== UPLOAD_ERR_OK) {
         $code = $_FILES["arquivo"]["error"];
         switch ($code) {
@@ -75,11 +101,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["acao"]) && $_POST["aca
                 @mkdir($upload_dir, 0777, true);
             }
 
+            // Verificar permissões antes de mover
+            if (!is_writable(dirname($upload_dir))) {
+                $erro = "Pasta pai de destino não é gravável: " . dirname($upload_dir);
+            } elseif (!is_dir($upload_dir) || !is_writable($upload_dir)) {
+                // Tentar criar e ajustar permissões
+                @chmod($upload_dir, 0777);
+                if (!is_dir($upload_dir) || !is_writable($upload_dir)) {
+                    $erro = "A pasta de vídeos não é gravável: " . $upload_dir;
+                }
+            }
+
+            // Falha antecipada caso os limites do PHP impeçam o upload
+            if ($parsed_upload_max > 0 && isset($_FILES["arquivo"]["size"]) && $_FILES["arquivo"]["size"] > $parsed_upload_max) {
+                $erro = "O arquivo (" . $_FILES["arquivo"]["size"] . " bytes) excede upload_max_filesize (" . $ini_upload_max . ").";
+            }
+
             $nome_arquivo = time() . "_" . preg_replace('/[^a-zA-Z0-9_-]/', '_', pathinfo($nome_original, PATHINFO_FILENAME)) . "." . $extensao;
             $destino = $upload_dir . $nome_arquivo;
 
             if (!is_uploaded_file($_FILES["arquivo"]["tmp_name"])) {
-                $erro = "Arquivo temporário não encontrado: " . ($_FILES["arquivo"]["tmp_name"] ?? 'n/a');
+                $tmp = $_FILES["arquivo"]["tmp_name"] ?? 'n/a';
+                $erro = "Arquivo temporário não encontrado: " . $tmp . "; upload_tmp_dir: " . $upload_tmp_dir . " (existe: " . (is_dir($upload_tmp_dir) ? 'sim' : 'nao') . ")";
             } elseif (move_uploaded_file($_FILES["arquivo"]["tmp_name"], $destino)) {
                 $url_salva = "videos/" . $nome_arquivo;
 
