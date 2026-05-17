@@ -149,7 +149,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
             </div>
 
-            <div class="auth-form-grid auth-form-grid--two">
+            <div class="auth-form-grid">
                 <div>
                     <input type="password" name="IDF_SENHA" class="form-control custom-input" placeholder="Criar senha" minlength="6" maxlength="100" required>
                 </div>
