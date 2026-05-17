@@ -628,7 +628,7 @@ if ($res) {
         .stat-card.danger { --icon-bg: linear-gradient(135deg, #ef4444, #f87171); }
     </style>
 </head>
-<body style="transition: background 0.3s ease;">
+<body class="admin-layout" style="transition: background 0.3s ease;">
 
     <!-- SIDEBAR -->
     <aside class="admin-sidebar">

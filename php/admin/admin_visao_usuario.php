@@ -65,7 +65,7 @@ if ($usuario_id > 0) {
     <link rel="stylesheet" href="../../css/styles.css">
     <script src="../../js/theme.js"></script>
 </head>
-<body style="transition: background 0.3s ease;">
+<body class="admin-layout" style="transition: background 0.3s ease;">
     <nav class="navbar navbar-expand-lg navbar-dark w-100 p-3">
         <div class="container-fluid px-4">
             <a class="navbar-brand fw-bold d-flex align-items-center" href="<?php echo site_url('php/admin/admin_conteudos.php'); ?>">

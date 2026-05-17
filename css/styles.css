@@ -939,3 +939,22 @@ img { max-width: 100%; height: auto; }
 :root[data-theme="light"] [style*="background: var(--bg-dark)"] {
     background: transparent !important;
 }
+
+/* Admin fixes: remove top body padding artifact and ensure header aligns to top */
+.admin-main { padding-top: 0 !important; margin-top: 0 !important; }
+.admin-header { position: sticky; top: 0; z-index: 1100; }
+.admin-sidebar { top: 0; }
+
+/* Sidebar icon visibility: make sure icons are visible in both themes */
+.sidebar-link i { color: var(--primary-light); }
+.sidebar-link { color: var(--text-muted); }
+.sidebar-link.active, .sidebar-link:hover { color: var(--text-main); }
+
+/* When body has admin-layout class, remove global body padding that creates a stripe */
+body.admin-layout { padding-top: 0 !important; }
+
+/* Admin header navbar adjustments */
+.admin-header .admin-header-content { align-items: center; }
+.admin-header .admin-header-actions { align-items: center; }
+.admin-header .theme-toggle-container { margin-left: 0.5rem; }
+

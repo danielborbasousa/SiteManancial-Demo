@@ -105,7 +105,7 @@ if ($res_usuarios && mysqli_num_rows($res_usuarios) > 0) {
         .table-responsive { background: var(--bg-light); border-radius: 10px; overflow: hidden; }
     </style>
 </head>
-<body style="transition: background 0.3s ease;">
+<body class="admin-layout" style="transition: background 0.3s ease;">
     <nav class="navbar navbar-expand-lg navbar-dark w-100 p-3">
         <div class="container-fluid px-4">
             <a class="navbar-brand fw-bold d-flex align-items-center" href="dashboard.php">
