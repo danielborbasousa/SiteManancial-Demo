@@ -253,11 +253,14 @@ if ($res) {
         }
 
         .admin-header {
-            background: rgba(30, 41, 59, 0.8);
+            position: sticky;
+            top: 0;
+            z-index: 1200;
+            background: #0f172a;
             border-bottom: 1px solid rgba(96, 165, 250, 0.2);
-            padding: 1.5rem;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            padding: 1.25rem 1.5rem;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
             animation: fadeInDown 0.5s ease-out;
         }
 
@@ -638,7 +641,7 @@ if ($res) {
             <div class="sidebar-logo">
                 <img src="../../assets/logo.png" alt="Logo" />
                 <div>
-                    <h5>Admin Panel</h5>
+                    <h5>Painel Admin</h5>
                     <small>Missão Evangélica</small>
                 </div>
             </div>

@@ -106,31 +106,53 @@ body {
     padding-top: calc(var(--navbar-height) + 8px);
 }
 
-/* Personalização da navbar */
+/* Fixed admin/navbar behavior shared with the landing page */
 .navbar {
-    background: var(--surface) !important;
-    background-color: unset !important;
-    border-bottom: 1px solid rgba(255,255,255,0.03);
-    box-shadow: 0 6px 20px rgba(2,6,23,0.6);
-    z-index: 1000;
-    height: var(--navbar-height);
     position: fixed;
     top: 0;
-    display: block;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1200;
+    background: #0f172a !important;
+    background-image: none !important;
+    box-shadow: 0 6px 20px rgba(2, 6, 23, 0.6);
 }
 
-/* Ajustes específicos para o Painel Admin (tema escuro): garantir legibilidade */
-body.admin-layout {
-    color: var(--text-main) !important;
-}
-body.admin-layout h1,
-body.admin-layout h2,
-body.admin-layout h3,
-body.admin-layout h4,
-body.admin-layout h5,
-body.admin-layout h6,
-body.admin-layout p,
-body.admin-layout small,
+/* Personalização da navbar */
+        .admin-header {
+            background: rgba(30, 41, 59, 0.8);
+            border-bottom: 1px solid rgba(96, 165, 250, 0.2);
+            height: var(--navbar-height);
+            padding: 0 1rem;
+            display: flex;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            animation: fadeInDown 0.5s ease-out;
+        }
+
+        .admin-header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .admin-header h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .admin-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
 body.admin-layout label,
 body.admin-layout .form-label,
 body.admin-layout .auth-container,
@@ -218,6 +240,21 @@ body.admin-layout .table .btn {
     gap: 1rem;
     flex-wrap: wrap;
 }
+
+/* Ensure controls appear visually inside the navbar */
+.navbar .theme-toggle-container {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+}
+.navbar .theme-toggle { box-shadow: none; }
+.navbar .btn-outline-light {
+    background: transparent !important;
+    border-color: rgba(255,255,255,0.06) !important;
+    padding: .35rem .6rem !important;
+    height: auto !important;
+}
+.navbar .logo { max-height: calc(var(--navbar-height) - 12px); }
 
 /* Dropdown menu dark theme support */
 .dropdown-menu {
@@ -1076,20 +1113,39 @@ img { max-width: 100%; height: auto; }
 /* Admin fixes: remove top body padding artifact and ensure header aligns to top */
 .admin-main { padding-top: 0 !important; margin-top: 0 !important; }
 .admin-header { position: sticky; top: 0; z-index: 1100; }
+/* Keep sidebar fixed to very top so dashboard layout remains full-height */
 .admin-sidebar { top: 0; }
+
+/* Non-dashboard admin pages use a standard main container; push it below the navbar */
+/* Non-dashboard admin pages use a standard main container; push it below the navbar */
+body.admin-layout main.container,
+body.admin-layout main.container-fluid {
+    margin-top: calc(var(--navbar-height) + 1rem) !important;
+    padding-top: 1.5rem !important;
+}
 
 /* Sidebar icon visibility: make sure icons are visible in both themes */
 .sidebar-link i { color: var(--primary-light); }
 .sidebar-link { color: var(--text-muted); }
 .sidebar-link.active, .sidebar-link:hover { color: var(--text-main); }
 
-/* When body has admin-layout class, remove global body padding that creates a stripe */
-body.admin-layout { padding-top: 0 !important; }
+/* When body has admin-layout class, reserve space for the fixed navbar so it doesn't overlap content
+    Increase navbar height for admin pages to accommodate larger titles and controls. */
+body.admin-layout { --navbar-height: 56px; padding-top: 0 !important; }
 
 /* Admin header navbar adjustments */
 .admin-header .admin-header-content { align-items: center; }
 .admin-header .admin-header-actions { align-items: center; }
 .admin-header .theme-toggle-container { margin-left: 0.5rem; }
+
+/* Ensure the boxed auth-container aligns below navbar */
+body.admin-layout .auth-container {
+    margin-top: 0 !important;
+    padding-top: 0.5rem !important;
+}
+
+/* Keep admin-main (dashboard) layout intact */
+body.admin-layout .admin-main { padding-top: 0 !important; }
 
 /* Strong overrides to fix boxed components with white backgrounds or white text inside admin */
 body.admin-layout .data-table,

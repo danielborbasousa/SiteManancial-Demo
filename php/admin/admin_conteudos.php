@@ -198,21 +198,7 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
     <script src="../../js/theme.js"></script>
 </head>
 <body class="admin-layout" style="transition: background 0.3s ease;">
-    <nav class="navbar navbar-expand-lg navbar-dark w-100 p-3">
-        <div class="container-fluid px-4">
-                <a class="navbar-brand fw-bold d-flex align-items-center" href="dashboard.php">
-                <img src="../../assets/logo.png" alt="Logotipo" class="logo me-2" /> Painel Admin
-            </a>
-            <div class="d-flex gap-2 align-items-center ms-auto">
-                <div class="theme-toggle-container">
-                    <i class="fas fa-moon theme-icon" style="font-size: 1rem;"></i>
-                    <input type="checkbox" id="theme-toggle" class="theme-toggle" aria-label="Alternar tema" style="width: 40px; height: 22px;">
-                    <i class="fas fa-sun theme-icon" style="font-size: 1rem;\"></i>
-                </div>
-                <a href="dashboard.php" class="btn btn-sm btn-outline-light">Voltar ao Painel</a>
-            </div>
-        </div>
-    </nav>
+    <?php include __DIR__ . '/header_admin.php'; ?>
 
     <main class="container py-5">
         <div class="auth-container" style="max-width: 1000px; margin: 0 auto;">
@@ -329,5 +315,6 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
             </div>
         </div>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

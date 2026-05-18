@@ -80,6 +80,19 @@ define('MODO_BANCO', 'simples');
 
 Use `simples` para a versão básica e `robusto` para a estrutura completa.
 
+## Configuração de e-mail com Mailtrap
+
+O envio de e-mails do sistema está centralizado em `php/conexao.php` e usa Mailtrap quando as credenciais forem preenchidas.
+
+Preencha estas constantes no mesmo arquivo:
+
+- `MAILTRAP_API_TOKEN`
+- `MAILTRAP_INBOX_ID`
+
+Se esses dados estiverem vazios, o sistema tenta usar `mail()` como fallback local.
+
+O endpoint usado é o de sandbox do Mailtrap, então você precisa copiar o token e o Inbox ID da sua conta antes de testar aprovação ou recusa no admin.
+
 ## Contas de teste
 
 - Admin: `admin@igreja.com` / `123456`
