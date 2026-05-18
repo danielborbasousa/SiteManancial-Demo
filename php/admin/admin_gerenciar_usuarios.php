@@ -8,12 +8,32 @@ $erro = "";
 $modo = isset($_GET["modo"]) ? $_GET["modo"] : "listar";
 $usuario_id = isset($_GET["id"]) ? (int) $_GET["id"] : 0;
 $usuario_edicao = null;
+$admin_id = isset($_SESSION["Usuario_id"]) ? (int) $_SESSION["Usuario_id"] : 0;
 
 // Processar atualização de usuário
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["acao"])) {
     $acao = $_POST["acao"];
+
+    if ($acao === "excluir_usuario") {
+        $id = (int) $_POST["usuario_id"];
+
+        if ($id <= 0) {
+            $erro = "Usuário inválido.";
+        } else {
+            if ($id === $admin_id) {
+                $erro = "Você não pode excluir o seu próprio usuário.";
+            } else {
+                $sql_delete = "DELETE FROM ID_FIEL WHERE IDF_ID = $id LIMIT 1";
+                if (mysqli_query($conn, $sql_delete)) {
+                    header("location:admin_gerenciar_usuarios.php");
+                    exit;
+                } else {
+                    $erro = "Erro ao excluir usuário: " . mysqli_error($conn);
+                }
+            }
+        }
     
-    if ($acao === "editar_usuario") {
+    } elseif ($acao === "editar_usuario") {
         $id = (int) $_POST["usuario_id"];
         $nome = mysqli_real_escape_string($conn, trim($_POST["nome"]));
         $email = mysqli_real_escape_string($conn, trim($_POST["email"]));
@@ -65,7 +85,6 @@ if ($modo === "editar" && $usuario_id > 0) {
 }
 
 // Buscar informações do admin logado
-$admin_id = isset($_SESSION["Usuario_id"]) ? (int) $_SESSION["Usuario_id"] : 0;
 $sql_admin = "SELECT IDF_ID, IDF_NOME, IDF_EMAIL, IDF_TELEFONE, IDF_CPF, IDF_FUNCAO, IDF_STATUS FROM ID_FIEL WHERE IDF_ID = $admin_id LIMIT 1";
 $res_admin = mysqli_query($conn, $sql_admin);
 $admin_info = $res_admin && mysqli_num_rows($res_admin) > 0 ? mysqli_fetch_assoc($res_admin) : null;
@@ -257,9 +276,20 @@ if ($res_usuarios && mysqli_num_rows($res_usuarios) > 0) {
                                 </td>
                                 <td><small><?php echo date('d/m/Y', strtotime($user["IDF_CRIADO_EM"])); ?></small></td>
                                 <td>
-                                    <a href="admin_gerenciar_usuarios.php?modo=editar&id=<?php echo $user['IDF_ID']; ?>" class="btn btn-sm btn-primary">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <a href="admin_gerenciar_usuarios.php?modo=editar&id=<?php echo $user['IDF_ID']; ?>" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <?php if ((int) $user['IDF_ID'] !== $admin_id) { ?>
+                                            <form method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este usuário?');" style="display:inline;">
+                                                <input type="hidden" name="acao" value="excluir_usuario">
+                                                <input type="hidden" name="usuario_id" value="<?php echo $user['IDF_ID']; ?>">
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </form>
+                                        <?php } ?>
+                                    </div>
                                 </td>
                             </tr>
                             <?php } ?>
