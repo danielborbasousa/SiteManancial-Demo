@@ -1,8 +1,8 @@
 <?php
 // Shared admin header include located inside php/admin/ for easier inclusion from admin pages.
 ?>
-<nav class="navbar navbar-expand-lg navbar-dark w-100 p-100 px-4">
-    <a class="navbar-brand fw-bold d-flex align-items-center" href="admin_conteudos.php">
+<nav class="navbar navbar-expand-lg navbar-dark w-100 p-3 px-4">
+    <a class="navbar-brand fw-bold d-flex align-items-center" href="dashboard.php">
         <img src="../../assets/logo.png" alt="Logotipo" class="logo me-2" /> Painel Admin
     </a>
     <div class="d-flex gap-2 align-items-center ms-auto">

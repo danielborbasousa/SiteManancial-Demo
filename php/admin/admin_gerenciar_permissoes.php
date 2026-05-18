@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $erro = "Este usuário já é administrador.";
                 } else {
                     // Promover a admin
-                    $sql_promote = "INSERT INTO ID_ADMIN (IDA_FIEL_ID, IDA_NIVEL, IDA_ATIVO) VALUES ($usuario_id, 'EDITOR', 1)";
+                    $sql_promote = "INSERT INTO ID_ADMIN (IDA_FIEL_ID, IDA_NIVEL, IDA_ATIVO) VALUES ($usuario_id, 'ADMIN', 1)";
                     if (mysqli_query($conn, $sql_promote)) {
                         $mensagem = "Usuário '" . htmlspecialchars($user["IDF_NOME"]) . "' promovido a ADMIN com sucesso!";
                         
@@ -191,7 +191,7 @@ if ($res_users && mysqli_num_rows($res_users) > 0) {
                                                         <form method="POST">
                                                             <div class="modal-body">
                                                                 <p>Deseja promover <strong><?php echo htmlspecialchars($user["IDF_NOME"]); ?></strong> a administrador?</p>
-                                                                <p class="text-muted small">O usuário terá acesso completo ao painel administrativo e poderá gerenciar conteúdos, usuários e permissões.</p>
+                                                                    <p class="text-muted small">O usuário terá acesso ao painel administrativo.</p>
                                                             </div>
                                                             <div class="modal-footer" style="border-top: 1px solid var(--border-color);">
                                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -247,9 +247,8 @@ if ($res_users && mysqli_num_rows($res_users) > 0) {
                     <i class="fas fa-info-circle me-2"></i>
                     <strong>Níveis de Permissão:</strong>
                     <ul class="mb-0 mt-2">
-                        <li><strong>Usuário:</strong> Acesso à plataforma de conteúdo (vídeos, cursos)</li>
-                        <li><strong>EDITOR:</strong> Acesso ao painel admin, gerenciamento de conteúdos</li>
-                        <li><strong>SUPER:</strong> Acesso total (apenas atribuir manualmente no banco)</li>
+                        <li><strong>Fiel:</strong> Acesso à plataforma de conteúdo (vídeos, cursos)</li>
+                        <li><strong>Admin:</strong> Acesso ao painel administrativo</li>
                     </ul>
                 </div>
             </div>
