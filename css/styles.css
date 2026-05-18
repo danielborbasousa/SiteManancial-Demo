@@ -119,6 +119,97 @@ body {
     display: block;
 }
 
+/* Ajustes específicos para o Painel Admin (tema escuro): garantir legibilidade */
+body.admin-layout {
+    color: var(--text-main) !important;
+}
+body.admin-layout h1,
+body.admin-layout h2,
+body.admin-layout h3,
+body.admin-layout h4,
+body.admin-layout h5,
+body.admin-layout h6,
+body.admin-layout p,
+body.admin-layout small,
+body.admin-layout label,
+body.admin-layout .form-label,
+body.admin-layout .auth-container,
+body.admin-layout .stat-box,
+body.admin-layout .video-card,
+body.admin-layout .table,
+body.admin-layout .table th,
+body.admin-layout .table td,
+body.admin-layout .alert,
+body.admin-layout .btn,
+body.admin-layout .navbar-brand {
+    color: var(--text-main) !important;
+}
+
+/* Inputs/selects/textareas in admin should show white text on dark background */
+body.admin-layout input,
+body.admin-layout textarea,
+body.admin-layout select,
+body.admin-layout .form-control,
+body.admin-layout .custom-input {
+    color: var(--text-main) !important;
+    background: var(--input-bg) !important;
+}
+
+/* Form-select (bootstrap) specific fixes for admin */
+body.admin-layout .form-select,
+body.admin-layout .form-select:focus {
+    background: var(--input-bg) !important;
+    color: var(--text-main) !important;
+    border: 2px solid var(--border-color) !important;
+    box-shadow: 0 0 0 4px rgba(59,130,246,0.06) !important;
+}
+
+/* Modal fixes: ensure modal-content matches dark theme */
+body.admin-layout .modal-content {
+    background: var(--bg-light) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-color) !important;
+}
+body.admin-layout .modal-header .modal-title,
+body.admin-layout .modal-body,
+body.admin-layout .modal-footer {
+    color: var(--text-main) !important;
+}
+
+/* Ensure disabled inputs remain dark and legible */
+body.admin-layout input[disabled],
+body.admin-layout textarea[disabled],
+body.admin-layout .form-control[disabled],
+body.admin-layout select[disabled] {
+    background: rgba(255,255,255,0.02) !important;
+    color: var(--text-muted) !important;
+}
+
+/* Forçar legibilidade de textos que possam estar com opacidade baixa */
+body.admin-layout .text-muted { color: var(--text-muted) !important; opacity: 1 !important; }
+
+/* Tabelas no Painel Admin: texto claro e fundo levemente escuro para melhor leitura */
+body.admin-layout .table {
+    background: transparent !important;
+    color: var(--text-main) !important;
+}
+body.admin-layout .table thead th {
+    background: rgba(255,255,255,0.02) !important;
+    color: var(--text-main) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+}
+body.admin-layout .table tbody tr {
+    background: rgba(255,255,255,0.01) !important;
+}
+body.admin-layout .table tbody td {
+    color: var(--text-main) !important;
+    border-top: 1px solid rgba(255,255,255,0.03) !important;
+}
+body.admin-layout .table .btn {
+    color: inherit !important;
+}
+
+
 /* Ensure navbar contents are arranged responsively */
 .navbar .container-fluid {
     display: flex;
@@ -292,6 +383,32 @@ body {
     outline: none !important;
     animation: inputFocus 0.4s ease-out;
 }
+
+/* Forçar campos do admin a manterem fundo escuro e texto legível (sobrescreve Bootstrap quando necessário) */
+.form-control.custom-input,
+select.custom-input,
+textarea.custom-input {
+    background: var(--input-bg) !important;
+    color: var(--text-main) !important;
+    border: 2px solid var(--border-color) !important;
+}
+
+.form-control.custom-input::placeholder,
+textarea.custom-input::placeholder {
+    color: var(--text-muted) !important;
+}
+
+.form-control.custom-input:focus,
+select.custom-input:focus,
+textarea.custom-input:focus {
+    background: linear-gradient(135deg, #334155 0%, #3d4a5f 100%) !important;
+    color: var(--text-main) !important;
+    border-color: rgba(96,165,250,0.9) !important;
+    box-shadow: 0 0 0 4px rgba(59,130,246,0.12) !important;
+}
+
+/* Evitar que selects nativos mostrem fundo branco quando abertos/selecionados */
+select.custom-input:-moz-focusring { color: transparent; text-shadow: 0 0 0 var(--text-main); }
 
 .auth-link {
     color: var(--text-main);
@@ -973,4 +1090,90 @@ body.admin-layout { padding-top: 0 !important; }
 .admin-header .admin-header-content { align-items: center; }
 .admin-header .admin-header-actions { align-items: center; }
 .admin-header .theme-toggle-container { margin-left: 0.5rem; }
+
+/* Strong overrides to fix boxed components with white backgrounds or white text inside admin */
+body.admin-layout .data-table,
+body.admin-layout .table-responsive,
+body.admin-layout .user-card,
+body.admin-layout .meu-perfil-card,
+body.admin-layout .p-3.rounded-3,
+body.admin-layout .card,
+body.admin-layout .panel,
+body.admin-layout .panel-body,
+body.admin-layout .action-card {
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+/* Ensure any table cells inside admin boxes are dark and text is visible */
+body.admin-layout .data-table table,
+body.admin-layout .table-responsive table,
+body.admin-layout .table {
+    background: transparent !important;
+    color: var(--text-main) !important;
+}
+
+body.admin-layout .data-table table tbody tr,
+body.admin-layout .table-responsive table tbody tr,
+body.admin-layout .table tbody tr,
+body.admin-layout .data-table table tbody td,
+body.admin-layout .table-responsive table tbody td,
+body.admin-layout .table tbody td {
+    background: transparent !important;
+    color: var(--text-main) !important;
+}
+
+body.admin-layout .data-table table thead th,
+body.admin-layout .table thead th,
+body.admin-layout .table-responsive table thead th {
+    background: rgba(255,255,255,0.03) !important;
+    color: var(--text-main) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+}
+
+/* Fix input/select/textarea inside boxed areas to ensure legible text */
+body.admin-layout .p-3.rounded-3 input,
+body.admin-layout .p-3.rounded-3 select,
+body.admin-layout .p-3.rounded-3 textarea,
+body.admin-layout .card input,
+body.admin-layout .card select,
+body.admin-layout .card textarea,
+body.admin-layout .data-table input,
+body.admin-layout .data-table select,
+body.admin-layout .data-table textarea {
+    background: var(--input-bg) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+/* Force option background and text color for selects in admin (dropdown list) */
+body.admin-layout select,
+body.admin-layout select.custom-input,
+body.admin-layout .form-control.custom-input {
+    background: var(--input-bg) !important;
+    color: var(--text-main) !important;
+}
+
+body.admin-layout select option {
+    background: linear-gradient(180deg, var(--bg-light), rgba(21,34,56,0.95)) !important;
+    color: var(--text-main) !important;
+}
+
+/* Remove native white dropdown arrow background on some browsers */
+body.admin-layout select::-ms-expand { display: none; }
+
+/* On focus keep border and visible text */
+body.admin-layout select:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 6px rgba(59,130,246,0.06) !important;
+    border-color: rgba(59,130,246,0.4) !important;
+}
+
+/* Buttons inside admin boxes keep visible text */
+body.admin-layout .card .btn,
+body.admin-layout .data-table .btn,
+body.admin-layout .action-card .btn {
+    color: var(--text-main) !important;
+}
 

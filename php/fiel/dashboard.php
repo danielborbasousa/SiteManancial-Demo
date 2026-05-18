@@ -117,7 +117,7 @@ $eh_admin = isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "a
         <div class="hero-dashboard">
             <div class="row align-items-center">
                 <div class="col-md-8">
-                    <h1 class="display-5 fw-bold mb-2">Bem-vindo, <?php echo htmlspecialchars($usuario_nome); ?>! 👋</h1>
+                    <h1 class="display-5 fw-bold mb-2">Bem-vindo, <?php echo htmlspecialchars($usuario_nome); ?>! </h1>
                     <p class="lead text-muted mb-0">
                         Explore nossos vídeos, conteúdos exclusivos e fortaleça seu crescimento espiritual na comunidade.
                     </p>

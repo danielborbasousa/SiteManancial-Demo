@@ -200,8 +200,8 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
 <body class="admin-layout" style="transition: background 0.3s ease;">
     <nav class="navbar navbar-expand-lg navbar-dark w-100 p-3">
         <div class="container-fluid px-4">
-            <a class="navbar-brand fw-bold d-flex align-items-center" href="dashboard.php">
-                <img src="../../assets/logo.png" alt="Logotipo" class="logo me-2" /> Admin Panel
+                <a class="navbar-brand fw-bold d-flex align-items-center" href="dashboard.php">
+                <img src="../../assets/logo.png" alt="Logotipo" class="logo me-2" /> Painel Admin
             </a>
             <div class="d-flex gap-2 align-items-center ms-auto">
                 <div class="theme-toggle-container">
