@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["acao"])) {
             $erro = "Usuário inválido.";
         } else {
             if ($id === $admin_id) {
-                $erro = "Você não pode excluir o seu próprio usuário.";
+                $erro = "Você não pode excluir sua própria conta.";
             } else {
                 $sql_delete = "DELETE FROM ID_FIEL WHERE IDF_ID = $id LIMIT 1";
                 if (mysqli_query($conn, $sql_delete)) {

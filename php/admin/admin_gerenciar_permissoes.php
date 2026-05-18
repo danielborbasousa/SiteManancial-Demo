@@ -5,6 +5,8 @@ auth_require(array('admin'));
 
 $mensagem = "";
 $erro = "";
+$admin_id_logado = isset($_SESSION["Usuario_id"]) ? (int) $_SESSION["Usuario_id"] : 0;
+$admin_id_logado = isset($_SESSION["Usuario_id"]) ? (int) $_SESSION["Usuario_id"] : 0;
 
 // Processar mudança de permissão
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -44,6 +46,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     }
                 }
             } else if ($acao === 'remover') {
+                if ($usuario_id === $admin_id_logado) {
+                    $erro = "Você não pode remover sua própria permissão de administrador.";
+                } else {
                 // Verificar se é admin
                 $sql_check = "SELECT IDA_ID FROM ID_ADMIN WHERE IDA_FIEL_ID = $usuario_id LIMIT 1";
                 $res_check = mysqli_query($conn, $sql_check);
@@ -67,6 +72,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     } else {
                         $erro = "Erro ao remover permissão: " . mysqli_error($conn);
                     }
+                }
                 }
             }
         } else {
@@ -168,7 +174,11 @@ if ($res_users && mysqli_num_rows($res_users) > 0) {
                                                     <?php } ?>
                                                 </td>
                                                 <td>
-                                                    <?php if ($user["eh_admin"] == 1) { ?>
+                                                    <?php if ($user["eh_admin"] == 1 && (int) $user["IDF_ID"] === $admin_id_logado) { ?>
+                                                        <span class="badge bg-info text-dark">
+                                                            <i class="fas fa-shield-alt me-1"></i>Seu acesso
+                                                        </span>
+                                                    <?php } elseif ($user["eh_admin"] == 1) { ?>
                                                         <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#removeModal<?php echo $user["IDF_ID"]; ?>">
                                                             <i class="fas fa-times me-1"></i>Remover Admin
                                                         </button>
@@ -205,6 +215,7 @@ if ($res_users && mysqli_num_rows($res_users) > 0) {
                                                 </div>
                                             </div>
 
+                                            <?php if ($user["eh_admin"] == 1 && (int) $user["IDF_ID"] !== $admin_id_logado) { ?>
                                             <!-- Modal Remover -->
                                             <div class="modal fade" id="removeModal<?php echo $user["IDF_ID"]; ?>" tabindex="-1">
                                                 <div class="modal-dialog">
@@ -229,6 +240,7 @@ if ($res_users && mysqli_num_rows($res_users) > 0) {
                                                     </div>
                                                 </div>
                                             </div>
+                                            <?php } ?>
                                         <?php } ?>
                                     </tbody>
                                 </table>
