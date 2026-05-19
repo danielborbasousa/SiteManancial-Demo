@@ -175,7 +175,7 @@ if ($res_historico && mysqli_num_rows($res_historico) > 0) {
                 <h1 class="mb-4"><i class="fas fa-user-check me-2"></i>Aprovação de Usuários</h1>
 
                 <?php if ($mensagem !== "") { ?>
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <div class="alert alert-success alert-dismissible fade show approval-status-alert" role="alert">
                         <i class="fas fa-check-circle me-2"></i><?php echo htmlspecialchars($mensagem); ?>
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
@@ -187,6 +187,14 @@ if ($res_historico && mysqli_num_rows($res_historico) > 0) {
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 <?php } ?>
+
+                <style>
+                    :root[data-theme="dark"] .approval-status-alert {
+                        background: #14532d !important;
+                        color: #000 !important;
+                        border: 1px solid #166534 !important;
+                    }
+                </style>
 
                 <!-- USUARIOS PENDENTES -->
                 <div class="card mb-5" style="background: var(--bg-light); border: 1px solid var(--border-color);">
