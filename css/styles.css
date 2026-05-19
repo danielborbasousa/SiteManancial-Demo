@@ -231,6 +231,13 @@ body.admin-layout .table .btn {
     color: inherit !important;
 }
 
+/* Ajuste para alerts: usar cores do tema (no escuro fica preto/escuro, no claro fica claro) */
+.alert-info {
+    background: var(--bg-dark) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
 
 /* Ensure navbar contents are arranged responsively */
 .navbar .container-fluid {
