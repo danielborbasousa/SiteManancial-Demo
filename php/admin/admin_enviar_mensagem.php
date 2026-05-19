@@ -186,8 +186,42 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["acao"]) && $_POST["ac
             </form>
 
             <style>
-                #lista-selecionados .user-item.is-selected { background: rgba(99,102,241,0.12); border-color: rgba(99,102,241,0.25); }
-                #lista-selecionados .user-item .form-check-input { width:18px; height:18px; }
+                /* Radio buttons - destino */
+                .form-check-input {
+                    width: 20px;
+                    height: 20px;
+                    border: 2px solid #888;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                }
+                .form-check-input:checked {
+                    background-color: #10b981 !important;
+                    border-color: #059669 !important;
+                    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
+                }
+                .form-check-input:focus {
+                    border-color: #10b981;
+                    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
+                }
+
+                /* Lista de usuários */
+                #lista-selecionados .user-item {
+                    transition: all 0.2s ease;
+                    border: 2px solid rgba(255, 255, 255, 0.2);
+                }
+                #lista-selecionados .user-item.is-selected {
+                    background: rgba(16, 185, 129, 0.25);
+                    border-color: #10b981;
+                    box-shadow: 0 0 12px rgba(16, 185, 129, 0.3);
+                }
+                #lista-selecionados .user-item .form-check-input { 
+                    width: 18px; 
+                    height: 18px;
+                }
+                #lista-selecionados .user-item .form-check-input:checked {
+                    background-color: #10b981 !important;
+                    border-color: #059669 !important;
+                }
             </style>
 
             <script>
