@@ -180,7 +180,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["acao"]) && $_POST["ac
                         <button type="submit" class="btn btn-primary fw-bold">
                             <i class="fas fa-paper-plane me-2"></i>Enviar Mensagem
                         </button>
-                        <a href="dashboard.php" class="btn btn-outline-light">Voltar ao Painel</a>
                     </div>
                 </div>
             </form>
