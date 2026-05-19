@@ -93,7 +93,7 @@ if ($usuario_id > 0) {
                     <?php } ?>
                 </div>
             <?php } else { ?>
-                <div class="alert alert-info" role="alert">
+                <div class="alert alert-info" role="alert" style="background:#ffffff !important; color:#000000 !important; border:1px solid rgba(0,0,0,0.08) !important;">
                     Você não tem notificações no momento.
                 </div>
             <?php } ?>

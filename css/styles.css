@@ -252,6 +252,43 @@ body.admin-layout .admin-notifications .alert-info {
     border: 1px solid rgba(0,0,0,0.08) !important;
 }
 
+/* Forçar texto do botão 'Enviar video' em admin dark para preto (melhor contraste) */
+body.admin-layout .btn.btn-light {
+    color: #000000 !important;
+}
+
+/* Garantir também quando o botão estiver desabilitado/estado :disabled */
+body.admin-layout .btn.btn-light:disabled,
+body.admin-layout .btn.btn-light[disabled] {
+    color: #000000 !important;
+    opacity: 0.95 !important;
+}
+
+/* No tema claro, garantir que a tabela de videos no admin tenha texto branco para melhor leitura */
+:root[data-theme="light"] body.admin-layout .table.table-dark tbody td,
+:root[data-theme="light"] body.admin-layout .table.table-dark thead th {
+    color: #ffffff !important;
+}
+
+/* Garantir que links dentro das células (URL) também fiquem brancos no tema claro */
+:root[data-theme="light"] body.admin-layout .table.table-dark tbody td a {
+    color: #ffffff !important;
+    text-decoration: underline !important;
+}
+
+/* Seleção de usuários na lista de envio de mensagens: usar verde de destaque em ambos temas */
+#lista-selecionados .user-item.is-selected,
+body.admin-layout #lista-selecionados .user-item.is-selected,
+.admin-notifications #lista-selecionados .user-item.is-selected {
+    background: rgba(16,185,129,0.14) !important; /* verde suave */
+    border-color: rgba(16,185,129,0.4) !important;
+}
+
+#lista-selecionados .user-item.is-selected .text-white,
+body.admin-layout #lista-selecionados .user-item.is-selected .text-white {
+    color: var(--text-main) !important;
+}
+
 
 /* Ensure navbar contents are arranged responsively */
 .navbar .container-fluid {

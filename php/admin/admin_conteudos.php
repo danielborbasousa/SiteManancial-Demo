@@ -244,14 +244,14 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
                         <input type="file" name="arquivo" class="form-control custom-input" accept="video/*" required>
                     </div>
                     <div class="col-12">
-                        <button type="submit" class="btn btn-light fw-bold">Enviar video</button>
+                        <button type="submit" class="btn btn-light fw-bold" style="color:#000000 !important; background:#ffffff !important;">Enviar video</button>
                     </div>
                 </div>
             </form>
 
             <h2 class="h4 mb-3">Videos enviados</h2>
             <div class="table-responsive">
-                <table class="table table-dark table-striped align-middle">
+                <table class="table table-dark table-striped align-middle" style="color:#ffffff !important;">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -265,9 +265,9 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
                         <?php if (count($conteudos) > 0) { ?>
                             <?php foreach ($conteudos as $conteudo) { ?>
                                 <tr>
-                                    <td><?php echo (int) $conteudo["IDCT_ID"]; ?></td>
-                                    <td><?php echo htmlspecialchars($conteudo["IDCT_TITULO"]); ?></td>
-                                    <td><?php echo htmlspecialchars($conteudo["IDCT_URL"]); ?></td>
+                                    <td style="color:#ffffff !important;"><?php echo (int) $conteudo["IDCT_ID"]; ?></td>
+                                    <td style="color:#ffffff !important;"><?php echo htmlspecialchars($conteudo["IDCT_TITULO"]); ?></td>
+                                    <td style="color:#ffffff !important;"><?php echo htmlspecialchars($conteudo["IDCT_URL"]); ?></td>
                                     <td><?php echo (int) $conteudo["IDCT_ORDEM"]; ?></td>
                                     <td>
                                         <a href="<?php echo htmlspecialchars(strpos($conteudo["IDCT_URL"], 'videos/') === 0 ? '../../' . $conteudo["IDCT_URL"] : $conteudo["IDCT_URL"]); ?>" class="btn btn-sm btn-info" target="_blank">Ver</a>
