@@ -143,10 +143,6 @@ $eh_admin = isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "a
                 <div class="stat-label">Crescimento</div>
             </div>
             <div class="stat-box">
-                <div class="stat-number">24/7</div>
-                <div class="stat-label">Acesso</div>
-            </div>
-            <div class="stat-box">
                 <div class="stat-number">100%</div>
                 <div class="stat-label">Gratuito</div>
             </div>

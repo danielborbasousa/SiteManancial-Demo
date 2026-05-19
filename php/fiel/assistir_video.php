@@ -65,7 +65,7 @@ if($url != "" && !file_exists($url)) {
                 </ul>
 
                 <div class="d-flex align-items-center gap-3">
-                    <a href="dashboard.php" class="btn btn-sm btn-outline-light" title="Voltar para o painel"><i class="fas fa-arrow-left"></i></a>
+                    <a href="dashboard.php" class="btn btn-sm btn-outline-light">Voltar ao Painel</a>
                     <a href="busca.php" class="text-decoration-none" style="font-size: 1.2rem; color: var(--primary-light);"><i class="fas fa-search"></i></a>
                     <a href="notificacoes.php" class="text-decoration-none" style="font-size: 1.2rem; color: var(--primary-light);"><i class="fas fa-bell"></i></a>
                     <div class="theme-toggle-container">
