@@ -691,6 +691,12 @@ if ($res) {
                     </a>
                 </li>
                 <li class="sidebar-menu-item">
+                    <a href="admin_enviar_mensagem.php" class="sidebar-link">
+                        <i class="fas fa-comment-dots"></i>
+                        <span>Enviar Mensagem</span>
+                    </a>
+                </li>
+                <li class="sidebar-menu-item">
                     <a href="../fiel/sair.php" class="sidebar-link" style="margin-top: auto;">
                         <i class="fas fa-sign-out-alt"></i>
                         <span>Sair</span>
