@@ -102,8 +102,23 @@ A tabela usada para isso é `ID_NOTIFICACAO`.
 
 1. Inicie o Apache e o MySQL no XAMPP.
 2. Importe um dos bancos presentes em `database/`.
-3. Ajuste as credenciais em `php/conexao.php` se necessário.
-4. Defina o modo do banco em `php/conexao.php`.
+3. Crie um arquivo `.env` na raiz do projeto com as chaves sensíveis (ex.: credenciais do banco, chaves de serviço de e-mail). Exemplo mínimo:
+
+```env
+# Banco de dados
+DB_HOST=localhost
+DB_USER=root
+DB_PASS=
+DB_NAME=igreja_cursos
+
+# Email (API key para provedor SMTP/Transactional)
+EMAIL_API_KEY=
+EMAIL_SENDER_EMAIL=seu_email@exemplo.com
+EMAIL_SENDER_NAME=SiteManancial
+```
+
+4. O projeto carrega automaticamente variáveis do `.env` — não comite esse arquivo. O `.gitignore` já contém uma entrada para `.env`.
+5. Defina o modo do banco em `php/conexao.php` se necessário.
 5. Acesse `http://localhost/SiteManancial-Demo/index.html`.
 
 ## Configuração do modo do banco
@@ -117,16 +132,15 @@ define('MODO_BANCO', 'simples');
 Use `simples` para a estrutura enxuta e `robusto` para a estrutura completa.
 
 ## E-mail do sistema
-
 O envio de e-mails do sistema está centralizado em `php/conexao.php`.
 
-O projeto já possui suporte para envio de e-mail em ações administrativas, como aprovação ou recusa de cadastro. Quando o envio por e-mail não estiver disponível, o fluxo continua funcionando com o registro interno da ação.
+O sistema usa uma chave de API e um remetente configurados via variáveis de ambiente (veja a seção de configuração acima). Caso o provedor de e-mail/transmissão não esteja configurado, o sistema tenta um fallback para envio local (função `mail()`), mas esse envio local pode não funcionar em ambientes de desenvolvimento sem um servidor SMTP configurado.
+
+Para que o envio de e-mail funcione corretamente, entre em contato com os desenvolvedores para que passem as variáveis de configuração necessárias (por exemplo: API key do provedor e e-mail remetente) e realizem a configuração no servidor.
 
 ## Contas de teste
 
-- Admin: `admin@igreja.com` / `123456`
-- Usuário: `joao@email.com` / `123456`
-- Usuário: `maria@email.com` / `123456`
+Existem contas e dados de exemplo nos scripts em `database/` para facilitar testes locais. Esses dados são apenas ilustrativos — não use essas credenciais em ambiente de produção. Recomenda-se alterar as senhas de exemplo após importar os dumps.
 
 ## Regras e validações
 
