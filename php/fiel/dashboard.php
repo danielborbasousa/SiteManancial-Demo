@@ -87,9 +87,7 @@ $eh_admin = isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "a
                         <i class="fas fa-search"></i>
                     </a>
                     
-                    <a href="notificacoes.php" class="text-decoration-none" style="font-size: 1.2rem; color: var(--primary-light);">
-                        <i class="fas fa-bell"></i>
-                    </a>
+                    <?php include __DIR__ . '/../partials/notif_bell.php'; ?>
 
                     <div class="theme-toggle-container">
                         <i class="fas fa-moon theme-icon" style="font-size: 1rem;"></i>

@@ -11,6 +11,7 @@
             <input type="checkbox" id="theme-toggle" class="theme-toggle" aria-label="Alternar tema" style="width: 40px; height: 22px;">
             <i class="fas fa-sun theme-icon" style="font-size: 1rem;"></i>
         </div>
+        <?php include __DIR__ . '/../partials/notif_bell.php'; ?>
         <a href="dashboard.php" class="btn btn-sm btn-outline-light">Voltar ao Painel</a>
     </div>
 </nav>

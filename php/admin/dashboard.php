@@ -718,6 +718,7 @@ if ($res) {
                     </h1>
                 </div>
                 <div class="admin-header-actions">
+                    <?php include __DIR__ . '/../partials/notif_bell.php'; ?>
                     <div class="theme-toggle-container">
                         <i class="fas fa-moon theme-icon" style="font-size: 1rem;"></i>
                         <input type="checkbox" id="theme-toggle" class="theme-toggle" aria-label="Alternar tema" style="width: 40px; height: 22px;">
