@@ -13,12 +13,147 @@ if (!defined('SESSION_TIMEOUT_SECONDS')) {
     define('SESSION_TIMEOUT_SECONDS', 3600);
 }
 
+function site_load_env($path = null) {
+    $env = array();
+    $path = $path ?? dirname(__DIR__) . '/.env';
+
+    if (!is_file($path) || !is_readable($path)) {
+        return $env;
+    }
+
+    $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    if ($lines === false) {
+        return $env;
+    }
+
+    foreach ($lines as $line) {
+        $line = trim($line);
+        if ($line === '' || $line[0] === '#') {
+            continue;
+        }
+
+        $pos = strpos($line, '=');
+        if ($pos === false) {
+            continue;
+        }
+
+        $key = trim(substr($line, 0, $pos));
+        $value = trim(substr($line, $pos + 1));
+
+        if ($key === '') {
+            continue;
+        }
+
+        if ((strlen($value) >= 2) && (($value[0] === '"' && substr($value, -1) === '"') || ($value[0] === "'" && substr($value, -1) === "'"))) {
+            $value = substr($value, 1, -1);
+        }
+
+        $env[$key] = $value;
+        $_ENV[$key] = $value;
+        $_SERVER[$key] = $value;
+        putenv($key . '=' . $value);
+    }
+
+    return $env;
+}
+
+function site_env($key, $default = '') {
+    if (array_key_exists($key, $_ENV) && $_ENV[$key] !== '') {
+        return $_ENV[$key];
+    }
+
+    $value = getenv($key);
+    if ($value !== false && $value !== '') {
+        return $value;
+    }
+
+    if (array_key_exists($key, $_SERVER) && $_SERVER[$key] !== '') {
+        return $_SERVER[$key];
+    }
+
+    return $default;
+}
+
+site_load_env();
+
+// Email provider configuration - prefer generic names, but keep backward compatibility
+if (!defined('EMAIL_API_KEY')) {
+    $email_api = site_env('EMAIL_API_KEY');
+    if (empty($email_api)) {
+        $email_api = site_env('BREVO_API_KEY');
+    }
+    define('EMAIL_API_KEY', $email_api);
+}
+
+if (!defined('EMAIL_SENDER_EMAIL')) {
+    $sender = site_env('EMAIL_SENDER_EMAIL');
+    if (empty($sender)) {
+        $sender = site_env('BREVO_SENDER_EMAIL');
+    }
+    define('EMAIL_SENDER_EMAIL', $sender);
+}
+
+if (!defined('EMAIL_SENDER_NAME')) {
+    $sender_name = site_env('EMAIL_SENDER_NAME', site_env('BREVO_SENDER_NAME', 'SiteManancial'));
+    define('EMAIL_SENDER_NAME', $sender_name);
+}
+
 function site_url($path = '') {
     return rtrim(SITE_BASE_URL, '/') . '/' . ltrim($path, '/');
 }
 
 function enviar_email_sistema($destinatario, $assunto, $mensagem_html, $mensagem_texto = '') {
-    if (!function_exists('mail') || trim($destinatario) === '') {
+    $destinatario = trim((string) $destinatario);
+    if ($destinatario === '') {
+        return false;
+    }
+
+    $api_key = trim((string) EMAIL_API_KEY);
+    $sender_email = trim((string) EMAIL_SENDER_EMAIL);
+
+    if ($api_key !== '' && $sender_email !== '' && function_exists('curl_init')) {
+        $payload = array(
+            'sender' => array(
+                'name' => trim((string) EMAIL_SENDER_NAME) !== '' ? EMAIL_SENDER_NAME : 'SiteManancial',
+                'email' => $sender_email,
+            ),
+            'to' => array(
+                array(
+                    'email' => $destinatario,
+                ),
+            ),
+            'subject' => $assunto,
+            'htmlContent' => $mensagem_html,
+        );
+
+        if ($mensagem_texto !== '') {
+            $payload['textContent'] = $mensagem_texto;
+        }
+
+        $ch = curl_init('https://api.brevo.com/v3/smtp/email');
+        curl_setopt_array($ch, array(
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode($payload),
+            CURLOPT_HTTPHEADER => array(
+                'api-key: ' . $api_key,
+                'Content-Type: application/json',
+                'Accept: application/json',
+            ),
+            CURLOPT_TIMEOUT => 20,
+        ));
+
+        $response = curl_exec($ch);
+        $curl_error = curl_errno($ch);
+        $http_code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if (!$curl_error && $http_code >= 200 && $http_code < 300) {
+            return true;
+        }
+    }
+
+    if (!function_exists('mail')) {
         return false;
     }
 
@@ -26,8 +161,8 @@ function enviar_email_sistema($destinatario, $assunto, $mensagem_html, $mensagem
     $headers = array();
     $headers[] = 'MIME-Version: 1.0';
     $headers[] = 'Content-type: text/html; charset=UTF-8';
-    $headers[] = 'From: SiteManancial <no-reply@localhost>';
-    $headers[] = 'Reply-To: no-reply@localhost';
+    $headers[] = 'From: ' . (trim((string) BREVO_SENDER_NAME) !== '' ? BREVO_SENDER_NAME : 'SiteManancial') . ' <' . (trim((string) BREVO_SENDER_EMAIL) !== '' ? BREVO_SENDER_EMAIL : 'no-reply@localhost') . '>';
+    $headers[] = 'Reply-To: ' . (trim((string) BREVO_SENDER_EMAIL) !== '' ? BREVO_SENDER_EMAIL : 'no-reply@localhost');
     $headers[] = 'X-Mailer: PHP/' . phpversion();
 
     $html = $mensagem_html;

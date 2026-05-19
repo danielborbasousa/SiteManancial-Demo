@@ -2,7 +2,8 @@
 /.vscode/
 /.idea/
 *.log
-*.env
+.env
+.env.*
 .DS_Store
 
 # Dependências
