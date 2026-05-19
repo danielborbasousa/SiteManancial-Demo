@@ -118,7 +118,7 @@ $eh_admin = isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "a
             <div class="row align-items-center">
                 <div class="col-md-8">
                     <h1 class="display-5 fw-bold mb-2">Bem-vindo, <?php echo htmlspecialchars($usuario_nome); ?>! </h1>
-                    <p class="lead text-muted mb-0">
+                    <p class="lead text-white mb-0">
                         Explore nossos vídeos, conteúdos exclusivos e fortaleça seu crescimento espiritual na comunidade.
                     </p>
                 </div>
@@ -153,7 +153,7 @@ $eh_admin = isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "a
             <div class="d-flex align-items-center justify-content-between mb-4">
                 <div>
                     <h2 class="mb-1"><i class="fas fa-play-circle me-2" style="color: #60a5fa;"></i>Conteúdos Recentes</h2>
-                    <p class="text-muted">Nossos vídeos e aulas mais recentes para sua edificação espiritual</p>
+                    <p class="text-white">Nossos vídeos e aulas mais recentes para sua edificação espiritual</p>
                 </div>
                 <a href="todos_videos.php" class="btn btn-outline-light btn-sm">Ver Todos</a>
             </div>
