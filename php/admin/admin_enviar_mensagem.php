@@ -17,7 +17,8 @@ if ($res_usuarios && mysqli_num_rows($res_usuarios) > 0) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["acao"]) && $_POST["acao"] === "enviar_mensagem") {
-    $destino = isset($_POST["destino"]) ? trim($_POST["destino"]) : "";
+    $destino_tipo = isset($_POST["destino_tipo"]) ? trim($_POST["destino_tipo"]) : "";
+    $destinos = isset($_POST["destinos"]) && is_array($_POST["destinos"]) ? $_POST["destinos"] : array();
     $titulo = trim($_POST["titulo"] ?? "");
     $mensagem_texto = trim($_POST["mensagem"] ?? "");
     $tipo = trim($_POST["tipo"] ?? "info");
@@ -26,39 +27,53 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["acao"]) && $_POST["ac
         $erro = "Preencha o título e a mensagem.";
     } elseif (!in_array($tipo, array('info', 'sucesso', 'aviso', 'erro'), true)) {
         $erro = "Tipo de mensagem inválido.";
-    } elseif ($destino === "") {
-        $erro = "Selecione um fiel ou Todos os fiéis.";
+    } elseif ($destino_tipo === "") {
+        $erro = "Selecione um destino (ex: Todos os fiéis, Admins, Usuários ou Selecionados).";
     } else {
         $titulo_db = mysqli_real_escape_string($conn, $titulo);
         $mensagem_db = mysqli_real_escape_string($conn, $mensagem_texto);
         $tipo_db = mysqli_real_escape_string($conn, $tipo);
 
-        if ($destino === 'todos') {
+        // todos os fiéis / todos os usuários (aprovados e ativos)
+        if ($destino_tipo === 'todos' || $destino_tipo === 'todos_fieis' || $destino_tipo === 'todos_usuarios') {
             $sql = "INSERT INTO ID_NOTIFICACAO (IDF_ID, IDN_TITULO, IDN_MENSAGEM, IDN_TIPO)\n                    SELECT IDF_ID, '$titulo_db', '$mensagem_db', '$tipo_db'\n                    FROM ID_FIEL\n                    WHERE IDF_STATUS = 'aprovado' AND IDF_ATIVO = 1";
             if (mysqli_query($conn, $sql)) {
                 $qtde = mysqli_affected_rows($conn);
-                $mensagem = "Mensagem enviada com sucesso para " . ($qtde > 0 ? $qtde : 0) . " fiel(is).";
+                $mensagem = "Mensagem enviada com sucesso para " . ($qtde > 0 ? $qtde : 0) . " usuário(s).";
             } else {
                 $erro = "Erro ao enviar mensagem: " . mysqli_error($conn);
             }
-        } else {
-            $usuario_id = (int) $destino;
-            if ($usuario_id <= 0) {
-                $erro = "Fiel inválido.";
+
+        } elseif ($destino_tipo === 'todos_admins') {
+            $sql = "INSERT INTO ID_NOTIFICACAO (IDF_ID, IDN_TITULO, IDN_MENSAGEM, IDN_TIPO)\n                    SELECT f.IDF_ID, '$titulo_db', '$mensagem_db', '$tipo_db'\n                    FROM ID_ADMIN a JOIN ID_FIEL f ON f.IDF_ID = a.IDA_FIEL_ID\n                    WHERE a.IDA_ATIVO = 1 AND f.IDF_STATUS = 'aprovado' AND f.IDF_ATIVO = 1";
+            if (mysqli_query($conn, $sql)) {
+                $qtde = mysqli_affected_rows($conn);
+                $mensagem = "Mensagem enviada com sucesso para " . ($qtde > 0 ? $qtde : 0) . " admin(s).";
             } else {
-                $sql_verifica = "SELECT IDF_ID FROM ID_FIEL WHERE IDF_ID = $usuario_id AND IDF_STATUS = 'aprovado' LIMIT 1";
-                $res_verifica = mysqli_query($conn, $sql_verifica);
-                if ($res_verifica && mysqli_num_rows($res_verifica) > 0) {
-                    $sql = "INSERT INTO ID_NOTIFICACAO (IDF_ID, IDN_TITULO, IDN_MENSAGEM, IDN_TIPO) VALUES ($usuario_id, '$titulo_db', '$mensagem_db', '$tipo_db')";
-                    if (mysqli_query($conn, $sql)) {
-                        $mensagem = "Mensagem enviada com sucesso para o fiel selecionado.";
-                    } else {
-                        $erro = "Erro ao enviar mensagem: " . mysqli_error($conn);
-                    }
-                } else {
-                    $erro = "Somente fiéis aprovados podem receber mensagens.";
-                }
+                $erro = "Erro ao enviar mensagem: " . mysqli_error($conn);
             }
+
+        } elseif ($destino_tipo === 'selecionados') {
+            if (empty($destinos)) {
+                $erro = "Selecione pelo menos um usuário.";
+            } else {
+                $enviadas = 0;
+                foreach ($destinos as $d) {
+                    $uid = (int) $d;
+                    if ($uid <= 0) continue;
+                    $sql_verifica = "SELECT IDF_ID FROM ID_FIEL WHERE IDF_ID = $uid AND IDF_STATUS = 'aprovado' AND IDF_ATIVO = 1 LIMIT 1";
+                    $res_verifica = mysqli_query($conn, $sql_verifica);
+                    if ($res_verifica && mysqli_num_rows($res_verifica) > 0) {
+                        $sql_ins = "INSERT INTO ID_NOTIFICACAO (IDF_ID, IDN_TITULO, IDN_MENSAGEM, IDN_TIPO) VALUES ($uid, '$titulo_db', '$mensagem_db', '$tipo_db')";
+                        if (mysqli_query($conn, $sql_ins)) {
+                            $enviadas++;
+                        }
+                    }
+                }
+                $mensagem = "Mensagem enviada com sucesso para " . $enviadas . " usuário(s) selecionados.";
+            }
+        } else {
+            $erro = "Destino inválido.";
         }
     }
 }
@@ -105,15 +120,44 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["acao"]) && $_POST["ac
                 <div class="row g-3">
                     <div class="col-md-12">
                         <label class="form-label">Destino</label>
-                        <select name="destino" class="form-select custom-input" required>
-                            <option value="">Selecione</option>
-                            <option value="todos">Todos os fiéis</option>
-                            <?php foreach ($usuarios as $usuario) { ?>
-                                <option value="<?php echo (int) $usuario['IDF_ID']; ?>">
-                                    <?php echo htmlspecialchars($usuario['IDF_NOME']); ?> (<?php echo htmlspecialchars($usuario['IDF_EMAIL']); ?>)
-                                </option>
-                            <?php } ?>
-                        </select>
+                        <div class="mb-2">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="destino_tipo" id="dest_todos_fieis" value="todos_fieis" checked>
+                                <label class="form-check-label" for="dest_todos_fieis">Todos os fiéis</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="destino_tipo" id="dest_todos_admins" value="todos_admins">
+                                <label class="form-check-label" for="dest_todos_admins">Todos os admins</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="destino_tipo" id="dest_todos_usuarios" value="todos_usuarios">
+                                <label class="form-check-label" for="dest_todos_usuarios">Todos os usuários</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="destino_tipo" id="dest_selecionados" value="selecionados">
+                                <label class="form-check-label" for="dest_selecionados">Selecionar indivíduos</label>
+                            </div>
+                        </div>
+
+                        <div id="lista-selecionados" class="border rounded p-2 bg-dark" style="display:none;">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <small class="text-white-50">Clique nos nomes para selecionar (lista rolável)</small>
+                                <div>
+                                    <button type="button" id="btn-marcar-todos" class="btn btn-sm btn-outline-light">Marcar todos</button>
+                                </div>
+                            </div>
+                            <div class="scroll-list" style="max-height:260px; overflow:auto;">
+                                <?php foreach ($usuarios as $usuario) { ?>
+                                    <label class="d-flex align-items-center justify-content-between p-2 mb-1 border rounded user-item" data-uid="<?php echo (int) $usuario['IDF_ID']; ?>" style="cursor:pointer;">
+                                        <div class="text-white">
+                                            <?php echo htmlspecialchars($usuario['IDF_NOME']); ?>
+                                            <div class="text-white-50 small"><?php echo htmlspecialchars($usuario['IDF_EMAIL']); ?></div>
+                                        </div>
+                                        <input type="checkbox" name="destinos[]" value="<?php echo (int) $usuario['IDF_ID']; ?>" class="form-check-input ms-2 d-none">
+                                    </label>
+                                <?php } ?>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-12">
                         <label class="form-label">Título</label>
@@ -140,6 +184,56 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["acao"]) && $_POST["ac
                     </div>
                 </div>
             </form>
+
+            <style>
+                #lista-selecionados .user-item.is-selected { background: rgba(99,102,241,0.12); border-color: rgba(99,102,241,0.25); }
+                #lista-selecionados .user-item .form-check-input { width:18px; height:18px; }
+            </style>
+
+            <script>
+                (function(){
+                    const rdSelecionados = document.getElementById('dest_selecionados');
+                    const rdTodosFieis = document.getElementById('dest_todos_fieis');
+                    const rdTodosAdmins = document.getElementById('dest_todos_admins');
+                    const rdTodosUsuarios = document.getElementById('dest_todos_usuarios');
+                    const lista = document.getElementById('lista-selecionados');
+                    const btnMarcarTodos = document.getElementById('btn-marcar-todos');
+
+                    function updateListaVisibility(){
+                        if (rdSelecionados.checked) {
+                            lista.style.display = '';
+                        } else {
+                            lista.style.display = 'none';
+                            // clear selections when hiding
+                            document.querySelectorAll('#lista-selecionados .user-item').forEach(function(it){ it.classList.remove('is-selected'); var cb = it.querySelector('input[type=checkbox]'); if(cb) cb.checked = false; });
+                        }
+                    }
+
+                    [rdSelecionados, rdTodosFieis, rdTodosAdmins, rdTodosUsuarios].forEach(function(r){ r.addEventListener('change', updateListaVisibility); });
+
+                    // clicking a label toggles selection and checkbox
+                    document.querySelectorAll('#lista-selecionados .user-item').forEach(function(item){
+                        item.addEventListener('click', function(e){
+                            // ignore clicks on inner checkbox (if visible)
+                            const cb = item.querySelector('input[type=checkbox]');
+                            if (cb) {
+                                cb.checked = !cb.checked;
+                                item.classList.toggle('is-selected', cb.checked);
+                            }
+                        });
+                    });
+
+                    btnMarcarTodos.addEventListener('click', function(){
+                        const items = document.querySelectorAll('#lista-selecionados .user-item');
+                        let allSelected = true;
+                        items.forEach(function(it){ const cb = it.querySelector('input[type=checkbox]'); if(cb && !cb.checked) allSelected = false; });
+                        items.forEach(function(it){ const cb = it.querySelector('input[type=checkbox]'); if(cb){ cb.checked = !allSelected; it.classList.toggle('is-selected', !allSelected); } });
+                    });
+
+                    // initialize visibility
+                    updateListaVisibility();
+                })();
+            </script>
         </div>
     </main>
 
