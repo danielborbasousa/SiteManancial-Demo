@@ -55,7 +55,7 @@ if ($usuario_id > 0) {
     <?php include __DIR__ . '/header_admin.php'; ?>
 
     <main class="container py-5">
-        <div class="auth-container" style="max-width: 1000px; margin: 0 auto;">
+        <div class="auth-container admin-notifications" style="max-width: 1000px; margin: 0 auto;">
             <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap mb-4">
                 <h1 class="mb-0">Notificações (<?php echo $total_notificacoes; ?>)</h1>
                 <?php if ($total_notificacoes > 0) { ?>

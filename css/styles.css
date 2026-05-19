@@ -238,6 +238,20 @@ body.admin-layout .table .btn {
     border: 1px solid var(--border-color) !important;
 }
 
+/* Ajuste específico para o painel admin em tema escuro: tornar alert-info branco/preto para legibilidade */
+body.admin-layout .alert-info {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: 1px solid rgba(0,0,0,0.08) !important;
+}
+
+/* Forçar ainda mais apenas na tela de notificações do admin */
+body.admin-layout .admin-notifications .alert-info {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: 1px solid rgba(0,0,0,0.08) !important;
+}
+
 
 /* Ensure navbar contents are arranged responsively */
 .navbar .container-fluid {
