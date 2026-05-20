@@ -5,6 +5,7 @@ auth_require(array('admin'));
 
 $mensagem = "";
 $erro = "";
+$admin_logado_id = isset($_SESSION["Usuario_id"]) ? (int) $_SESSION["Usuario_id"] : 0;
 
 // Processar aprovação/rejeição
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -14,6 +15,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($usuario_id <= 0 || !in_array($acao, array('aprovar', 'rejeitar', 'remover_permissao', 'dar_permissao'))) {
         $erro = "Requisição inválida.";
+    } elseif ($usuario_id === $admin_logado_id && in_array($acao, array('rejeitar', 'remover_permissao', 'dar_permissao'), true)) {
+        $erro = "Não é permitido alterar as permissões do próprio administrador logado.";
     } else {
         // Buscar dados do usuário
         $sql_user = "
@@ -347,6 +350,7 @@ if ($res_historico && mysqli_num_rows($res_historico) > 0) {
                                     </thead>
                                     <tbody>
                                         <?php foreach ($usuarios_historico as $user) { ?>
+                                            <?php $eh_proprio_admin = $admin_logado_id > 0 && (int) $user["IDF_ID"] === $admin_logado_id; ?>
                                             <tr>
                                                 <td><?php echo htmlspecialchars($user["IDF_NOME"]); ?></td>
                                                 <td><small><?php echo htmlspecialchars($user["IDF_EMAIL"]); ?></small></td>
@@ -361,7 +365,11 @@ if ($res_historico && mysqli_num_rows($res_historico) > 0) {
                                                 <td><small><?php echo htmlspecialchars($user["ADMIN_NOME"] ?? "Sistema"); ?></small></td>
                                                 <td><small><?php echo htmlspecialchars($user["IDSA_MOTIVO_NEGACAO"] ?? "-"); ?></small></td>
                                                 <td>
-                                                    <?php if ($user["IDF_STATUS"] === "aprovado") { ?>
+                                                    <?php if ($eh_proprio_admin) { ?>
+                                                        <span class="badge bg-info text-dark">
+                                                            <i class="fas fa-shield-alt"></i>
+                                                        </span>
+                                                    <?php } elseif ($user["IDF_STATUS"] === "aprovado") { ?>
                                                         <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#removerPermissaoModal<?php echo $user["IDF_ID"]; ?>" title="Remover Permissão">
                                                             <i class="fas fa-ban"></i>
                                                         </button>
@@ -379,6 +387,7 @@ if ($res_historico && mysqli_num_rows($res_historico) > 0) {
 
                             <!-- MODAIS DE AÇÃO DO HISTÓRICO -->
                             <?php foreach ($usuarios_historico as $user) { ?>
+                                <?php if ($admin_logado_id > 0 && (int) $user["IDF_ID"] === $admin_logado_id) { continue; } ?>
                                 <!-- Modal Remover Permissão -->
                                 <div class="modal fade" id="removerPermissaoModal<?php echo $user["IDF_ID"]; ?>" tabindex="-1">
                                     <div class="modal-dialog">

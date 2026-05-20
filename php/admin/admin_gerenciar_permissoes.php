@@ -176,7 +176,7 @@ if ($res_users && mysqli_num_rows($res_users) > 0) {
                                                 <td>
                                                     <?php if ($user["eh_admin"] == 1 && (int) $user["IDF_ID"] === $admin_id_logado) { ?>
                                                         <span class="badge bg-info text-dark">
-                                                            <i class="fas fa-shield-alt me-1"></i>Seu acesso
+                                                            <i class="fas fa-shield-alt me-1"></i>Seu Acesso
                                                         </span>
                                                     <?php } elseif ($user["eh_admin"] == 1) { ?>
                                                         <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#removeModal<?php echo $user["IDF_ID"]; ?>">
