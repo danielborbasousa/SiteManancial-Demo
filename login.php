@@ -11,10 +11,11 @@ $base_url = "http://localhost/SiteManancial-Demo/";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim($_POST["IDF_EMAIL"] ?? "");
+    $senha = (string) ($_POST["IDF_SENHA"] ?? "");
     $email_limpo = mysqli_real_escape_string($conn, $email);
 
     // Procurar usuário no banco para resolver nome e flag de admin (se existir)
-    $sql_lookup = "SELECT f.IDF_ID, f.IDF_NOME, f.IDF_STATUS, CASE WHEN a.IDA_ID IS NULL THEN 0 ELSE 1 END AS EH_ADMIN FROM ID_FIEL f LEFT JOIN ID_ADMIN a ON a.IDA_FIEL_ID = f.IDF_ID AND a.IDA_ATIVO = 1 WHERE LOWER(f.IDF_EMAIL) = LOWER('$email_limpo') LIMIT 1";
+    $sql_lookup = "SELECT f.IDF_ID, f.IDF_NOME, f.IDF_STATUS, f.IDF_SENHA, f.IDF_SENHA_HASH, CASE WHEN a.IDA_ID IS NULL THEN 0 ELSE 1 END AS EH_ADMIN FROM ID_FIEL f LEFT JOIN ID_ADMIN a ON a.IDA_FIEL_ID = f.IDF_ID AND a.IDA_ATIVO = 1 WHERE LOWER(f.IDF_EMAIL) = LOWER('$email_limpo') LIMIT 1";
     $res_lookup = @mysqli_query($conn, $sql_lookup);
     $usuario_db = null;
     $eh_admin = false;
@@ -23,13 +24,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($res_lookup && mysqli_num_rows($res_lookup) > 0) {
         $usuario_db = mysqli_fetch_assoc($res_lookup);
         $status_usuario = $usuario_db['IDF_STATUS'] ?? 'pendente';
+        $senha_db = (string) ($usuario_db['IDF_SENHA_HASH'] ?? '');
+        $senha_legada = (string) ($usuario_db['IDF_SENHA'] ?? '');
+
+        $senha_valida = false;
+        if ($senha_db !== '') {
+            $senha_valida = password_verify($senha, $senha_db);
+        } elseif ($senha_legada !== '') {
+            $senha_valida = hash_equals($senha_legada, $senha);
+        }
+
+        if (!$senha_valida) {
+            $erro = "E-mail ou senha invalido(s).";
+        }
         
         // Verificar status do usuário
-        if ($status_usuario === 'pendente') {
+        if ($erro === "" && $status_usuario === 'pendente') {
             $erro = "Sua conta está aguardando aprovação. Por favor, aguarde o administrador aprovar seu acesso.";
-        } elseif ($status_usuario === 'negado') {
+        } elseif ($erro === "" && $status_usuario === 'negado') {
             $erro = "Sua conta foi rejeitada. Entre em contato com o administrador para mais informações.";
-        } else {
+        } elseif ($erro === "") {
             // Status é 'aprovado', continuar com o login
             $id_fiel = (int) ($usuario_db['IDF_ID'] ?? 1);
             $nome_usuario = $usuario_db['IDF_NOME'] ?? $email_limpo;
