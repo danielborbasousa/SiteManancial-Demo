@@ -67,6 +67,28 @@ $eh_admin = isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "a
         .nav-link { transition: color 0.3s ease; }
         .nav-link:hover { color: var(--primary-light); }
 
+        .recent-videos-linkbox {
+            position: relative;
+            padding-top: 0.9rem;
+        }
+
+        .recent-videos-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            transform: translate(35%, -45%);
+            z-index: 2;
+            background: #dc2626;
+            color: #fff;
+            border: 2px solid rgba(0,0,0,0.15);
+            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.25);
+            min-width: 1.2rem;
+            min-height: 1.2rem;
+            padding: 0.08rem 0.28rem !important;
+            font-size: 0.58rem !important;
+            line-height: 1;
+        }
+
         .footer-faith-panel {
             background: rgba(255,255,255,0.02);
             border: 1px solid rgba(96,165,250,0.15);
@@ -312,11 +334,13 @@ $eh_admin = isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "a
                     <h2 class="mb-1"><i class="fas fa-play-circle me-2" style="color: #60a5fa;"></i>Conteúdos Recentes</h2>
                     <p class="text-white">Nossos vídeos e aulas mais recentes para sua edificação espiritual</p>
                 </div>
-                <div class="d-flex flex-column align-items-end gap-2">
-                    <?php if ($videos_restantes > 0) { ?>
-                        <span class="badge rounded-pill bg-danger px-3 py-2" style="font-size: 0.95rem;">+<?php echo $videos_restantes; ?></span>
-                    <?php } ?>
-                    <a href="todos_videos.php" class="btn btn-outline-light btn-sm">Ver Todos</a>
+                <div class="recent-videos-linkbox d-flex justify-content-end">
+                    <div class="position-relative d-inline-flex align-items-center justify-content-center">
+                        <?php if ($videos_restantes > 0) { ?>
+                            <span class="badge rounded-pill recent-videos-badge px-3 py-2" style="font-size: 0.95rem;">+<?php echo $videos_restantes; ?></span>
+                        <?php } ?>
+                        <a href="todos_videos.php" class="btn btn-outline-light btn-sm">Ver Todos</a>
+                    </div>
                 </div>
             </div>
 
