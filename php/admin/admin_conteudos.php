@@ -192,11 +192,19 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
 
         .videos-table {
             color: var(--text-main) !important;
+            width: 100%;
+            table-layout: fixed;
         }
 
         .videos-table thead th {
             color: var(--text-main) !important;
             border-bottom-color: var(--border-color) !important;
+        }
+
+        .videos-table th,
+        .videos-table td {
+            white-space: normal;
+            word-break: break-word;
         }
 
         :root[data-theme="light"] .videos-table.table-striped > tbody > tr:nth-of-type(odd) > * {
@@ -221,6 +229,41 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
         .videos-table .video-column-blue {
             color: var(--primary-light) !important;
             font-weight: 600;
+        }
+
+        .videos-table th:nth-child(1),
+        .videos-table td:nth-child(1) {
+            width: 70px;
+        }
+
+        .videos-table th:nth-child(4),
+        .videos-table td:nth-child(4) {
+            width: 90px;
+        }
+
+        .videos-table th:nth-child(5),
+        .videos-table td:nth-child(5) {
+            width: 240px;
+        }
+
+        .videos-table-wrapper {
+            max-height: 410px;
+            overflow-y: auto;
+            overflow-x: auto;
+            padding-right: 12px;
+            box-sizing: border-box;
+        }
+
+        .video-actions-cell {
+            white-space: nowrap;
+            width: 1%;
+            text-align: right;
+        }
+
+        .video-actions-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
         }
     </style>
 </head>
@@ -306,7 +349,7 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
             </form>
 
             <h2 class="h4 mb-3">Videos enviados</h2>
-            <div class="table-responsive">
+            <div class="table-responsive videos-table-wrapper">
                 <table class="table table-dark table-striped align-middle videos-table" style="color:#ffffff !important;">
                     <thead>
                         <tr>
@@ -322,17 +365,19 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
                             <?php foreach ($conteudos as $conteudo) { ?>
                                 <tr>
                                     <td class="video-column-blue"><?php echo (int) $conteudo["IDCT_ID"]; ?></td>
-                                    <td class="video-column-blue"><?php echo htmlspecialchars($conteudo["IDCT_TITULO"]); ?></td>
-                                    <td class="video-column-blue"><?php echo htmlspecialchars($conteudo["IDCT_URL"]); ?></td>
+                                    <td class="video-column-blue" title="<?php echo htmlspecialchars($conteudo["IDCT_TITULO"]); ?>"><?php echo htmlspecialchars($conteudo["IDCT_TITULO"]); ?></td>
+                                    <td class="video-column-blue" title="<?php echo htmlspecialchars($conteudo["IDCT_URL"]); ?>"><?php echo htmlspecialchars($conteudo["IDCT_URL"]); ?></td>
                                     <td><?php echo (int) $conteudo["IDCT_ORDEM"]; ?></td>
-                                    <td>
-                                        <a href="<?php echo htmlspecialchars(strpos($conteudo["IDCT_URL"], 'videos/') === 0 ? '../../' . $conteudo["IDCT_URL"] : $conteudo["IDCT_URL"]); ?>" class="btn btn-sm btn-info" target="_blank">Ver</a>
-                                        <a href="admin_editar_conteudo.php?id=<?php echo (int) $conteudo["IDCT_ID"]; ?>" class="btn btn-sm btn-warning">Editar</a>
-                                        <form method="POST" style="display:inline;" onsubmit="return confirm('Deseja excluir este video?');">
-                                            <input type="hidden" name="acao" value="excluir">
-                                            <input type="hidden" name="IDCT_ID" value="<?php echo (int) $conteudo["IDCT_ID"]; ?>">
-                                            <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
-                                        </form>
+                                    <td class="video-actions-cell">
+                                        <div class="video-actions-group">
+                                            <a href="<?php echo htmlspecialchars(strpos($conteudo["IDCT_URL"], 'videos/') === 0 ? '../../' . $conteudo["IDCT_URL"] : $conteudo["IDCT_URL"]); ?>" class="btn btn-sm btn-info" target="_blank">Ver</a>
+                                            <a href="admin_editar_conteudo.php?id=<?php echo (int) $conteudo["IDCT_ID"]; ?>" class="btn btn-sm btn-warning">Editar</a>
+                                            <form method="POST" style="display:inline;" onsubmit="return confirm('Deseja excluir este video?');">
+                                                <input type="hidden" name="acao" value="excluir">
+                                                <input type="hidden" name="IDCT_ID" value="<?php echo (int) $conteudo["IDCT_ID"]; ?>">
+                                                <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             <?php } ?>
