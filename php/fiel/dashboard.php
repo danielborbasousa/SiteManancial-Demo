@@ -67,6 +67,132 @@ $eh_admin = isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "a
         .nav-link { transition: color 0.3s ease; }
         .nav-link:hover { color: var(--primary-light); }
 
+        .footer-faith-panel {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(96,165,250,0.15);
+            border-radius: 18px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer-faith-panel::before,
+        .footer-faith-panel::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .footer-faith-panel::before {
+            width: 180px;
+            height: 180px;
+            background: rgba(96,165,250,0.12);
+            top: -70px;
+            right: -40px;
+            animation: footerFloat 8s ease-in-out infinite;
+        }
+
+        .footer-faith-panel::after {
+            width: 120px;
+            height: 120px;
+            background: rgba(16,185,129,0.12);
+            bottom: -40px;
+            left: -30px;
+            animation: footerFloat 10s ease-in-out infinite reverse;
+        }
+
+        .footer-faith-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 1.5rem;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-faith-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .footer-faith-brand img {
+            width: 58px;
+            height: 58px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 18px rgba(96,165,250,0.35));
+        }
+
+        .footer-faith-title {
+            margin: 0;
+            color: #60a5fa;
+            font-weight: 700;
+        }
+
+        .footer-faith-icons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-faith-icon {
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(96,165,250,0.18);
+            color: #93c5fd;
+            font-size: 1.5rem;
+            box-shadow: 0 0 0 rgba(96,165,250,0.0);
+            animation: footerPulse 2.8s ease-in-out infinite;
+        }
+
+        .footer-faith-icon:nth-child(2) { animation-delay: 0.35s; }
+        .footer-faith-icon:nth-child(3) { animation-delay: 0.7s; }
+        .footer-faith-icon:nth-child(4) { animation-delay: 1.05s; }
+
+        .footer-faith-verse {
+            margin-top: 1rem;
+            padding: 1rem 1.2rem;
+            border-left: 3px solid #60a5fa;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            color: var(--text-muted);
+        }
+
+        .footer-faith-bible {
+            font-size: 0.92rem;
+            color: #93c5fd;
+            margin-top: 0.4rem;
+        }
+
+        @keyframes footerPulse {
+            0%, 100% { transform: translateY(0) scale(1); box-shadow: 0 0 0 0 rgba(96,165,250,0.0); }
+            50% { transform: translateY(-4px) scale(1.04); box-shadow: 0 10px 30px rgba(96,165,250,0.18); }
+        }
+
+        @keyframes footerFloat {
+            0%, 100% { transform: translateY(0) translateX(0) scale(1); }
+            50% { transform: translateY(-10px) translateX(6px) scale(1.04); }
+        }
+
+        @media (max-width: 768px) {
+            .footer-faith-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .footer-faith-brand {
+                justify-content: center;
+            }
+        }
+
         :root[data-theme="light"] .hero-dashboard .text-white,
         :root[data-theme="light"] .hero-dashboard .lead,
         :root[data-theme="light"] section p.text-white,
@@ -254,31 +380,32 @@ $eh_admin = isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "a
     <!-- FOOTER -->
     <footer class="site-footer">
         <div class="container-fluid px-4">
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <h6 style="color: #60a5fa;">Missão Evangélica</h6>
-                    <p class="text-muted small">Manancial da Esperança - Fortalecendo vidas através da fé, tecnologia e comunidade.</p>
-                </div>
-                <div class="col-md-4">
-                    <h6 style="color: #60a5fa;">Links Rápidos</h6>
-                    <ul class="list-unstyled small">
-                        <li><a href="dashboard.php" class="text-muted text-decoration-none">Dashboard</a></li>
-                        <li><a href="sobre.php" class="text-muted text-decoration-none">Sobre</a></li>
-                        <li><a href="contato.php" class="text-muted text-decoration-none">Contato</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <h6 style="color: #60a5fa;">Conta</h6>
-                    <ul class="list-unstyled small">
-                        <li><a href="perfil.php" class="text-muted text-decoration-none">Meu Perfil</a></li>
-                        <li><a href="sair.php" class="text-muted text-decoration-none">Sair</a></li>
-                    </ul>
+            <div class="footer-faith-panel">
+                <div class="footer-faith-grid">
+                    <div>
+                        <div class="footer-faith-brand">
+                            <img src="../../assets/logo.png" alt="Logo Missão Manancial">
+                            <div>
+                                <h6 class="footer-faith-title">Missão Evangélica</h6>
+                                <p class="text-muted mb-0">Manancial da Esperança - Fortalecendo vidas através da fé, tecnologia e comunidade.</p>
+                            </div>
+                        </div>
+                        <div class="footer-faith-verse">
+                            <div><i class="fas fa-quote-left me-2" style="color:#60a5fa;"></i>“Lâmpada para os meus pés é a tua palavra e luz para o meu caminho.”</div>
+                            <div class="footer-faith-bible">Salmo 119:105</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="footer-faith-icons">
+                            <span class="footer-faith-icon" title="Fé"><i class="fas fa-cross"></i></span>
+                            <span class="footer-faith-icon" title="Luz"><i class="fas fa-sun"></i></span>
+                            <span class="footer-faith-icon" title="Paz"><i class="fas fa-dove"></i></span>
+                            <span class="footer-faith-icon" title="Esperança"><i class="fas fa-hands-praying"></i></span>
+                        </div>
+                        <p class="text-muted small mt-3 mb-0 text-center text-md-start">Que cada acesso à plataforma seja um momento de edificação, esperança e comunhão.</p>
+                    </div>
                 </div>
             </div>
-            <hr style="border-color: rgba(96,165,250,0.2); margin: 2rem 0;">
-            <p class="text-center text-muted small mb-0">
-                &copy; 2024-2026 Missão Evangélica Manancial da Esperança. Todos os direitos reservados.
-            </p>
         </div>
     </footer>
 
