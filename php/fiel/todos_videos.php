@@ -127,6 +127,25 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
             opacity: 1;
         }
 
+        .video-play-link {
+            position: absolute;
+            inset: 0;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .video-play-link:hover {
+            text-decoration: none;
+        }
+
+        .video-play-link:focus-visible {
+            outline: 2px solid var(--primary-light);
+            outline-offset: -4px;
+        }
+
         .video-info {
             padding: 1rem;
             flex-grow: 1;
@@ -258,6 +277,7 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
                             <div class="col-lg-3 col-md-4 col-sm-6">
                                 <div class="video-card">
                                     <div class="video-thumbnail">
+                                        <a href="assistir_video.php?id=<?php echo (int) $video["IDCT_ID"]; ?>" class="video-play-link" aria-label="Assistir vídeo <?php echo htmlspecialchars($video["IDCT_TITULO"]); ?>">
                                         <?php if ($preview_url !== "") { ?>
                                             <video muted playsinline preload="metadata" onloadedmetadata="if (this.currentTime < 0.15) { try { this.currentTime = 0.15; } catch (e) {} } this.pause();">
                                                 <source src="<?php echo htmlspecialchars($preview_url); ?>">
@@ -267,6 +287,7 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
                                             <div style="position:absolute; inset:0; background: radial-gradient(circle, rgba(96,165,250,0.2) 0%, transparent 70%);"></div>
                                         <?php } ?>
                                         <i class="fas fa-play video-play-btn"></i>
+                                        </a>
                                     </div>
 
                                     <div class="video-info">

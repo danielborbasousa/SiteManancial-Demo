@@ -49,6 +49,9 @@ $eh_admin = isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "a
         .video-preview-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(7,16,29,0.05), rgba(7,16,29,0.28)); z-index: 1; pointer-events: none; }
         .video-play-btn { position: absolute; font-size: 2.5rem; opacity: 0.8; transition: all 0.3s; }
         .video-card:hover .video-play-btn { opacity: 1; transform: scale(1.2); }
+        .video-play-link { position: absolute; inset: 0; z-index: 3; display: flex; align-items: center; justify-content: center; text-decoration: none; }
+        .video-play-link:hover { text-decoration: none; }
+        .video-play-link:focus-visible { outline: 2px solid var(--primary-light); outline-offset: -4px; }
         .video-info { padding: 1.5rem; }
         .video-title { font-weight: 600; color: var(--text-main); margin-bottom: 0.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .video-desc { font-size: 0.9rem; color: var(--text-muted); display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
@@ -206,6 +209,7 @@ $eh_admin = isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "a
                         <div class="col-md-6 col-lg-4">
                             <div class="video-card">
                                 <div class="video-thumbnail">
+                                    <a href="<?php echo $link_video; ?>" class="video-play-link" aria-label="Assistir vídeo <?php echo htmlspecialchars($video["IDCT_TITULO"]); ?>">
                                     <?php if ($preview_url !== "") { ?>
                                         <video muted playsinline preload="metadata" onloadedmetadata="if (this.currentTime < 0.15) { try { this.currentTime = 0.15; } catch (e) {} } this.pause();">
                                             <source src="<?php echo htmlspecialchars($preview_url); ?>">
@@ -215,6 +219,7 @@ $eh_admin = isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "a
                                         <i class="fas fa-play video-play-btn"></i>
                                     <?php } ?>
                                     <i class="fas fa-play video-play-btn" style="z-index: 2;"></i>
+                                    </a>
                                 </div>
                                 <div class="video-info">
                                     <div class="video-title"><?php echo htmlspecialchars($video["IDCT_TITULO"]); ?></div>
