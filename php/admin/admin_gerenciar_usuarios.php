@@ -64,8 +64,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["acao"])) {
         
         if (preg_match('/\d/', $nome)) {
             $erro = "O nome não pode conter números.";
-        } elseif (strlen($nome) < 3 || strlen($nome) > 100) {
-            $erro = "Nome inválido. Use entre 3 e 100 caracteres.";
+        } elseif (strlen($nome) < 3 || strlen($nome) > 50) {
+            $erro = "Nome inválido. Use entre 3 e 50 caracteres.";
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $erro = "Informe um e-mail válido.";
         } elseif (strlen($email) > 60) {
@@ -74,8 +74,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["acao"])) {
             $erro = "Telefone inválido. Use o formato (11) 9 9999-9999.";
         } elseif (!ctype_digit($cpf_limpo) || strlen($cpf_limpo) !== 11) {
             $erro = "CPF inválido. Use o formato 000.000.000-00.";
-        } elseif (strlen($funcao) < 2 || strlen($funcao) > 50) {
-            $erro = "Função inválida. Use entre 2 e 50 caracteres.";
+        } elseif (strlen($funcao) < 2 || strlen($funcao) > 25) {
+            $erro = "Função inválida. Use entre 2 e 25 caracteres.";
         } elseif (!in_array($status, array('pendente', 'aprovado', 'negado'), true)) {
             $erro = "Status inválido.";
         } else {
@@ -96,12 +96,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["acao"])) {
         }
     } elseif ($acao === "editar_perfil") {
         $id = (int) $_POST["usuario_id"];
-        $nome = mysqli_real_escape_string($conn, trim($_POST["nome"]));
-        $telefone = mysqli_real_escape_string($conn, trim($_POST["telefone"]));
-        
-        if (empty($nome)) {
-            $erro = "Nome é obrigatório.";
+        $nome_raw = trim($_POST["nome"]);
+        $telefone_raw = trim($_POST["telefone"]);
+
+        if (preg_match('/\d/', $nome_raw)) {
+            $erro = "O nome não pode conter números.";
+        } elseif (strlen($nome_raw) < 3 || strlen($nome_raw) > 50) {
+            $erro = "Nome inválido. Use entre 3 e 50 caracteres.";
         } else {
+            $nome = mysqli_real_escape_string($conn, $nome_raw);
+            $telefone = mysqli_real_escape_string($conn, $telefone_raw);
             $sql = "UPDATE ID_FIEL SET IDF_NOME = '$nome', IDF_TELEFONE = '$telefone' WHERE IDF_ID = $id LIMIT 1";
             if (mysqli_query($conn, $sql)) {
                 $_SESSION["Usuario_nome"] = $nome;
@@ -236,7 +240,7 @@ if ($res_usuarios && mysqli_num_rows($res_usuarios) > 0) {
 
                         <div class="mb-3">
                             <label for="nome" class="form-label">Nome Completo</label>
-                            <input type="text" class="form-control" id="nome" name="nome" value="<?php echo htmlspecialchars($usuario_edicao['IDF_NOME']); ?>" required>
+                            <input type="text" class="form-control" id="nome" name="nome" value="<?php echo htmlspecialchars($usuario_edicao['IDF_NOME']); ?>" required maxlength="50" pattern="^[^0-9]{3,50}$" title="Nome: sem números, entre 3 e 50 caracteres">
                         </div>
 
                         <div class="mb-3">
@@ -251,7 +255,7 @@ if ($res_usuarios && mysqli_num_rows($res_usuarios) > 0) {
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="funcao" class="form-label">Função</label>
-                                <input type="text" class="form-control" id="funcao" name="funcao" value="<?php echo htmlspecialchars($usuario_edicao['IDF_FUNCAO']); ?>">
+                                <input type="text" class="form-control" id="funcao" name="funcao" value="<?php echo htmlspecialchars($usuario_edicao['IDF_FUNCAO']); ?>" maxlength="25">
                             </div>
                         </div>
 
@@ -358,7 +362,7 @@ if ($res_usuarios && mysqli_num_rows($res_usuarios) > 0) {
 
                         <div class="mb-3">
                             <label for="nome_perfil" class="form-label">Nome Completo</label>
-                            <input type="text" class="form-control" id="nome_perfil" name="nome" value="<?php echo htmlspecialchars($admin_info['IDF_NOME']); ?>" required>
+                            <input type="text" class="form-control" id="nome_perfil" name="nome" value="<?php echo htmlspecialchars($admin_info['IDF_NOME']); ?>" required maxlength="50" pattern="^[^0-9]{3,50}$" title="Nome: sem números, entre 3 e 50 caracteres">
                         </div>
 
                         <div class="mb-3">

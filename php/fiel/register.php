@@ -5,12 +5,12 @@ include("../conexao.php");
 $mensagem = "";
 
 // Limites alinhados com a estrutura da tabela ID_FIEL
-$lim_nome = 100;
+$lim_nome = 50;
 $lim_email = 100;
 $lim_telefone = 11;
 $lim_cpf = 11;
 $lim_filial = 100;
-$lim_funcao = 50;
+$lim_funcao = 25;
 $lim_endereco = 200;
 $lim_senha = 100;
 
@@ -131,7 +131,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <form action="" method="POST" class="auth-form-grid">
             <div class="auth-form-grid auth-form-grid--two">
                 <div>
-                    <input type="text" name="IDF_NOME" class="form-control custom-input" placeholder="Nome completo" pattern="[A-Za-zÀ-ÿ\s]+" title="Use apenas letras e espacos" minlength="3" maxlength="100" required>
+                    <input type="text" name="IDF_NOME" class="form-control custom-input" placeholder="Nome completo" pattern="^[^0-9]{3,50}$" title="Nome: sem números, entre 3 e 50 caracteres" minlength="3" maxlength="50" required>
                 </div>
 
                 <div>
@@ -155,7 +155,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
 
                 <div>
-                    <input type="text" name="IDF_FUNCAO" class="form-control custom-input" placeholder="Função" minlength="2" maxlength="50" required>
+                    <input type="text" name="IDF_FUNCAO" class="form-control custom-input" placeholder="Função" minlength="2" maxlength="25" required>
                 </div>
             </div>
 
