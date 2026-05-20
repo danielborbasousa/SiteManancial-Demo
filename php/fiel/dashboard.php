@@ -60,6 +60,17 @@ $eh_admin = isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "a
         /* navbar styling is controlled by css/styles.css to follow the selected theme */
         .nav-link { transition: color 0.3s ease; }
         .nav-link:hover { color: var(--primary-light); }
+
+        :root[data-theme="light"] .hero-dashboard .text-white,
+        :root[data-theme="light"] .hero-dashboard .lead,
+        :root[data-theme="light"] section p.text-white,
+        :root[data-theme="light"] .site-footer .text-muted,
+        :root[data-theme="light"] .site-footer .text-muted a,
+        :root[data-theme="light"] .site-footer .text-muted.text-decoration-none,
+        :root[data-theme="light"] .site-footer p,
+        :root[data-theme="light"] .site-footer li a {
+            color: #0f172a !important;
+        }
     </style>
 </head>
 <body style="transition: background 0.3s ease;">
