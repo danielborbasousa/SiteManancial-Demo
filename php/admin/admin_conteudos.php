@@ -285,7 +285,7 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Modulo (opcional)</label>
-                        <input type="number" name="IDM_ID" class="form-control custom-input" placeholder="ID do modulo">
+                        <input type="text" name="IDM_ID" class="form-control custom-input" placeholder="ID do modulo" inputmode="numeric" pattern="[0-9]*" title="Use apenas numeros" oninput="this.value = this.value.replace(/\D/g, '')">
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Ordem</label>
@@ -314,7 +314,7 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
                             <th>Titulo</th>
                             <th>URL</th>
                             <th>Ordem</th>
-                            <th>Acoes</th>
+                            <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody>

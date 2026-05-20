@@ -44,64 +44,61 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $conteudo_atual = $res_busca ? mysqli_fetch_assoc($res_busca) : null;
         $url_final = $conteudo_atual && isset($conteudo_atual["IDCT_URL"]) ? $conteudo_atual["IDCT_URL"] : "";
 
-        if (!isset($_FILES["arquivo"])) {
-            // nada enviado - opcional
-        } elseif ($_FILES["arquivo"]["error"] !== UPLOAD_ERR_OK) {
-            $code = $_FILES["arquivo"]["error"];
-            switch ($code) {
-                case UPLOAD_ERR_INI_SIZE:
-                    $msg = "O arquivo excede upload_max_filesize no servidor.";
-                    break;
-                case UPLOAD_ERR_FORM_SIZE:
-                    $msg = "O arquivo excede o tamanho permitido pelo formulário.";
-                    break;
-                case UPLOAD_ERR_PARTIAL:
-                    $msg = "O upload foi parcial.";
-                    break;
-                case UPLOAD_ERR_NO_FILE:
-                    $msg = "Nenhum arquivo enviado.";
-                    break;
-                case UPLOAD_ERR_NO_TMP_DIR:
-                    $msg = "Pasta temporária ausente no servidor.";
-                    break;
-                case UPLOAD_ERR_CANT_WRITE:
-                    $msg = "Falha ao gravar o arquivo no disco.";
-                    break;
-                case UPLOAD_ERR_EXTENSION:
-                    $msg = "Upload interrompido por extensão PHP.";
-                    break;
-                default:
-                    $msg = "Erro no upload (código $code).";
-            }
-            $erro = $msg;
-        } else {
-            $nome_original = basename($_FILES["arquivo"]["name"]);
-            $extensao = strtolower(pathinfo($nome_original, PATHINFO_EXTENSION));
-            $permitidas = array("mp4", "webm", "ogg", "mov");
-
-            if (!in_array($extensao, $permitidas)) {
-                    $erro = "Formato de video nao permitido.";
-            } else {
-                if (!is_dir($upload_dir)) {
-                    @mkdir($upload_dir, 0777, true);
+        if (isset($_FILES["arquivo"]) && $_FILES["arquivo"]["error"] !== UPLOAD_ERR_NO_FILE) {
+            if ($_FILES["arquivo"]["error"] !== UPLOAD_ERR_OK) {
+                $code = $_FILES["arquivo"]["error"];
+                switch ($code) {
+                    case UPLOAD_ERR_INI_SIZE:
+                        $msg = "O arquivo excede upload_max_filesize no servidor.";
+                        break;
+                    case UPLOAD_ERR_FORM_SIZE:
+                        $msg = "O arquivo excede o tamanho permitido pelo formulário.";
+                        break;
+                    case UPLOAD_ERR_PARTIAL:
+                        $msg = "O upload foi parcial.";
+                        break;
+                    case UPLOAD_ERR_NO_TMP_DIR:
+                        $msg = "Pasta temporária ausente no servidor.";
+                        break;
+                    case UPLOAD_ERR_CANT_WRITE:
+                        $msg = "Falha ao gravar o arquivo no disco.";
+                        break;
+                    case UPLOAD_ERR_EXTENSION:
+                        $msg = "Upload interrompido por extensão PHP.";
+                        break;
+                    default:
+                        $msg = "Erro no upload (código $code).";
                 }
+                $erro = $msg;
+            } else {
+                $nome_original = basename($_FILES["arquivo"]["name"]);
+                $extensao = strtolower(pathinfo($nome_original, PATHINFO_EXTENSION));
+                $permitidas = array("mp4", "webm", "ogg", "mov");
 
-                $nome_arquivo = time() . "_" . preg_replace('/[^a-zA-Z0-9_-]/', '_', pathinfo($nome_original, PATHINFO_FILENAME)) . "." . $extensao;
-                $destino = $upload_dir . $nome_arquivo;
-
-                if (!is_uploaded_file($_FILES["arquivo"]["tmp_name"])) {
-                    $erro = "Arquivo temporário não encontrado: " . ($_FILES["arquivo"]["tmp_name"] ?? 'n/a');
-                } elseif (move_uploaded_file($_FILES["arquivo"]["tmp_name"], $destino)) {
-                    if ($url_final !== "" && strpos($url_final, "videos/") === 0) {
-                        $arquivo_antigo = "../../" . $url_final;
-                        if (file_exists($arquivo_antigo)) {
-                            @unlink($arquivo_antigo);
-                        }
+                if (!in_array($extensao, $permitidas)) {
+                        $erro = "Formato de video nao permitido.";
+                } else {
+                    if (!is_dir($upload_dir)) {
+                        @mkdir($upload_dir, 0777, true);
                     }
 
-                    $url_final = "videos/" . $nome_arquivo;
-                } else {
-                    $erro = "Nao foi possivel salvar o novo video.";
+                    $nome_arquivo = time() . "_" . preg_replace('/[^a-zA-Z0-9_-]/', '_', pathinfo($nome_original, PATHINFO_FILENAME)) . "." . $extensao;
+                    $destino = $upload_dir . $nome_arquivo;
+
+                    if (!is_uploaded_file($_FILES["arquivo"]["tmp_name"])) {
+                        $erro = "Arquivo temporário não encontrado: " . ($_FILES["arquivo"]["tmp_name"] ?? 'n/a');
+                    } elseif (move_uploaded_file($_FILES["arquivo"]["tmp_name"], $destino)) {
+                        if ($url_final !== "" && strpos($url_final, "videos/") === 0) {
+                            $arquivo_antigo = "../../" . $url_final;
+                            if (file_exists($arquivo_antigo)) {
+                                @unlink($arquivo_antigo);
+                            }
+                        }
+
+                        $url_final = "videos/" . $nome_arquivo;
+                    } else {
+                        $erro = "Nao foi possivel salvar o novo video.";
+                    }
                 }
             }
         }
@@ -189,7 +186,7 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Modulo (opcional)</label>
-                        <input type="number" name="IDM_ID" class="form-control custom-input" value="<?php echo htmlspecialchars($conteudo["IDM_ID"]); ?>" placeholder="ID do modulo">
+                        <input type="text" name="IDM_ID" class="form-control custom-input" value="<?php echo htmlspecialchars($conteudo["IDM_ID"]); ?>" placeholder="ID do modulo" inputmode="numeric" pattern="[0-9]*" title="Use apenas numeros" oninput="this.value = this.value.replace(/\D/g, '')">
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Ordem</label>
@@ -203,6 +200,15 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
                         <label class="form-label">Trocar video (opcional)</label>
                         <input type="file" name="arquivo" class="form-control custom-input" accept="video/*">
                         <small class="text-muted d-block mt-1">Atual: <?php echo htmlspecialchars($conteudo["IDCT_URL"]); ?></small>
+                        <small class="text-muted d-block">Se nenhum arquivo for selecionado, o vídeo atual será mantido.</small>
+                        <?php if (!empty($conteudo["IDCT_URL"])) { ?>
+                            <div class="mt-3">
+                                <video controls style="max-width: 100%; border-radius: 10px; border: 1px solid var(--border-color);">
+                                    <source src="<?php echo htmlspecialchars(strpos($conteudo["IDCT_URL"], 'videos/') === 0 ? '../../' . $conteudo["IDCT_URL"] : $conteudo["IDCT_URL"]); ?>">
+                                    Seu navegador não suporta a reprodução de vídeo.
+                                </video>
+                            </div>
+                        <?php } ?>
                     </div>
                     <div class="col-12 d-flex gap-2">
                         <button type="submit" class="btn btn-light fw-bold">Salvar alteracoes</button>
