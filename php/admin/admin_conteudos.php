@@ -179,6 +179,50 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="../../css/styles.css">
     <script src="../../js/theme.js"></script>
+    <style>
+        :root[data-theme="dark"] .video-upload-success {
+            background: #14532d !important;
+            color: #ffffff !important;
+            border: 1px solid #166534 !important;
+        }
+
+        :root[data-theme="dark"] .video-upload-success .btn-close {
+            filter: invert(1) grayscale(100%);
+        }
+
+        .videos-table {
+            color: var(--text-main) !important;
+        }
+
+        .videos-table thead th {
+            color: var(--text-main) !important;
+            border-bottom-color: var(--border-color) !important;
+        }
+
+        :root[data-theme="light"] .videos-table.table-striped > tbody > tr:nth-of-type(odd) > * {
+            background-color: #dbeafe !important;
+            color: #0f172a !important;
+        }
+
+        :root[data-theme="light"] .videos-table.table-striped > tbody > tr:nth-of-type(even) > * {
+            background-color: #1e3a8a !important;
+            color: #ffffff !important;
+        }
+
+        :root[data-theme="light"] .videos-table thead th {
+            background: #cbd5e1 !important;
+            color: #0f172a !important;
+        }
+
+        :root[data-theme="light"] .videos-table tbody td {
+            border-color: rgba(148, 163, 184, 0.45) !important;
+        }
+
+        .videos-table .video-column-blue {
+            color: var(--primary-light) !important;
+            font-weight: 600;
+        }
+    </style>
 </head>
 <body class="admin-layout" style="transition: background 0.3s ease;">
     <?php include __DIR__ . '/header_admin.php'; ?>
@@ -216,7 +260,7 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
             <!-- Diagnostic removed from default view; shown only after successful upload -->
 
             <?php if ($mensagem !== "") { ?>
-                <div class="alert alert-success"><?php echo htmlspecialchars($mensagem); ?></div>
+                <div class="alert alert-success video-upload-success"><?php echo htmlspecialchars($mensagem); ?></div>
             <?php } ?>
 
             <?php if ($erro !== "") { ?>
@@ -263,7 +307,7 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
 
             <h2 class="h4 mb-3">Videos enviados</h2>
             <div class="table-responsive">
-                <table class="table table-dark table-striped align-middle" style="color:#ffffff !important;">
+                <table class="table table-dark table-striped align-middle videos-table" style="color:#ffffff !important;">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -277,9 +321,9 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
                         <?php if (count($conteudos) > 0) { ?>
                             <?php foreach ($conteudos as $conteudo) { ?>
                                 <tr>
-                                    <td style="color:#ffffff !important;"><?php echo (int) $conteudo["IDCT_ID"]; ?></td>
-                                    <td style="color:#ffffff !important;"><?php echo htmlspecialchars($conteudo["IDCT_TITULO"]); ?></td>
-                                    <td style="color:#ffffff !important;"><?php echo htmlspecialchars($conteudo["IDCT_URL"]); ?></td>
+                                    <td class="video-column-blue"><?php echo (int) $conteudo["IDCT_ID"]; ?></td>
+                                    <td class="video-column-blue"><?php echo htmlspecialchars($conteudo["IDCT_TITULO"]); ?></td>
+                                    <td class="video-column-blue"><?php echo htmlspecialchars($conteudo["IDCT_URL"]); ?></td>
                                     <td><?php echo (int) $conteudo["IDCT_ORDEM"]; ?></td>
                                     <td>
                                         <a href="<?php echo htmlspecialchars(strpos($conteudo["IDCT_URL"], 'videos/') === 0 ? '../../' . $conteudo["IDCT_URL"] : $conteudo["IDCT_URL"]); ?>" class="btn btn-sm btn-info" target="_blank">Ver</a>
