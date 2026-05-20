@@ -525,6 +525,48 @@ textarea.custom-input:focus {
     box-shadow: 0 0 0 4px rgba(59,130,246,0.12) !important;
 }
 
+:root[data-theme="light"] .custom-input,
+:root[data-theme="light"] .form-control.custom-input,
+:root[data-theme="light"] select.custom-input,
+:root[data-theme="light"] textarea.custom-input {
+    background: #ffffff !important;
+    color: #0f172a !important;
+}
+
+:root[data-theme="light"] .custom-input:hover,
+:root[data-theme="light"] .form-control.custom-input:hover,
+:root[data-theme="light"] select.custom-input:hover,
+:root[data-theme="light"] textarea.custom-input:hover,
+:root[data-theme="light"] .custom-input:focus,
+:root[data-theme="light"] .form-control.custom-input:focus,
+:root[data-theme="light"] select.custom-input:focus,
+:root[data-theme="light"] textarea.custom-input:focus {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border-color: rgba(59,130,246,0.8) !important;
+    box-shadow: 0 0 0 4px rgba(59,130,246,0.12) !important;
+}
+
+:root[data-theme="light"] .custom-input:-webkit-autofill,
+:root[data-theme="light"] .custom-input:-webkit-autofill:hover,
+:root[data-theme="light"] .custom-input:-webkit-autofill:focus,
+:root[data-theme="light"] .form-control.custom-input:-webkit-autofill,
+:root[data-theme="light"] .form-control.custom-input:-webkit-autofill:hover,
+:root[data-theme="light"] .form-control.custom-input:-webkit-autofill:focus,
+:root[data-theme="light"] select.custom-input:-webkit-autofill,
+:root[data-theme="light"] select.custom-input:-webkit-autofill:hover,
+:root[data-theme="light"] select.custom-input:-webkit-autofill:focus,
+:root[data-theme="light"] textarea.custom-input:-webkit-autofill,
+:root[data-theme="light"] textarea.custom-input:-webkit-autofill:hover,
+:root[data-theme="light"] textarea.custom-input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+    -webkit-text-fill-color: #0f172a !important;
+    caret-color: #0f172a !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+    transition: background-color 9999s ease-in-out 0s;
+}
+
 /* Evitar que selects nativos mostrem fundo branco quando abertos/selecionados */
 select.custom-input:-moz-focusring { color: transparent; text-shadow: 0 0 0 var(--text-main); }
 

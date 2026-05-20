@@ -36,9 +36,9 @@ $formspreeEndpoint = "https://formspree.io/f/xreoyrka";
                 </a>
             <div class="collapse navbar-collapse show">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="<?php echo $painel_link; ?>">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="sobre.php">Sobre</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="contato.php">Contato</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo $painel_link; ?>"><i class="fas fa-home me-2"></i>Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="sobre.php"><i class="fas fa-info-circle me-2"></i>Sobre</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="contato.php"><i class="fas fa-envelope me-2"></i>Contato</a></li>
                 </ul>
 
                 <div class="d-flex align-items-center gap-3">
