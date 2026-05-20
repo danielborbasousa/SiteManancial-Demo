@@ -25,6 +25,9 @@ if($resultado_videos && mysqli_num_rows($resultado_videos) > 0) {
     }
 }
 
+$videos_recentes = array_slice($videos, 0, 3);
+$videos_restantes = max(0, count($videos) - count($videos_recentes));
+
 // Estatísticas do usuário
 $usuario_nome = $_SESSION["Usuario_nome"] ?? "Usuário";
 $usuario_email = $_SESSION["Usuario_logado"] ?? "";
@@ -183,12 +186,17 @@ $eh_admin = isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "a
                     <h2 class="mb-1"><i class="fas fa-play-circle me-2" style="color: #60a5fa;"></i>Conteúdos Recentes</h2>
                     <p class="text-white">Nossos vídeos e aulas mais recentes para sua edificação espiritual</p>
                 </div>
-                <a href="todos_videos.php" class="btn btn-outline-light btn-sm">Ver Todos</a>
+                <div class="d-flex flex-column align-items-end gap-2">
+                    <?php if ($videos_restantes > 0) { ?>
+                        <span class="badge rounded-pill bg-danger px-3 py-2" style="font-size: 0.95rem;">+<?php echo $videos_restantes; ?></span>
+                    <?php } ?>
+                    <a href="todos_videos.php" class="btn btn-outline-light btn-sm">Ver Todos</a>
+                </div>
             </div>
 
-            <?php if (count($videos) > 0) { ?>
+            <?php if (count($videos_recentes) > 0) { ?>
                 <div class="row g-3">
-                    <?php foreach ($videos as $video) { ?>
+                    <?php foreach ($videos_recentes as $video) { ?>
                         <?php
                             $tem_id = isset($video["IDCT_ID"]) && (int) $video["IDCT_ID"] > 0;
                             $link_video = $tem_id
