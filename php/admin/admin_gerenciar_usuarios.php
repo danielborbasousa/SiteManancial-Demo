@@ -10,6 +10,24 @@ $usuario_id = isset($_GET["id"]) ? (int) $_GET["id"] : 0;
 $usuario_edicao = null;
 $admin_id = isset($_SESSION["Usuario_id"]) ? (int) $_SESSION["Usuario_id"] : 0;
 
+function formatar_telefone_exibicao($telefone) {
+    $telefone_limpo = preg_replace('/\D/', '', (string) $telefone);
+    if (strlen($telefone_limpo) !== 11) {
+        return $telefone_limpo === '' ? 'N/A' : $telefone;
+    }
+
+    return sprintf('(%s) %s %s-%s', substr($telefone_limpo, 0, 2), substr($telefone_limpo, 2, 1), substr($telefone_limpo, 3, 4), substr($telefone_limpo, 7, 4));
+}
+
+function formatar_cpf_exibicao($cpf) {
+    $cpf_limpo = preg_replace('/\D/', '', (string) $cpf);
+    if (strlen($cpf_limpo) !== 11) {
+        return $cpf_limpo === '' ? 'N/A' : $cpf;
+    }
+
+    return sprintf('%s.%s.%s-%s', substr($cpf_limpo, 0, 3), substr($cpf_limpo, 3, 3), substr($cpf_limpo, 6, 3), substr($cpf_limpo, 9, 2));
+}
+
 // Processar atualização de usuário
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["acao"])) {
     $acao = $_POST["acao"];
@@ -35,16 +53,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["acao"])) {
     
     } elseif ($acao === "editar_usuario") {
         $id = (int) $_POST["usuario_id"];
-        $nome = mysqli_real_escape_string($conn, trim($_POST["nome"]));
-        $email = mysqli_real_escape_string($conn, trim($_POST["email"]));
-        $telefone = mysqli_real_escape_string($conn, trim($_POST["telefone"]));
-        $funcao = mysqli_real_escape_string($conn, trim($_POST["funcao"]));
-        $status = mysqli_real_escape_string($conn, trim($_POST["status"]));
+        $nome = trim($_POST["nome"]);
+        $email = trim($_POST["email"]);
+        $telefone = trim($_POST["telefone"]);
+        $cpf = trim($_POST["cpf"] ?? '');
+        $funcao = trim($_POST["funcao"]);
+        $status = trim($_POST["status"]);
+        $telefone_limpo = preg_replace('/\D/', '', $telefone);
+        $cpf_limpo = preg_replace('/\D/', '', $cpf);
         
-        if (empty($nome) || empty($email)) {
-            $erro = "Nome e email são obrigatórios.";
+        if (preg_match('/\d/', $nome)) {
+            $erro = "O nome não pode conter números.";
+        } elseif (strlen($nome) < 3 || strlen($nome) > 100) {
+            $erro = "Nome inválido. Use entre 3 e 100 caracteres.";
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $erro = "Informe um e-mail válido.";
+        } elseif (strlen($email) > 60) {
+            $erro = "E-mail inválido. Máximo de 60 caracteres.";
+        } elseif (!ctype_digit($telefone_limpo) || strlen($telefone_limpo) !== 11) {
+            $erro = "Telefone inválido. Use o formato (11) 9 9999-9999.";
+        } elseif (!ctype_digit($cpf_limpo) || strlen($cpf_limpo) !== 11) {
+            $erro = "CPF inválido. Use o formato 000.000.000-00.";
+        } elseif (strlen($funcao) < 2 || strlen($funcao) > 50) {
+            $erro = "Função inválida. Use entre 2 e 50 caracteres.";
+        } elseif (!in_array($status, array('pendente', 'aprovado', 'negado'), true)) {
+            $erro = "Status inválido.";
         } else {
-            $sql = "UPDATE ID_FIEL SET IDF_NOME = '$nome', IDF_EMAIL = '$email', IDF_TELEFONE = '$telefone', IDF_FUNCAO = '$funcao', IDF_STATUS = '$status' WHERE IDF_ID = $id LIMIT 1";
+            $nome = mysqli_real_escape_string($conn, $nome);
+            $email = mysqli_real_escape_string($conn, $email);
+            $telefone_limpo = mysqli_real_escape_string($conn, $telefone_limpo);
+            $cpf_limpo = mysqli_real_escape_string($conn, $cpf_limpo);
+            $funcao = mysqli_real_escape_string($conn, $funcao);
+            $status = mysqli_real_escape_string($conn, $status);
+
+            $sql = "UPDATE ID_FIEL SET IDF_NOME = '$nome', IDF_EMAIL = '$email', IDF_TELEFONE = '$telefone_limpo', IDF_CPF = '$cpf_limpo', IDF_FUNCAO = '$funcao', IDF_STATUS = '$status' WHERE IDF_ID = $id LIMIT 1";
             if (mysqli_query($conn, $sql)) {
                 $mensagem = "Usuário atualizado com sucesso!";
                 $modo = "listar";
@@ -166,7 +208,7 @@ if ($res_usuarios && mysqli_num_rows($res_usuarios) > 0) {
                                         <i class="fas fa-envelope me-2"></i><?php echo htmlspecialchars($admin_info["IDF_EMAIL"]); ?>
                                     </p>
                                     <p style="color: var(--text-muted);">
-                                        <i class="fas fa-phone me-2"></i><?php echo htmlspecialchars($admin_info["IDF_TELEFONE"] ?? "N/A"); ?>
+                                        <i class="fas fa-phone me-2"></i><?php echo htmlspecialchars(formatar_telefone_exibicao($admin_info["IDF_TELEFONE"] ?? "")); ?>
                                     </p>
                                 </div>
                             </div>
@@ -199,13 +241,13 @@ if ($res_usuarios && mysqli_num_rows($res_usuarios) > 0) {
 
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($usuario_edicao['IDF_EMAIL']); ?>" required>
+                            <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($usuario_edicao['IDF_EMAIL']); ?>" maxlength="60" required>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="telefone" class="form-label">Telefone</label>
-                                <input type="tel" class="form-control" id="telefone" name="telefone" value="<?php echo htmlspecialchars($usuario_edicao['IDF_TELEFONE']); ?>">
+                                <input type="tel" class="form-control" id="telefone" name="telefone" value="<?php echo htmlspecialchars(formatar_telefone_exibicao($usuario_edicao['IDF_TELEFONE'])); ?>" placeholder="(11) 9 9999-9999" pattern="\([0-9]{2}\) 9 [0-9]{4}-[0-9]{4}" title="Use o formato (11) 9 9999-9999" inputmode="numeric" minlength="16" maxlength="16">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="funcao" class="form-label">Função</label>
@@ -224,8 +266,8 @@ if ($res_usuarios && mysqli_num_rows($res_usuarios) > 0) {
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">CPF</label>
-                                <input type="text" class="form-control" value="<?php echo htmlspecialchars($usuario_edicao['IDF_CPF']); ?>" disabled>
+                                <label for="cpf" class="form-label">CPF</label>
+                                <input type="text" class="form-control" id="cpf" name="cpf" value="<?php echo htmlspecialchars(formatar_cpf_exibicao($usuario_edicao['IDF_CPF'])); ?>" placeholder="000.000.000-00" pattern="[0-9]{3}\.[0-9]{3}\.[0-9]{3}-[0-9]{2}" title="Use o formato 000.000.000-00" inputmode="numeric" minlength="14" maxlength="14" required>
                             </div>
                         </div>
 
@@ -267,7 +309,7 @@ if ($res_usuarios && mysqli_num_rows($res_usuarios) > 0) {
                             <tr>
                                 <td><strong><?php echo htmlspecialchars($user["IDF_NOME"]); ?></strong></td>
                                 <td><?php echo htmlspecialchars($user["IDF_EMAIL"]); ?></td>
-                                <td><?php echo htmlspecialchars($user["IDF_TELEFONE"] ?? "-"); ?></td>
+                                <td><?php echo htmlspecialchars(formatar_telefone_exibicao($user["IDF_TELEFONE"] ?? "")); ?></td>
                                 <td><?php echo htmlspecialchars($user["IDF_FUNCAO"] ?? "-"); ?></td>
                                 <td>
                                     <span class="status-badge <?php echo $status_class; ?>">
@@ -327,12 +369,12 @@ if ($res_usuarios && mysqli_num_rows($res_usuarios) > 0) {
 
                         <div class="mb-3">
                             <label for="telefone_perfil" class="form-label">Telefone</label>
-                            <input type="tel" class="form-control" id="telefone_perfil" name="telefone" value="<?php echo htmlspecialchars($admin_info['IDF_TELEFONE']); ?>">
+                            <input type="tel" class="form-control" id="telefone_perfil" name="telefone" value="<?php echo htmlspecialchars(formatar_telefone_exibicao($admin_info['IDF_TELEFONE'])); ?>" placeholder="(11) 9 9999-9999" pattern="\([0-9]{2}\) 9 [0-9]{4}-[0-9]{4}" title="Use o formato (11) 9 9999-9999" inputmode="numeric" minlength="16" maxlength="16">
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">CPF</label>
-                            <input type="text" class="form-control" value="<?php echo htmlspecialchars($admin_info['IDF_CPF']); ?>" disabled>
+                            <input type="text" class="form-control" value="<?php echo htmlspecialchars(formatar_cpf_exibicao($admin_info['IDF_CPF'])); ?>" disabled>
                         </div>
                     </div>
                     <div class="modal-footer" style="border-top: 1px solid var(--border-color);">
@@ -345,6 +387,55 @@ if ($res_usuarios && mysqli_num_rows($res_usuarios) > 0) {
             </div>
         </div>
     </div>
+
+    <script>
+        function mascaraCPF(valor) {
+            valor = valor.replace(/\D/g, '').substring(0, 11);
+            valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+            valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+            valor = valor.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            return valor;
+        }
+
+        function mascaraTelefone(valor) {
+            valor = valor.replace(/\D/g, '').substring(0, 11);
+
+            if (valor.length <= 2) {
+                return '(' + valor;
+            }
+
+            if (valor.length === 3) {
+                return '(' + valor.substring(0, 2) + ') ' + valor.substring(2);
+            }
+
+            var ddd = valor.substring(0, 2);
+            var nove = valor.substring(2, 3);
+            var bloco1 = valor.substring(3, 7);
+            var bloco2 = valor.substring(7, 11);
+            var formatado = '(' + ddd + ') ' + nove;
+
+            if (bloco1.length > 0) {
+                formatado += ' ' + bloco1;
+            }
+
+            if (bloco2.length > 0) {
+                formatado += '-' + bloco2;
+            }
+
+            return formatado;
+        }
+
+        ['cpf', 'telefone', 'telefone_perfil'].forEach(function (id) {
+            var input = document.getElementById(id);
+            if (!input) {
+                return;
+            }
+
+            input.addEventListener('input', function () {
+                this.value = id.indexOf('cpf') !== -1 ? mascaraCPF(this.value) : mascaraTelefone(this.value);
+            });
+        });
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

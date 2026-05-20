@@ -35,8 +35,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mensagem = "Informe um e-mail valido.";
     } elseif (strlen($email) > $lim_email) {
         $mensagem = "E-mail invalido. Maximo de " . $lim_email . " caracteres.";
-    } elseif (!ctype_digit($telefone_limpo) || strlen($telefone_limpo) < 10 || strlen($telefone_limpo) > 11) {
-        $mensagem = "Telefone invalido. Use apenas numeros (10 ou 11 digitos).";
+    } elseif (!ctype_digit($telefone_limpo) || strlen($telefone_limpo) !== 11) {
+        $mensagem = "Telefone invalido. Use o formato (11) 9 9999-9999.";
     } elseif (!ctype_digit($cpf_limpo) || strlen($cpf_limpo) != 11) {
         $mensagem = "CPF invalido. Use apenas numeros (11 digitos).";
     } elseif (strlen($filial) < 2 || strlen($filial) > $lim_filial) {
@@ -141,7 +141,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <div class="auth-form-grid auth-form-grid--two">
                 <div>
-                    <input type="text" id="IDF_TELEFONE" name="IDF_TELEFONE" class="form-control custom-input" placeholder="(11) 99999-9999" pattern="\([0-9]{2}\) [0-9]{4,5}-[0-9]{4}" title="Use o formato (11) 99999-9999" inputmode="numeric" minlength="14" maxlength="15" required>
+                    <input type="text" id="IDF_TELEFONE" name="IDF_TELEFONE" class="form-control custom-input" placeholder="(11) 9 9999-9999" pattern="\([0-9]{2}\) 9 [0-9]{4}-[0-9]{4}" title="Use o formato (11) 9 9999-9999" inputmode="numeric" minlength="16" maxlength="16" required>
                 </div>
 
                 <div>
@@ -190,16 +190,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         function mascaraTelefone(valor) {
-            valor = valor.replace(/\D/g, '');
-            valor = valor.substring(0, 11);
-            if (valor.length <= 10) {
-                valor = valor.replace(/(\d{2})(\d)/, '($1) $2');
-                valor = valor.replace(/(\d{4})(\d)/, '$1-$2');
-            } else {
-                valor = valor.replace(/(\d{2})(\d)/, '($1) $2');
-                valor = valor.replace(/(\d{5})(\d)/, '$1-$2');
+            valor = valor.replace(/\D/g, '').substring(0, 11);
+
+            if (valor.length <= 2) {
+                return '(' + valor;
             }
-            return valor;
+
+            if (valor.length === 3) {
+                return '(' + valor.substring(0, 2) + ') ' + valor.substring(2);
+            }
+
+            var ddd = valor.substring(0, 2);
+            var nove = valor.substring(2, 3);
+            var bloco1 = valor.substring(3, 7);
+            var bloco2 = valor.substring(7, 11);
+            var formatado = '(' + ddd + ') ' + nove;
+
+            if (bloco1.length > 0) {
+                formatado += ' ' + bloco1;
+            }
+
+            if (bloco2.length > 0) {
+                formatado += '-' + bloco2;
+            }
+
+            return formatado;
         }
 
         document.getElementById('IDF_CPF').addEventListener('input', function() {

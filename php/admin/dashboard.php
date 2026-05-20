@@ -12,6 +12,15 @@ if (!isset($_SESSION["Usuario_tipo"]) || $_SESSION["Usuario_tipo"] !== "admin") 
     exit;
 }
 
+function formatar_telefone_exibicao($telefone) {
+    $telefone_limpo = preg_replace('/\D/', '', (string) $telefone);
+    if (strlen($telefone_limpo) !== 11) {
+        return $telefone_limpo === '' ? 'N/A' : $telefone;
+    }
+
+    return sprintf('(%s) %s %s-%s', substr($telefone_limpo, 0, 2), substr($telefone_limpo, 2, 1), substr($telefone_limpo, 3, 4), substr($telefone_limpo, 7, 4));
+}
+
 // Buscar estatísticas
 $stats = array(
     'total_usuarios' => 0,
@@ -957,7 +966,7 @@ if ($res) {
                                                 <div class="row mb-3">
                                                     <div class="col-md-6">
                                                         <strong>Telefone:</strong><br>
-                                                        <span style="color: var(--text-muted);"><?php echo htmlspecialchars($user['IDF_TELEFONE'] ?? 'N/A'); ?></span>
+                                                        <span style="color: var(--text-muted);"><?php echo htmlspecialchars(formatar_telefone_exibicao($user['IDF_TELEFONE'] ?? '')); ?></span>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <strong>CPF:</strong><br>
