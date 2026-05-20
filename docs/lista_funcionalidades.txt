@@ -1,0 +1,90 @@
+SiteManancial-Demo - Lista de Funcionalidades
+
+1. Area publica
+- Landing page institucional com identidade visual da Missao Manancial.
+- Menu superior com acesso rapido para Home, Cursos, Sobre, Login e Criar conta.
+- Seletor de tema claro e escuro com persistencia no navegador.
+- Blocos de apresentacao da missao, valores e chamadas para cadastro.
+- Seccao de cursos exibida como vitrine institucional do que a plataforma oferece.
+
+2. Cadastro e acesso
+- Cadastro de fiel com nome completo, e-mail, CPF, telefone, filial, funcao, senha e confirmacao.
+- Validacao de nome sem numeros.
+- Validacao de e-mail em formato valido.
+- Validacao de CPF e telefone com tamanho e mascara esperados.
+- Validacao de senha com tamanho minimo e confirmacao igual.
+- Registro do usuario com status inicial pendente.
+- Login por e-mail e senha com redirecionamento automatico por perfil.
+- Bloqueio de acesso para contas pendentes e negadas.
+- Indicacao visual de cadastro recebido e aguardando aprovacao.
+- Logout e encerramento da sessao autenticada.
+
+3. Area do fiel
+- Dashboard autenticado com destaque dos videos recentes.
+- Cartoes de resumo com quantidade de videos e apresentacao visual da plataforma.
+- Listagem de videos recentes diretamente na tela inicial do fiel.
+- Biblioteca completa de videos com paginacao.
+- Abertura de video individual por ID ou por URL de conteudo.
+- Reproducao de video local armazenado na pasta videos.
+- Busca de conteudos por titulo e descricao.
+- Tela de perfil em modo somente leitura com nome, e-mail, telefone, CPF, filial, funcao e endereco.
+- Tela de notificacoes com lista cronologica das mensagens recebidas.
+- Exclusao de uma notificacao especifica.
+- Exclusao de todas as notificacoes do usuario.
+- Paginacao e navegacao interna com links para Sobre, Contato e Sair.
+- Pagina Sobre com descricao institucional da igreja e da plataforma.
+- Pagina Contato com formulario externo para envio de mensagem.
+
+4. Area administrativa
+- Dashboard administrativo com contagem de usuarios, pendentes, aprovados, videos, cursos, matriculas e taxa media de conclusao.
+- Listagem de solicitacoes pendentes para analise.
+- Aprovacao manual de usuarios.
+- Rejeicao manual de usuarios com possibilidade de motivo.
+- Registro de resposta na solicitacao de acesso.
+- Geração de notificacao interna para o usuario ao aprovar ou negar acesso.
+- Envio automatico de e-mail ao usuario na aprovacao ou recusa.
+- Gerenciamento de usuarios com listagem completa.
+- Edicao de dados de usuarios como nome, e-mail, telefone, funcao e status.
+- Exclusao de usuarios.
+- Edicao do proprio perfil do administrador.
+- Promocao de fiel para administrador.
+- Remocao de permissao administrativa.
+- Emissao de notificacao quando a permissao muda.
+- Envio de mensagens/notificacoes para todos os fieis aprovados.
+- Envio de mensagens/notificacoes para todos os administradores ativos.
+- Envio de mensagens/notificacoes para usuarios selecionados.
+- Gerenciamento de videos com upload de arquivo local.
+- Remocao de videos cadastrados.
+- Associacao de video a curso e modulo.
+- Definicao de ordem de exibicao do conteudo.
+- Visualizacao da experiencia de um usuario selecionado, incluindo perfil, cursos e conteudos disponiveis.
+- Tela de notificacoes do administrador.
+- Seed ou carga inicial de video de demonstracao.
+
+5. Suporte tecnico
+- Conexao central com MySQL por PHP.
+- Compatibilidade com banco simples e banco robusto.
+- Identificacao automatica de colunas para adaptar consultas entre as estruturas.
+- Sistema de sessao com token, IP, user agent e expiracao por inatividade.
+- Registro de sessao em tabela propria.
+- Expiracao de sessao configurada para cerca de 1 hora.
+- Envio de e-mail via Brevo com fallback local.
+- Leitura de variaveis sensiveis via arquivo .env.
+- Estrutura visual responsiva com Bootstrap e CSS proprio.
+- Tema claro/escuro compartilhado entre as telas.
+- Persistencia do tema no navegador.
+- Ajustes visuais para telas de login, cadastro, dashboard e areas internas.
+
+6. Estrutura de dados suportada
+- Cadastros de fieis e administradores.
+- Filiais da igreja.
+- Cursos, modulos, conteudos e matriculas.
+- Progresso de curso ou conteudo.
+- Notificacoes internas.
+- Sessoes autenticadas.
+- Recuperacao de senha prevista na modelagem.
+
+7. Observacao para teste
+- O que esta listado acima representa o que o projeto oferece hoje para teste.
+- Alguns itens aparecem totalmente nas telas.
+- Outros aparecem na base de dados e na documentacao e servem como suporte para evolucao futura.

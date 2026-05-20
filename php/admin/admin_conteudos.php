@@ -24,9 +24,17 @@ if ($base_root !== false) {
 
 // Diagnóstico básico de upload
 $upload_tmp_dir = ini_get('upload_tmp_dir') ?: sys_get_temp_dir();
+// Valores de configuração relevantes para uploads
+$php_upload_max = ini_get('upload_max_filesize');
+$php_post_max = ini_get('post_max_size');
+$php_max_exec = ini_get('max_execution_time');
+$php_mem_limit = ini_get('memory_limit');
+
+// Espaço livre na pasta de vídeos (em bytes), se disponível
+$videos_free = is_dir($upload_dir) ? @disk_free_space($upload_dir) : (@is_writable(dirname($upload_dir)) ? @disk_free_space(dirname($upload_dir)) : null);
 
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["acao"]) && $_POST["acao"] === "salvar") {
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["acao"]) && $_POST["acao"] === "salvar") {
     $titulo = trim($_POST["IDCT_TITULO"]);
     $descricao = trim($_POST["IDCT_DESCRICAO"]);
     $ordem = (int) $_POST["IDCT_ORDEM"];
@@ -39,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["acao"]) && $_POST["aca
         $erro = "Informe o titulo do video.";
     } elseif (!isset($_FILES["arquivo"])) {
         $erro = "Nenhum arquivo foi enviado.";
-    } elseif ($_FILES["arquivo"]["error"] !== UPLOAD_ERR_OK) {
+    } elseif (isset($_FILES["arquivo"]) && $_FILES["arquivo"]["error"] !== UPLOAD_ERR_OK) {
         $code = $_FILES["arquivo"]["error"];
         switch ($code) {
             case UPLOAD_ERR_INI_SIZE:
@@ -67,12 +75,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["acao"]) && $_POST["aca
                 $msg = "Erro no upload (código $code).";
         }
         $erro = $msg;
-    } else {
+        } else {
         $nome_original = basename($_FILES["arquivo"]["name"]);
         $extensao = strtolower(pathinfo($nome_original, PATHINFO_EXTENSION));
         $permitidas = array("mp4", "webm", "ogg", "mov");
 
-        if (!in_array($extensao, $permitidas)) {
+            if (!in_array($extensao, $permitidas)) {
             $erro = "Formato de video nao permitido.";
         } else {
             if (!is_dir($upload_dir)) {
@@ -93,7 +101,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["acao"]) && $_POST["aca
             $nome_arquivo = time() . "_" . preg_replace('/[^a-zA-Z0-9_-]/', '_', pathinfo($nome_original, PATHINFO_FILENAME)) . "." . $extensao;
             $destino = $upload_dir . $nome_arquivo;
 
-            if (!is_uploaded_file($_FILES["arquivo"]["tmp_name"])) {
+                if (!is_uploaded_file($_FILES["arquivo"]["tmp_name"])) {
                 $tmp = $_FILES["arquivo"]["tmp_name"] ?? 'n/a';
                 $erro = "Arquivo temporário não encontrado: " . $tmp . "; upload_tmp_dir: " . $upload_tmp_dir . " (existe: " . (is_dir($upload_tmp_dir) ? 'sim' : 'nao') . ")";
             } elseif (move_uploaded_file($_FILES["arquivo"]["tmp_name"], $destino)) {
@@ -118,6 +126,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["acao"]) && $_POST["aca
             }
         }
     }
+
+        // normal upload flow (sem chunking)
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["acao"]) && $_POST["acao"] === "excluir") {
@@ -202,6 +212,8 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
                     </div>
                 </div>
             </div>
+
+            <!-- Diagnostic removed from default view; shown only after successful upload -->
 
             <?php if ($mensagem !== "") { ?>
                 <div class="alert alert-success"><?php echo htmlspecialchars($mensagem); ?></div>

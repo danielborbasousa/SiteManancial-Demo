@@ -100,9 +100,9 @@ A tabela usada para isso é `ID_NOTIFICACAO`.
 
 ## Como executar localmente
 
-1. Inicie o Apache e o MySQL no XAMPP.
-2. Importe um dos bancos presentes em `database/`.
-3. Crie um arquivo `.env` na raiz do projeto com as chaves sensíveis (ex.: credenciais do banco, chaves de serviço de e-mail). Exemplo mínimo:
+1. Coloque a pasta do projeto dentro de `htdocs` (ex.: `C:\xampp\htdocs\SiteManancial-Demo`).
+2. Inicie Apache e MySQL via XAMPP Control Panel.
+3. Copie `.env.example` para `.env` na raiz e preencha os valores (DB, credenciais, e-mail). Exemplo mínimo:
 
 ```env
 # Banco de dados
@@ -111,15 +111,42 @@ DB_USER=root
 DB_PASS=
 DB_NAME=igreja_cursos
 
-# Email (API key para provedor SMTP/Transactional)
+# Email (opcional)
 EMAIL_API_KEY=
 EMAIL_SENDER_EMAIL=seu_email@exemplo.com
 EMAIL_SENDER_NAME=SiteManancial
 ```
 
-4. O projeto carrega automaticamente variáveis do `.env` — não comite esse arquivo. O `.gitignore` já contém uma entrada para `.env`.
-5. Defina o modo do banco em `php/conexao.php` se necessário.
-5. Acesse `http://localhost/SiteManancial-Demo/index.html`.
+4. Importe um dos bancos SQL em `database/` (use o arquivo `Banco Igreja Robusto.sql` ou `Banco Igreja.txt`).
+5. Garanta que a pasta `videos/` seja gravável pelo Apache (no Windows normalmente funciona por padrão; no Linux: `chmod -R 775 videos` e ajuste proprietário `www-data`).
+6. Reinicie o Apache (XAMPP Control Panel Stop → Start) para aplicar overrides por diretório, se for o caso.
+7. Acesse `http://localhost/SiteManancial-Demo/index.html` e faça login como admin para testar uploads.
+
+Problema comum — uploads grandes
+- Se vídeos grandes falharem (erro `UPLOAD_ERR_INI_SIZE` ou similares), ajuste os limites do PHP. Duas opções rápidas:
+
+- Editar `C:\xampp\php\php.ini` e aumentar `upload_max_filesize` e `post_max_size`, então reiniciar Apache.
+- Ou criar um arquivo `.user.ini` (no root do projeto) com estas linhas:
+
+```ini
+upload_max_filesize=512M
+post_max_size=520M
+memory_limit=1024M
+max_execution_time=900
+max_input_time=900
+```
+
+Salvar e reiniciar Apache (ou aguardar até 5 minutos se o PHP usar cache de `user_ini`).
+
+Segurança — variáveis sensíveis
+- Nunca comite o arquivo `.env` com chaves reais. Se alguma chave foi acidentalmente incluída no repositório git, gere/roteie a chave imediatamente e remova-a do histórico.
+
+Checklist rápido para enviar ao professor (zip)
+1. Compacte a pasta `SiteManancial-Demo`.
+2. Inclua `SETUP.md` no zip (já está no repositório).
+3. Oriente: abrir pasta em `htdocs`, importar SQL, copiar `.env.example` → `.env`, reiniciar Apache.
+
+Se quiser, eu adapto o `README.md` com um parágrafo em inglês para o professor ou gerencio um script simples para automatizar a criação do `.env` (opcional).
 
 ## Configuração do modo do banco
 

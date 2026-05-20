@@ -1,0 +1,23 @@
+# Universal-ish Apache/PHP overrides for local environments (XAMPP/LAMP).
+# php_value only works with mod_php, so keep it inside IfModule blocks.
+
+<IfModule mod_php8.c>
+    php_value upload_max_filesize 512M
+    php_value post_max_size 520M
+    php_value memory_limit 1024M
+    php_value max_execution_time 900
+    php_value max_input_time 900
+</IfModule>
+
+<IfModule mod_php.c>
+    php_value upload_max_filesize 512M
+    php_value post_max_size 520M
+    php_value memory_limit 1024M
+    php_value max_execution_time 900
+    php_value max_input_time 900
+</IfModule>
+
+# Optional timeout tuning for slower connections.
+<IfModule reqtimeout_module>
+    RequestReadTimeout header=20-40,MinRate=500 body=20-900,MinRate=500
+</IfModule>

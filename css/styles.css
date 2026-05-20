@@ -238,6 +238,29 @@ body.admin-layout .table .btn {
     border: 1px solid var(--border-color) !important;
 }
 
+/* Sucesso com fundo verde escuro legível no tema escuro */
+.success-dark-alert {
+    background: #14532d !important; /* verde escuro */
+    color: #000000 !important;     /* texto preto para contraste */
+    border: 1px solid #166534 !important;
+    padding: 1rem 1.25rem !important;
+    border-radius: 8px !important;
+    box-shadow: 0 6px 20px rgba(4, 120, 87, 0.12) !important;
+}
+.success-dark-alert p, .success-dark-alert small, .success-dark-alert strong {
+    color: #000000 !important;
+}
+.success-dark-alert .diagnostic-list {
+    margin-top: 0.6rem;
+    padding-left: 0;
+}
+.success-dark-alert .diagnostic-list li {
+    list-style: none;
+    margin: 0.18rem 0;
+    color: #000000 !important;
+    font-weight: 600;
+}
+
 /* Ajuste específico para o painel admin em tema escuro: tornar alert-info branco/preto para legibilidade */
 body.admin-layout .alert-info {
     background: #ffffff !important;
