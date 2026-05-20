@@ -53,6 +53,122 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="../../css/styles.css">
     <script src="../../js/theme.js"></script>
+    <style>
+        .video-library-header h1 {
+            color: var(--text-main);
+            font-weight: 800;
+        }
+
+        .video-library-subtitle {
+            color: #ffffff;
+            margin-bottom: 0;
+        }
+
+        :root[data-theme="light"] .video-library-subtitle {
+            color: #0f172a !important;
+        }
+
+        .video-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .video-card:hover {
+            background: rgba(96,165,250,0.1);
+            border-color: var(--primary-light);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(96,165,250,0.2);
+        }
+
+        .video-thumbnail {
+            position: relative;
+            height: 180px;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-light);
+            overflow: hidden;
+        }
+
+        .video-thumbnail video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            background: #0b1220;
+        }
+
+        .video-preview-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(7,16,29,0.05), rgba(7,16,29,0.28));
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .video-play-btn {
+            position: absolute;
+            font-size: 3rem;
+            opacity: 0.9;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+
+        .video-card:hover .video-play-btn {
+            transform: scale(1.1);
+            opacity: 1;
+        }
+
+        .video-info {
+            padding: 1rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .video-title {
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.3;
+        }
+
+        .video-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: auto;
+            min-height: 40px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .video-meta {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 1rem;
+        }
+
+        .video-actions {
+            padding: 0.8rem;
+            border-top: 1px solid var(--border-color);
+        }
+    </style>
 </head>
 <body style="transition: background 0.3s ease;">
     <?php $usuario_nome = $_SESSION['Usuario_nome'] ?? 'Usuário'; ?>
@@ -117,9 +233,9 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
     <main class="container-fluid py-5 px-4">
         <div class="row">
             <div class="col-12">
-                <div class="mb-4">
-                    <h1 class="mb-2"><i class="fas fa-film me-2" style="color: #60a5fa;"></i>Biblioteca de vídeos</h1>
-                    <p class="text-muted">Total de <?php echo $total_videos; ?> vídeos disponíveis</p>
+                <div class="mb-4 video-library-header">
+                    <h1 class="mb-2"><i class="fas fa-film me-2" style="color: #60a5fa;"></i>Biblioteca de Vídeos</h1>
+                    <p class="video-library-subtitle">Total de <?php echo $total_videos; ?> vídeos disponíveis</p>
                 </div>
 
                 <!-- GRID DE VÍDEOS -->
@@ -140,43 +256,39 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
                                 }
                             ?>
                             <div class="col-lg-3 col-md-4 col-sm-6">
-                                        <div style="background: var(--bg-light); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; transition: all 0.3s ease; height: 100%; display: flex; flex-direction: column;" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 40px rgba(96,165,250,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-                                        
-                                        <!-- THUMBNAIL -->
-                                        <div style="height: 180px; background: #000; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
-                                            <?php if ($preview_url !== "") { ?>
-                                                <video muted playsinline preload="metadata" style="width:100%; height:100%; object-fit:cover; display:block; background:#0b1220;" onloadedmetadata="if (this.currentTime < 0.15) { try { this.currentTime = 0.15; } catch (e) {} } this.pause();">
-                                                    <source src="<?php echo htmlspecialchars($preview_url); ?>">
-                                                </video>
-                                                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(180deg, rgba(7,16,29,0.05), rgba(7,16,29,0.28)); z-index: 1;"></div>
-                                            <?php } else { ?>
-                                                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle, rgba(96,165,250,0.2) 0%, transparent 70%);"></div>
-                                            <?php } ?>
-                                            <i class="fas fa-play-circle" style="font-size: 3.5rem; color: #60a5fa; z-index: 2; position: relative;"></i>
+                                <div class="video-card">
+                                    <div class="video-thumbnail">
+                                        <?php if ($preview_url !== "") { ?>
+                                            <video muted playsinline preload="metadata" onloadedmetadata="if (this.currentTime < 0.15) { try { this.currentTime = 0.15; } catch (e) {} } this.pause();">
+                                                <source src="<?php echo htmlspecialchars($preview_url); ?>">
+                                            </video>
+                                            <div class="video-preview-overlay"></div>
+                                        <?php } else { ?>
+                                            <div style="position:absolute; inset:0; background: radial-gradient(circle, rgba(96,165,250,0.2) 0%, transparent 70%);"></div>
+                                        <?php } ?>
+                                        <i class="fas fa-play video-play-btn"></i>
+                                    </div>
+
+                                    <div class="video-info">
+                                        <div class="video-title">
+                                            <?php echo htmlspecialchars(substr($video["IDCT_TITULO"], 0, 60)) . (strlen($video["IDCT_TITULO"]) > 60 ? "..." : ""); ?>
                                         </div>
 
-                                        <!-- CONTEÚDO -->
-                                        <div style="padding: 1rem; flex-grow: 1; display: flex; flex-direction: column;">
-                                            <h6 class="mb-2" style="font-weight: 700; color: var(--text-main); line-height: 1.3;">
-                                                <?php echo htmlspecialchars(substr($video["IDCT_TITULO"], 0, 60)) . (strlen($video["IDCT_TITULO"]) > 60 ? "..." : ""); ?>
-                                            </h6>
-                                            
-                                            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: auto; min-height: 40px;">
-                                                <?php echo htmlspecialchars(substr($video["IDCT_DESCRICAO"], 0, 80)) . (strlen($video["IDCT_DESCRICAO"]) > 80 ? "..." : ""); ?>
-                                            </p>
-
-                                            <div style="display: flex; gap: 0.5rem; font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem;">
-                                                <span><i class="fas fa-calendar-alt me-1"></i><?php echo date('d/m/Y', strtotime($video["IDCT_CRIADO_EM"])); ?></span>
-                                            </div>
+                                        <div class="video-desc">
+                                            <?php echo htmlspecialchars(substr($video["IDCT_DESCRICAO"], 0, 80)) . (strlen($video["IDCT_DESCRICAO"]) > 80 ? "..." : ""); ?>
                                         </div>
 
-                                        <!-- BOTÃO -->
-                                        <div style="padding: 0.8rem; border-top: 1px solid var(--border-color);">
-                                            <a href="assistir_video.php?id=<?php echo (int) $video["IDCT_ID"]; ?>" class="btn btn-sm btn-light w-100" style="background: linear-gradient(135deg, #60a5fa, #a78bfa); border: none; color: white;">
-                                                <i class="fas fa-play me-1"></i>Assistir
-                                            </a>
+                                        <div class="video-meta">
+                                            <span><i class="fas fa-calendar-alt me-1"></i><?php echo date('d/m/Y', strtotime($video["IDCT_CRIADO_EM"])); ?></span>
                                         </div>
                                     </div>
+
+                                    <div class="video-actions">
+                                        <a href="assistir_video.php?id=<?php echo (int) $video["IDCT_ID"]; ?>" class="btn btn-sm btn-light w-100" style="background: linear-gradient(135deg, #60a5fa, #a78bfa); border: none; color: white;">
+                                            <i class="fas fa-play me-1"></i>Assistir Agora
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         <?php } ?>
                     </div>
