@@ -1239,6 +1239,19 @@ img { max-width: 100%; height: auto; }
 /* Keep sidebar fixed to very top so dashboard layout remains full-height */
 .admin-sidebar { top: 0; }
 
+/* Bootstrap modals must sit above the fixed admin header/sidebar */
+body.admin-layout .modal {
+    z-index: 3000 !important;
+}
+
+body.admin-layout .modal-backdrop {
+    z-index: 2990 !important;
+}
+
+body.admin-layout .modal-dialog {
+    z-index: 3010 !important;
+}
+
 /* Non-dashboard admin pages use a standard main container; push it below the navbar */
 /* Non-dashboard admin pages use a standard main container; push it below the navbar */
 body.admin-layout main.container,

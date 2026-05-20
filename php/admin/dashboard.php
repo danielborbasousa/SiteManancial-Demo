@@ -919,9 +919,9 @@ if ($res) {
                                     <td><?php echo htmlspecialchars($user['IDF_FUNCAO'] ?? 'N/A'); ?></td>
                                     <td><?php echo !empty($user['IDF_CRIADO_EM']) ? date('d/m/Y H:i', strtotime($user['IDF_CRIADO_EM'])) : 'N/A'; ?></td>
                                     <td>
-                                        <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#verDadosModal<?php echo $user['IDF_ID']; ?>" style="padding: 0.35rem 0.75rem; font-size: 0.85rem;">
-                                            <i class="fas fa-eye me-1"></i>Ver Dados
-                                        </button>
+                                        <a href="admin_aprovar_usuarios.php" class="btn btn-sm btn-primary" style="padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+                                            </i>Ver Dados
+                                        </a>
                                     </td>
                                 </tr>
 
@@ -934,6 +934,15 @@ if ($res) {
                                                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                             </div>
                                             <div class="modal-body">
+                                                <div class="d-flex flex-wrap gap-2 justify-content-end mb-3">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                        <i class="fas fa-times me-2"></i>Fechar
+                                                    </button>
+                                                    <a href="admin_aprovar_usuarios.php" class="btn btn-primary">
+                                                        <i class="fas fa-check me-2"></i>Ir para Aprovações
+                                                    </a>
+                                                </div>
+
                                                 <div class="row mb-3">
                                                     <div class="col-md-6">
                                                         <strong>Nome:</strong><br>
