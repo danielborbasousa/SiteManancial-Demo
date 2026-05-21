@@ -572,28 +572,6 @@ WHERE c.IDC_TITULO = 'Fundamentos da Fe'
       WHERE m.IDC_ID = c.IDC_ID AND m.IDM_ORDEM = 2
   );
 
-INSERT INTO ID_CONTENT (
-    IDC_ID, IDM_ID, IDCT_TIPO, IDCT_TITULO, IDCT_DESCRICAO,
-    IDCT_URL, IDCT_DURACAO_SEGUNDOS, IDCT_ORDEM, IDCT_PUBLICADO
-)
-SELECT
-    c.IDC_ID,
-    m.IDM_ID,
-    'DOCUMENTO',
-    'Apostila 1',
-    'Material de apoio em PDF.',
-    'https://exemplo.com/docs/apostila1.pdf',
-    NULL,
-    2,
-    1
-FROM ID_CURSO c
-JOIN ID_MODULO m ON m.IDC_ID = c.IDC_ID AND m.IDM_ORDEM = 1
-WHERE c.IDC_TITULO = 'Fundamentos da Fe'
-  AND NOT EXISTS (
-      SELECT 1 FROM ID_CONTENT x
-      WHERE x.IDM_ID = m.IDM_ID AND x.IDCT_ORDEM = 2
-  );
-
 INSERT INTO ID_MATRICULA (IDF_ID, IDC_ID, IDMATR_STATUS, IDMATR_PERCENTUAL)
 SELECT
     f.IDF_ID,

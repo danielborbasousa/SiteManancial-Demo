@@ -314,11 +314,6 @@ VALUES
 ('Dedicado', 'Completou 3 cursos', 'fire'),
 ('Mestre', 'Completou 10 cursos', 'crown');
 
-INSERT INTO ID_CONTENT (IDC_ID, IDM_ID, IDCT_TIPO, IDCT_TITULO, IDCT_DESCRICAO, IDCT_URL, IDCT_ORDEM)
-VALUES
-(1, 1, 'DOCUMENTO', 'Apostila 1', 'Material de apoio', 'apostila1.pdf', 2),
-(1, 2, 'DOCUMENTO', 'Guia de Pratica', 'Material de apoio pratico', 'guia_pratica.pdf', 1);
-
 INSERT INTO ID_MATRICULA (IDF_ID, IDC_ID, IDMATR_STATUS, IDMATR_PERCENTUAL)
 VALUES
 (2, 1, 'ATIVA', 40.00),
