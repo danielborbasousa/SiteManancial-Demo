@@ -93,7 +93,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         . '<p>Atenciosamente,<br>Equipe SiteManancial</p>'
                         . '</div>';
                 }
-                $email_enviado = enviar_email_sistema($user['IDF_EMAIL'], $assunto_email, $html_email, $texto_email);
+                $email_enviado = false;
+                // Only attempt to send email if the mailer config keys are present
+                if (defined('BREVO_API_KEY') && (defined('BREVO_SENDER_EMAIL') || defined('EMAIL_SENDER')) ) {
+                    try {
+                        $email_enviado = enviar_email_sistema($user['IDF_EMAIL'], $assunto_email, $html_email, $texto_email);
+                    } catch (\Throwable $ex) {
+                        // swallow errors from the mailer and mark as not sent
+                        $email_enviado = false;
+                    }
+                } else {
+                    // Mail configuration missing — do not attempt to call the mailer (avoids fatal errors)
+                    $email_enviado = false;
+                }
                 
                 // Mensagem de sucesso
                 if ($acao === 'aprovar' || $acao === 'dar_permissao') {
