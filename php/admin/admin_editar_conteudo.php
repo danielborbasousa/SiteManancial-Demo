@@ -148,6 +148,13 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="../../css/styles.css">
     <script src="../../js/theme.js"></script>
+    <style>
+        :root[data-theme="dark"] .video-edit-success {
+            background: #14532d !important;
+            color: #ffffff !important;
+            border: 1px solid #166534 !important;
+        }
+    </style>
 </head>
 <body class="admin-layout" style="transition: background 0.3s ease;">
     <?php include __DIR__ . '/header_admin.php'; ?>
@@ -162,7 +169,7 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
             </div>
 
             <?php if ($mensagem !== "") { ?>
-                <div class="alert alert-success"><?php echo htmlspecialchars($mensagem); ?></div>
+                <div class="alert alert-success video-edit-success"><?php echo htmlspecialchars($mensagem); ?></div>
             <?php } ?>
 
             <?php if ($erro !== "") { ?>

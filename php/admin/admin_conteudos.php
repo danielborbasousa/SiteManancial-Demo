@@ -33,6 +33,42 @@ $php_mem_limit = ini_get('memory_limit');
 // Espaço livre na pasta de vídeos (em bytes), se disponível
 $videos_free = is_dir($upload_dir) ? @disk_free_space($upload_dir) : (@is_writable(dirname($upload_dir)) ? @disk_free_space(dirname($upload_dir)) : null);
 
+function video_postado_anteriormente($conn, $upload_dir, $hash_novo, $caminho_atual = '') {
+    $hash_novo = trim((string) $hash_novo);
+    if ($hash_novo === '') {
+        return false;
+    }
+
+    $sql_arquivos = "SELECT IDCT_URL FROM ID_CONTENT WHERE LOWER(IDCT_TIPO) = 'video' AND IDCT_URL IS NOT NULL AND IDCT_URL <> ''";
+    $resultado = mysqli_query($conn, $sql_arquivos);
+    if (!$resultado) {
+        return false;
+    }
+
+    while ($linha = mysqli_fetch_assoc($resultado)) {
+        $url_existente = trim((string) ($linha['IDCT_URL'] ?? ''));
+        if ($url_existente === '' || $url_existente === $caminho_atual) {
+            continue;
+        }
+
+        $arquivo_existente = '';
+        if (strpos($url_existente, 'videos/') === 0) {
+            $arquivo_existente = $upload_dir . basename($url_existente);
+        } elseif (is_file($url_existente)) {
+            $arquivo_existente = $url_existente;
+        }
+
+        if ($arquivo_existente !== '' && is_file($arquivo_existente)) {
+            $hash_existente = @hash_file('sha256', $arquivo_existente);
+            if ($hash_existente !== false && hash_equals($hash_novo, $hash_existente)) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["acao"]) && $_POST["acao"] === "salvar") {
     $titulo = trim($_POST["IDCT_TITULO"]);
@@ -106,20 +142,26 @@ $videos_free = is_dir($upload_dir) ? @disk_free_space($upload_dir) : (@is_writab
                 $erro = "Arquivo temporário não encontrado: " . $tmp . "; upload_tmp_dir: " . $upload_tmp_dir . " (existe: " . (is_dir($upload_tmp_dir) ? 'sim' : 'nao') . ")";
             } elseif (move_uploaded_file($_FILES["arquivo"]["tmp_name"], $destino)) {
                 $url_salva = "videos/" . $nome_arquivo;
+                $hash_novo = @hash_file('sha256', $destino);
 
-                $titulo_db = mysqli_real_escape_string($conn, $titulo);
-                $descricao_db = mysqli_real_escape_string($conn, $descricao);
-                $url_db = mysqli_real_escape_string($conn, $url_salva);
-                $curso_id = $curso_id > 0 ? $curso_id : 1;
-                $modulo_sql = $modulo_id === null ? "NULL" : (string) $modulo_id;
-
-                $sql = "INSERT INTO ID_CONTENT (IDC_ID, IDM_ID, IDCT_TIPO, IDCT_TITULO, IDCT_DESCRICAO, IDCT_URL, IDCT_ORDEM) VALUES ($curso_id, $modulo_sql, 'VIDEO', '$titulo_db', '$descricao_db', '$url_db', $ordem)";
-
-                if (mysqli_query($conn, $sql)) {
-                    $mensagem = "Video enviado com sucesso.";
-                } else {
+                if ($hash_novo !== false && video_postado_anteriormente($conn, $upload_dir, $hash_novo)) {
                     @unlink($destino);
-                    $erro = "Erro ao salvar no banco.";
+                    $erro = "Vídeo postado anteriormente, não sendo possível postar novamente.";
+                } else {
+                    $titulo_db = mysqli_real_escape_string($conn, $titulo);
+                    $descricao_db = mysqli_real_escape_string($conn, $descricao);
+                    $url_db = mysqli_real_escape_string($conn, $url_salva);
+                    $curso_id = $curso_id > 0 ? $curso_id : 1;
+                    $modulo_sql = $modulo_id === null ? "NULL" : (string) $modulo_id;
+
+                    $sql = "INSERT INTO ID_CONTENT (IDC_ID, IDM_ID, IDCT_TIPO, IDCT_TITULO, IDCT_DESCRICAO, IDCT_URL, IDCT_ORDEM) VALUES ($curso_id, $modulo_sql, 'VIDEO', '$titulo_db', '$descricao_db', '$url_db', $ordem)";
+
+                    if (mysqli_query($conn, $sql)) {
+                        $mensagem = "Video enviado com sucesso.";
+                    } else {
+                        @unlink($destino);
+                        $erro = "Erro ao salvar no banco.";
+                    }
                 }
             } else {
                 $erro = "Nao foi possivel salvar o arquivo. Tmp: " . ($_FILES["arquivo"]["tmp_name"] ?? 'n/a') . " Dest: " . $destino;
@@ -184,6 +226,12 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
             background: #14532d !important;
             color: #ffffff !important;
             border: 1px solid #166534 !important;
+        }
+
+        :root[data-theme="dark"] .video-upload-error {
+            background: #7f1d1d !important;
+            color: #ffffff !important;
+            border: 1px solid #991b1b !important;
         }
 
         :root[data-theme="dark"] .video-upload-success .btn-close {
@@ -307,7 +355,7 @@ if ($res_cursos && mysqli_num_rows($res_cursos) > 0) {
             <?php } ?>
 
             <?php if ($erro !== "") { ?>
-                <div class="alert alert-danger"><?php echo htmlspecialchars($erro); ?></div>
+                <div class="alert alert-danger video-upload-error"><?php echo htmlspecialchars($erro); ?></div>
             <?php } ?>
 
             <form method="POST" enctype="multipart/form-data" class="mb-5">
