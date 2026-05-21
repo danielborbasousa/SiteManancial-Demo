@@ -71,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $sql_notif = "INSERT INTO ID_NOTIFICACAO (IDF_ID, IDN_TITULO, IDN_MENSAGEM, IDN_TIPO) VALUES ($usuario_id, '$notif_titulo', '$notif_msg', 'resposta_acesso')";
                 @mysqli_query($conn, $sql_notif);
 
-                $login_link = site_url('login.php');
+                $login_link = 'http://localhost/SiteManancial-Demo/login.php';
                 $assunto_email = $novo_status === 'aprovado' ? 'Seu acesso foi aprovado' : 'Seu cadastro foi recusado';
                 $nome_email = htmlspecialchars($user['IDF_NOME']);
                 if ($novo_status === 'aprovado') {
