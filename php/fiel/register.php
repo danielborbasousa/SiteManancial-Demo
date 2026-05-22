@@ -12,17 +12,18 @@ $lim_cpf = 11;
 $lim_filial = 100;
 $lim_funcao = 25;
 $lim_endereco = 200;
-$lim_senha = 100;
+$lim_senha = 10;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nome = trim($_POST["IDF_NOME"]);
-    $email = trim($_POST["IDF_EMAIL"]);
-    $telefone = trim($_POST["IDF_TELEFONE"]);
-    $cpf = trim($_POST["IDF_CPF"]);
-    $filial = trim($_POST["IDF_FILIAL"]);
-    $funcao = trim($_POST["IDF_FUNCAO"]);
-    $senha = $_POST["IDF_SENHA"];
-    $senha_confirma = $_POST["IDF_SENHA_CONFIRMA"];
+    $nome = trim($_POST["IDF_NOME"] ?? "");
+    $email = trim($_POST["IDF_EMAIL"] ?? "");
+    $telefone = trim($_POST["IDF_TELEFONE"] ?? "");
+    $cpf = trim($_POST["IDF_CPF"] ?? "");
+    $filial = trim($_POST["IDF_FILIAL"] ?? "");
+    $funcao = trim($_POST["IDF_FUNCAO"] ?? "");
+    $senha = $_POST["IDF_SENHA"] ?? "";
+    $senha_confirma = $_POST["IDF_SENHA_CONFIRMA"] ?? "";
+
 
     $telefone_limpo = preg_replace('/\D/', '', $telefone);
     $cpf_limpo = preg_replace('/\D/', '', $cpf);
@@ -93,6 +94,96 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="../../css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="../../js/theme.js"></script>
+    <style>
+        /* Compact layout for register panel */
+        .auth-panel.auth-panel--wide {
+            width: min(470px, calc(100vw - 0.5rem));
+            max-width: 470px;
+            margin: 0.25rem auto;
+            padding: 0.42rem 0.55rem;
+            font-size: 0.86rem;
+            box-sizing: border-box;
+            overflow-x: hidden;
+        }
+
+        .auth-panel.auth-panel--wide .auth-brand-row {
+            gap: 0.65rem;
+        }
+
+        .auth-panel.auth-panel--wide .logo {
+            width: 48px;
+            height: auto;
+        }
+
+        .auth-panel.auth-panel--wide .auth-brand-copy h2 {
+            font-size: 1.45rem;
+            margin-bottom: 0;
+        }
+
+        .auth-panel.auth-panel--wide .auth-brand-copy p {
+            font-size: 0.82rem;
+        }
+
+        .auth-panel.auth-panel--wide .auth-compact-divider {
+            margin: 0.4rem 0;
+        }
+
+        .auth-panel.auth-panel--wide .auth-form-grid {
+            gap: 0.4rem;
+        }
+
+        .auth-panel.auth-panel--wide .custom-input {
+            min-height: 40px;
+            padding-top: 0.45rem;
+            padding-bottom: 0.45rem;
+        }
+
+        .auth-panel.auth-panel--wide .auth-submit {
+            padding-top: 0.6rem;
+            padding-bottom: 0.6rem;
+        }
+
+        @media (max-width: 768px) {
+            .auth-panel.auth-panel--wide {
+                max-width: 100%;
+                margin: 0.2rem;
+                padding: 0.35rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .auth-panel.auth-panel--wide {
+                margin: 0.15rem;
+                padding: 0.3rem;
+                border-radius: 8px;
+            }
+        }
+
+        .password-toggle-btn { border: 2px solid var(--border-color); color: var(--text-main); }
+        .password-help-trigger {
+            color: var(--text-muted);
+            font-size: 0.84rem;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            line-height: 1;
+        }
+        .password-help-trigger .fa-circle-info { color: var(--primary-light); }
+        .tooltip.password-tooltip {
+            --bs-tooltip-bg: rgba(15, 23, 42, 0.96);
+            --bs-tooltip-color: #fff;
+            --bs-tooltip-padding-x: 0.85rem;
+            --bs-tooltip-padding-y: 0.65rem;
+            --bs-tooltip-border-radius: 0.75rem;
+            --bs-tooltip-max-width: 260px;
+        }
+        .tooltip.password-tooltip .tooltip-inner {
+            font-size: 0.82rem;
+            line-height: 1.35;
+            text-align: left;
+            box-shadow: 0 10px 24px rgba(0,0,0,.28);
+        }
+    </style>
 </head>
 <body class="auth-page">
 
@@ -160,12 +251,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
             <div class="auth-form-grid">
-                <div>
-                    <input type="password" name="IDF_SENHA" class="form-control custom-input" placeholder="Criar senha" minlength="6" maxlength="100" required>
+                <button type="button" class="mb-2 password-help-trigger d-inline-flex align-items-center gap-2" data-bs-toggle="tooltip" data-bs-custom-class="password-tooltip" data-bs-placement="top" data-bs-container="body" data-bs-title="6 a 10 caracteres. 1 maiúscula. 1 especial. Senhas iguais.">
+                    <i class="fas fa-circle-info"></i>
+                    <span><strong>Regras da senha</strong></span>
+                </button>
+
+                <div class="input-group mb-2">
+                    <input id="IDF_SENHA" type="password" name="IDF_SENHA" class="form-control custom-input" placeholder="Criar senha" minlength="6" maxlength="10" pattern="(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{6,10}" title="6-10 caracteres, pelo menos 1 letra maiúscula e 1 caractere especial" required>
+                    <button class="btn btn-outline-light password-toggle-btn" type="button" id="toggleRegisterPassword"><i class="fas fa-eye"></i></button>
                 </div>
 
-                <div>
-                    <input type="password" name="IDF_SENHA_CONFIRMA" class="form-control custom-input" placeholder="Confirmar senha" minlength="6" maxlength="100" required>
+                <div class="input-group">
+                    <input id="IDF_SENHA_CONFIRMA" type="password" name="IDF_SENHA_CONFIRMA" class="form-control custom-input" placeholder="Confirmar senha" minlength="6" maxlength="10" pattern="(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{6,10}" title="Repita a senha (6-10 caracteres, pelo menos 1 letra maiúscula e 1 caractere especial)" required>
+                    <button class="btn btn-outline-light password-toggle-btn" type="button" id="toggleRegisterPasswordConfirm"><i class="fas fa-eye"></i></button>
                 </div>
             </div>
 
@@ -179,7 +277,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </form>
     </section>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (element) {
+            new bootstrap.Tooltip(element, { container: 'body', trigger: 'hover focus', customClass: 'password-tooltip' });
+        });
+
         function mascaraCPF(valor) {
             valor = valor.replace(/\D/g, '');
             valor = valor.substring(0, 11);
@@ -224,6 +327,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         document.getElementById('IDF_TELEFONE').addEventListener('input', function() {
             this.value = mascaraTelefone(this.value);
         });
+
+        // Toggle para mostrar/ocultar senhas
+        (function() {
+            var pass = document.getElementById('IDF_SENHA');
+            var passConfirm = document.getElementById('IDF_SENHA_CONFIRMA');
+            var toggle = document.getElementById('toggleRegisterPassword');
+            var toggleConfirm = document.getElementById('toggleRegisterPasswordConfirm');
+
+            function bindToggle(btn, input) {
+                if (!btn || !input) return;
+                btn.addEventListener('click', function () {
+                    var isHidden = input.type === 'password';
+                    input.type = isHidden ? 'text' : 'password';
+                    var icon = btn.querySelector('i');
+                    if (icon) icon.className = isHidden ? 'fas fa-eye-slash' : 'fas fa-eye';
+                });
+            }
+
+            bindToggle(toggle, pass);
+            bindToggle(toggleConfirm, passConfirm);
+        })();
     </script>
 
 </body>
