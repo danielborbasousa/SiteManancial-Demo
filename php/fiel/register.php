@@ -277,7 +277,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <form action="" method="POST" class="auth-form-grid">
             <div class="auth-form-grid auth-form-grid--two">
                 <div>
-                    <input type="text" name="IDF_NOME" class="form-control custom-input" placeholder="Nome completo" pattern="^[^0-9]{3,50}$" title="Nome: sem números, entre 3 e 50 caracteres" minlength="3" maxlength="50" required>
+                    <input type="text" id="IDF_NOME" name="IDF_NOME" class="form-control custom-input" placeholder="Nome completo" pattern="^[^0-9]{3,50}$" title="Nome: sem números, entre 3 e 50 caracteres" minlength="3" maxlength="50" autocomplete="name" required>
                 </div>
 
                 <div>
@@ -381,6 +381,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         document.getElementById('IDF_TELEFONE').addEventListener('input', function() {
             this.value = mascaraTelefone(this.value);
+        });
+
+        document.getElementById('IDF_NOME').addEventListener('input', function() {
+            this.value = this.value.replace(/\d+/g, '');
+        });
+
+        document.getElementById('IDF_NOME').addEventListener('paste', function(event) {
+            var texto = (event.clipboardData || window.clipboardData).getData('text');
+            if (/\d/.test(texto)) {
+                event.preventDefault();
+                this.value = this.value.replace(/\d+/g, '');
+            }
         });
 
         // Toggle para mostrar/ocultar senhas
