@@ -90,8 +90,8 @@ if(isset($_SESSION["Usuario_tipo"]) && $_SESSION["Usuario_tipo"] === "admin") {
         <div class="auth-container" style="max-width: 900px; margin: 0 auto;">
             <h1 class="mb-3">Sobre a missão</h1>
             <p>
-                Esta plataforma foi criada para disponibilizar videos, mensagens e estudos da Missao Evangelica
-                Manancial da Esperanca de forma simples e organizada.
+                Esta plataforma foi criada para disponibilizar videos, mensagens e estudos da Missão Evangelica
+                Manancial da Esperança de forma simples e organizada.
             </p>
             <p>
                 O objetivo e facilitar o acesso ao conteudo da igreja para membros e visitantes, usando uma
