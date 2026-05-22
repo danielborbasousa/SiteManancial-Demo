@@ -14,6 +14,61 @@ $lim_funcao = 25;
 $lim_endereco = 200;
 $lim_senha = 10;
 
+function valor_todos_iguais($valor) {
+    $valor = (string) $valor;
+    return $valor !== '' && preg_match('/^(\d)\1+$/', $valor) === 1;
+}
+
+function validar_cpf_br($cpf) {
+    $cpf = preg_replace('/\D/', '', (string) $cpf);
+    if (strlen($cpf) !== 11 || valor_todos_iguais($cpf)) {
+        return false;
+    }
+
+    for ($indice = 0; $indice < 9; $indice++) {
+        $peso = 10 - $indice;
+        $soma = $soma ?? 0;
+        $soma += ((int) $cpf[$indice]) * $peso;
+    }
+    $resto = $soma % 11;
+    $digito1 = ($resto < 2) ? 0 : 11 - $resto;
+
+    if ((int) $cpf[9] !== $digito1) {
+        return false;
+    }
+
+    $soma = 0;
+    for ($indice = 0; $indice < 10; $indice++) {
+        $peso = 11 - $indice;
+        $soma += ((int) $cpf[$indice]) * $peso;
+    }
+    $resto = $soma % 11;
+    $digito2 = ($resto < 2) ? 0 : 11 - $resto;
+
+    return (int) $cpf[10] === $digito2;
+}
+
+function validar_telefone_br($telefone) {
+    $telefone = preg_replace('/\D/', '', (string) $telefone);
+    if (strlen($telefone) !== 11) {
+        return false;
+    }
+
+    if (!preg_match('/^[1-9]{2}9\d{8}$/', $telefone)) {
+        return false;
+    }
+
+    if (valor_todos_iguais($telefone)) {
+        return false;
+    }
+
+    if (preg_match('/^\d{2}9(\d)\1{7}$/', $telefone) === 1) {
+        return false;
+    }
+
+    return true;
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nome = trim($_POST["IDF_NOME"] ?? "");
     $email = trim($_POST["IDF_EMAIL"] ?? "");
@@ -36,10 +91,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mensagem = "Informe um e-mail valido.";
     } elseif (strlen($email) > $lim_email) {
         $mensagem = "E-mail invalido. Maximo de " . $lim_email . " caracteres.";
-    } elseif (!ctype_digit($telefone_limpo) || strlen($telefone_limpo) !== 11) {
-        $mensagem = "Telefone invalido. Use o formato (11) 9 9999-9999.";
-    } elseif (!ctype_digit($cpf_limpo) || strlen($cpf_limpo) != 11) {
-        $mensagem = "CPF invalido. Use apenas numeros (11 digitos).";
+    } elseif (!validar_telefone_br($telefone_limpo)) {
+        $mensagem = "Telefone invalido. Use um celular valido com DDD e evite sequencias repetidas.";
+    } elseif (!validar_cpf_br($cpf_limpo)) {
+        $mensagem = "CPF invalido. Informe um CPF valido, sem sequencias repetidas.";
     } elseif (strlen($filial) < 2 || strlen($filial) > $lim_filial) {
         $mensagem = "Filial invalida. Use entre 2 e " . $lim_filial . " caracteres.";
     } elseif (strlen($funcao) < 2 || strlen($funcao) > $lim_funcao) {
@@ -232,11 +287,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <div class="auth-form-grid auth-form-grid--two">
                 <div>
-                    <input type="text" id="IDF_TELEFONE" name="IDF_TELEFONE" class="form-control custom-input" placeholder="(11) 9 9999-9999" pattern="\([0-9]{2}\) 9 [0-9]{4}-[0-9]{4}" title="Use o formato (11) 9 9999-9999" inputmode="numeric" minlength="16" maxlength="16" required>
+                    <input type="text" id="IDF_TELEFONE" name="IDF_TELEFONE" class="form-control custom-input" placeholder="(11) 9 9999-9999" pattern="\([0-9]{2}\) 9 [0-9]{4}-[0-9]{4}" title="Use o formato (11) 9 9999-9999, sem sequências repetidas" inputmode="numeric" minlength="16" maxlength="16" required>
                 </div>
 
                 <div>
-                    <input type="text" id="IDF_CPF" name="IDF_CPF" class="form-control custom-input" placeholder="000.000.000-00" pattern="[0-9]{3}\.[0-9]{3}\.[0-9]{3}-[0-9]{2}" title="Use o formato 000.000.000-00" inputmode="numeric" minlength="14" maxlength="14" required>
+                    <input type="text" id="IDF_CPF" name="IDF_CPF" class="form-control custom-input" placeholder="000.000.000-00" pattern="[0-9]{3}\.[0-9]{3}\.[0-9]{3}-[0-9]{2}" title="Use o formato 000.000.000-00, com CPF válido" inputmode="numeric" minlength="14" maxlength="14" required>
                 </div>
             </div>
 
