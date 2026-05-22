@@ -44,10 +44,59 @@ if($url != "" && !file_exists($url)) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* Offset dinâmico para evitar corte quando a navbar fixa quebra linhas no desktop */
+        body.video-player-page {
+            --video-nav-offset: calc(var(--navbar-height) + 24px);
+            padding-top: var(--video-nav-offset) !important;
+        }
+
+        body.video-player-page .video-main {
+            padding-top: clamp(0.6rem, 1.6vh, 1rem);
+        }
+
+        body.video-player-page .video-title {
+            margin-top: 0;
+            line-height: 1.25;
+        }
+
+        /* Ajustes para desktop intermediário, reduzindo o "zoom" percebido da barra */
+        @media (max-width: 1300px) {
+            body.video-player-page .navbar .container-fluid {
+                padding-left: 0.9rem !important;
+                padding-right: 0.9rem !important;
+            }
+
+            body.video-player-page .navbar-brand span {
+                font-size: 1.05rem;
+            }
+
+            body.video-player-page .navbar .d-flex.align-items-center.gap-3 {
+                gap: 0.6rem !important;
+            }
+
+            body.video-player-page .navbar .nav-link {
+                font-size: 0.95rem;
+                padding-left: 0.45rem;
+                padding-right: 0.45rem;
+            }
+
+            body.video-player-page .navbar .btn.btn-sm {
+                font-size: 0.9rem;
+                padding: 0.28rem 0.55rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body.video-player-page {
+                --video-nav-offset: calc(var(--navbar-height) + 14px);
+            }
+        }
+    </style>
 </head>
-<body>
+<body class="video-player-page">
     <?php $usuario_nome = $_SESSION['Usuario_nome'] ?? 'Usuário'; ?>
-    <nav class="navbar navbar-expand-lg navbar-dark w-100 p-3">
+    <nav id="videoPageNavbar" class="navbar navbar-expand-lg navbar-dark w-100 p-3">
         <div class="container-fluid px-4">
             <a class="navbar-brand fw-bold d-flex align-items-center" href="dashboard.php">
                 <img src="../../assets/logo.png" alt="Logo" style="height:50px; margin-right:1rem;" />
@@ -104,9 +153,9 @@ if($url != "" && !file_exists($url)) {
             </div>
         </div>
     </nav>
-    <main class="container py-4">
+    <main class="container py-4 video-main">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="mb-0"><?php echo htmlspecialchars($titulo); ?></h4>
+                <h4 class="mb-0 video-title"><?php echo htmlspecialchars($titulo); ?></h4>
             </div>
 
         <?php if($url != ""): ?>
@@ -121,6 +170,28 @@ if($url != "" && !file_exists($url)) {
         <?php endif; ?>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        (function () {
+            var navbar = document.getElementById('videoPageNavbar');
+            if (!navbar) return;
+
+            function updateVideoPageOffset() {
+                var navHeight = Math.ceil(navbar.getBoundingClientRect().height || 0);
+                var extra = window.innerWidth <= 768 ? 14 : 18;
+                document.body.style.setProperty('--video-nav-offset', (navHeight + extra) + 'px');
+            }
+
+            window.addEventListener('load', updateVideoPageOffset);
+            window.addEventListener('resize', updateVideoPageOffset);
+            updateVideoPageOffset();
+
+            var collapse = document.getElementById('navbarNav');
+            if (collapse) {
+                collapse.addEventListener('shown.bs.collapse', updateVideoPageOffset);
+                collapse.addEventListener('hidden.bs.collapse', updateVideoPageOffset);
+            }
+        })();
+    </script>
     <script src="../../js/theme.js"></script>
 </body>
 </html>

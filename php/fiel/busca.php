@@ -5,10 +5,12 @@ auth_require();
 
 $busca = "";
 $encontrou = false;
+$resultado = false;
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
-    $busca = $_POST["busca"];
-    $sql = "SELECT * FROM ID_CONTENT WHERE IDCT_TITULO LIKE '%$busca%' OR IDCT_DESCRICAO LIKE '%$busca%'";
+    $busca = trim($_POST["busca"] ?? "");
+    $busca_db = mysqli_real_escape_string($conn, $busca);
+    $sql = "SELECT * FROM ID_CONTENT WHERE IDCT_TITULO LIKE '%$busca_db%' OR IDCT_DESCRICAO LIKE '%$busca_db%' ORDER BY IDCT_ID DESC";
     $resultado = mysqli_query($conn, $sql);
 }
 ?>
@@ -21,6 +23,28 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="../../css/styles.css">
+    <style>
+        .search-result-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-main);
+        }
+
+        .btn-ver-video {
+            background: #0b2f6b;
+            border: 1px solid #1e4d9b;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .btn-ver-video:hover,
+        .btn-ver-video:focus {
+            background: #123f8f;
+            border-color: #2f63b8;
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
     <?php $usuario_nome = $_SESSION['Usuario_nome'] ?? 'Usuário'; ?>
@@ -95,7 +119,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <?php 
             if($_SERVER["REQUEST_METHOD"] == "POST") {
-                $resultado = mysqli_query($conn, $sql);
                 if($resultado && mysqli_num_rows($resultado) > 0) {
             ?>
                 <div>
@@ -103,11 +126,21 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="list-group mt-3">
                         <?php 
                         while($conteudo = mysqli_fetch_assoc($resultado)) {
+                            $tipo = strtoupper((string) ($conteudo['IDCT_TIPO'] ?? ''));
+                            $eh_video = (strtolower((string) ($conteudo['IDCT_TIPO'] ?? '')) === 'video');
+                            $link_video = "assistir_video.php?id=" . (int) ($conteudo['IDCT_ID'] ?? 0);
                         ?>
-                            <div class="list-group-item list-group-item-action">
-                                <h6 class="mb-1"><?php echo $conteudo['IDCT_TITULO']; ?></h6>
-                                <p class="mb-1"><?php echo $conteudo['IDCT_DESCRICAO']; ?></p>
-                                <small>Tipo: <?php echo $conteudo['IDCT_TIPO']; ?></small>
+                            <div class="list-group-item list-group-item-action search-result-item">
+                                <h6 class="mb-1"><?php echo htmlspecialchars((string) ($conteudo['IDCT_TITULO'] ?? 'Sem título')); ?></h6>
+                                <p class="mb-2"><?php echo htmlspecialchars((string) ($conteudo['IDCT_DESCRICAO'] ?? '')); ?></p>
+                                <div class="d-flex justify-content-between align-items-center gap-2 flex-wrap">
+                                    <small>Tipo: <?php echo htmlspecialchars($tipo); ?></small>
+                                    <?php if ($eh_video) { ?>
+                                        <a href="<?php echo htmlspecialchars($link_video); ?>" class="btn btn-sm btn-ver-video">
+                                            <i class="fas fa-play me-1"></i>Ver Vídeo
+                                        </a>
+                                    <?php } ?>
+                                </div>
                             </div>
                         <?php 
                         }
@@ -118,7 +151,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 } else {
             ?>
                 <div class="alert alert-warning">
-                    Nenhum conteúdo encontrado para "<?php echo $busca; ?>".
+                    Nenhum conteúdo encontrado para "<?php echo htmlspecialchars($busca); ?>".
                 </div>
             <?php 
                 }
